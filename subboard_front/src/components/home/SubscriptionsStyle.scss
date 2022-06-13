@@ -1,0 +1,83 @@
+.subscriptions {
+  background-color: navy;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+  max-width: 1440px;
+  max-height: 900px;
+  transition: all 0.2s;
+  transition-delay: 0.07s;
+
+  .card {
+    display: block;
+    background-color: #ff006a;
+    width: 250px;
+    height: 300px;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 0px #202020;
+    z-index: 10;
+
+    .cardHead {
+      background-color: red;
+      height: 50px;
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 5px 5px 0 0;
+    }
+
+    .cardHeadText {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-left: 5px;
+    }
+
+    .cardHeadLogo {
+      display: inline-block;
+      height: 100%;
+      width: auto;
+      border-radius: 0 5px 0 0;
+    }
+
+    .cardBody {
+      background-color: orange;
+    }
+
+    .cardBodyChips {
+      display: flex;
+      flex-wrap: wrap;
+      padding-right: 4px;
+      padding-bottom: 4px;
+    }
+  }
+
+
+
+  .innerCard {
+    width: 250px;
+    height: 300px;
+    transition: all 1s;
+  }
+}
+
+.selectedSubscriptions {
+  // max-width: 100%;
+
+  .selectedCard {
+    width: 100%;
+    height: 100%;
+    z-index: 11;
+  }
+}
+
+#profil {
+  float: right;
+  height: 100px;
+  background-color: #ff006a;
+}

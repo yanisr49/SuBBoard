@@ -1,28 +1,51 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import './App.scss';
+import jwtDecode from 'jwt-decode';
+import ThemeContext from './theme/ThemeContext';
+import Router from './router';
+import Credentials from './auth/Credentials';
+import AuthContext from './auth/AuthContext';
 
 function App() {
+  const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  const getCredentials = (): Credentials | undefined => {
+    const token = window.localStorage.getItem('token');
+    return token ? jwtDecode(token) : undefined;
+  };
+
+  const [credentials, setCredentials] = React.useState<Credentials | undefined>(getCredentials());
+  const authentication = React.useMemo(
+    () => ({
+      credentials,
+      updateCredentials: (newCredentials?: Credentials) => {
+        setCredentials(newCredentials);
+        if (newCredentials) {
+          window.localStorage.setItem('token', newCredentials.token);
+        } else if (window.localStorage.getItem('token')) {
+          window.localStorage.removeItem('token');
+        }
+      },
+    }),
+    [credentials],
+  );
+
+  const [themeName, setThemeName] = React.useState(prefersDarkMode ? 'dark' : 'light');
+  const themeValue = React.useMemo(
+    () => ({
+      color: themeName,
+      toggleColor: () => setThemeName((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark')),
+    }),
+    [themeName],
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit
-          {' '}
-          <code>src/App.tsx</code>
-          {' '}
-          and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div id="main">
+      <AuthContext.Provider value={authentication}>
+        <ThemeContext.Provider value={themeValue}>
+          <Router />
+        </ThemeContext.Provider>
+      </AuthContext.Provider>
     </div>
   );
 }
