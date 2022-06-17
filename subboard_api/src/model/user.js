@@ -3,7 +3,8 @@ const { SubscriptionSchema } = require('./subscription');
 
 const userSchema = new mongoose.Schema({
     email: { type: String, unique: true },
-    token: { type: String },
+    profilPicture: { type: String },
+    theme: { type: String, default: 'prefered' },
     subscriptions: [SubscriptionSchema],
 });
 

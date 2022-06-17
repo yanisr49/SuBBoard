@@ -5,5 +5,5 @@ interface Props {
 }
 
 export default function Chip({ tag }: Props) {
-  return <div>{tag.name}</div>;
+    return <div>{tag.name}</div>;
 }

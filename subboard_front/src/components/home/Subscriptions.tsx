@@ -10,14 +10,14 @@ import './SubscriptionsStyle.scss';
 // const { color, toggleColor } = useContext(ThemeContext);
 
 export default function Subscriptions() {
-  // const [cards, loading, refetch] = SubscriptionService.useAllSubscriptions(1);
-  const [displayCards] = React.useState<SubscriptionModel[]>([]);
+    // const [cards, loading, refetch] = SubscriptionService.useAllSubscriptions(1);
+    const [displayCards] = React.useState<SubscriptionModel[]>([]);
 
-  return (
-    <div className="subscriptions">
-      {displayCards.map((subscription: SubscriptionModel) => (
-        <Card key={subscription.id} subscription={subscription} />
-      ))}
-    </div>
-  );
+    return (
+        <div className="subscriptions">
+            {displayCards.map((subscription: SubscriptionModel) => (
+                <Card key={subscription.id} subscription={subscription} />
+            ))}
+        </div>
+    );
 }

@@ -1,13 +1,9 @@
 const { UserModel } = require('../model');
-const jwt = require('jsonwebtoken');
-const { TOKEN_KEY } = process.env;
 
 const resolvers = {
-    user: async ({ email }, { token }) => {
-        if (email === jwt.verify(token, TOKEN_KEY).email) {
-            return UserModel.findOne({ email });
-        }
-        return null;
+    user: async (_, {email}) => {
+        console.log(email)
+        return UserModel.findOne({ email: email });
     },
     addSubscription: async ({ email, name }) => {
         const newSubscription = {
