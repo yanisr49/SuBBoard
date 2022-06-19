@@ -1,2 +1,4 @@
 subboard_api/node_modules/
+subboard_api/package-lock.json
 subboard_front/node_modules/
+subboard_front/package-lock.json

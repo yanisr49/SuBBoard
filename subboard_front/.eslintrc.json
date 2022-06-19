@@ -85,6 +85,15 @@
         "quotes": [
             "error",
             "single"
+        ],
+        "no-param-reassign": [
+            "error",
+            {
+                "props": true,
+                "ignorePropertyModificationsFor": [
+                    "state"
+                ]
+            }
         ]
     },
     "settings": {
