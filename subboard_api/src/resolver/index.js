@@ -2,7 +2,6 @@ const { UserModel } = require('../model');
 
 const resolvers = {
     user: async (_, {email}) => {
-        console.log(email)
         return UserModel.findOne({ email: email });
     },
     addSubscription: async ({ email, name }) => {
@@ -15,6 +14,13 @@ const resolvers = {
         user.save();
         return newSubscription;
     },
+    theme: async ({ theme }, { email }) => {
+        const user = await UserModel.findOne({ email });
+        user.theme = theme;
+        user.save();
+
+        return theme;
+    }
 };
 
 module.exports = resolvers;

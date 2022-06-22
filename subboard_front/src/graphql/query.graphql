@@ -4,3 +4,7 @@ query User {
     theme
   }
 }
+
+mutation changeTheme($theme: String!) {
+  theme(theme: $theme)
+}

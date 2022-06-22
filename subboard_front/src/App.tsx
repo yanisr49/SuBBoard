@@ -1,68 +1,47 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import './App.scss';
-import jwtDecode from 'jwt-decode';
-import { Theme, ThemeProvider } from '@emotion/react';
+import { ThemeProvider } from '@emotion/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Router from './router';
-import AuthContext from './auth/AuthContext';
 import DarkTheme from './theme/DarkTheme';
-import ThemeContext from './theme/ThemeContext';
-import { graphQLClient } from './graphql/graphqlRequest';
+import { LightTheme } from './theme';
+import { selectTheme } from './redux/userSlice';
+import { useAppDispatch, useAppSelector } from './hooks/reduxHooks';
+import { updateToken } from './redux/tokenSlice';
+import { TOKEN_STORE_NAME } from './resources/Constants';
 
 function App() {
-    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const dispatch = useAppDispatch();
 
-    const getCredentials = (): string | undefined => {
-        const token = window.localStorage.getItem('token');
-        return token ?? undefined;
-
-        // return token ? jwtDecode(token) : undefined;
+    const getThemeFromString = (themeName?: string | null) => {
+        if (themeName === 'dark') {
+            return DarkTheme;
+        } if (themeName === 'light') {
+            return LightTheme;
+        }
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? DarkTheme : LightTheme;
     };
 
-    const [token, setToken] = React.useState<string | undefined>(getCredentials());
-    const authentication = React.useMemo(
-        () => ({
-            token,
-            updateToken: (newToken?: string) => {
-                // setToken(newToken);
-                if (newToken) {
-                    console.log(newToken);
-                    graphQLClient.setHeaders({
-                        authorization: `Bearer ${newToken}`,
-                    });
-                    window.localStorage.setItem('token', newToken);
-                } else if (window.localStorage.getItem('token')) {
-                    window.localStorage.removeItem('token');
-                }
-            },
-        }),
-        [token],
-    );
+    const userTheme = useAppSelector(selectTheme);
+    const currentTheme = getThemeFromString(userTheme);
 
-    const [theme, setTheme] = React.useState<Theme>(DarkTheme);
-    const themeContext = React.useMemo(
-        () => ({
-            theme,
-            toggleTheme: (newTheme: Theme) => setTheme(newTheme),
-        }),
-        [theme],
-    );
+    useEffect(() => {
+        if (window.localStorage.getItem(TOKEN_STORE_NAME)) {
+            dispatch(updateToken(window.localStorage.getItem(TOKEN_STORE_NAME) ?? undefined));
+        }
+    }, []);
 
     const queryClient = new QueryClient();
 
     return (
         <div id="main">
             <HelmetProvider>
-                <AuthContext.Provider value={authentication}>
-                    <QueryClientProvider client={queryClient}>
-                        <ThemeContext.Provider value={themeContext}>
-                            <ThemeProvider theme={theme}>
-                                <Router />
-                            </ThemeProvider>
-                        </ThemeContext.Provider>
-                    </QueryClientProvider>
-                </AuthContext.Provider>
+                <QueryClientProvider client={queryClient}>
+                    <ThemeProvider theme={currentTheme}>
+                        <Router />
+                    </ThemeProvider>
+                </QueryClientProvider>
             </HelmetProvider>
         </div>
     );

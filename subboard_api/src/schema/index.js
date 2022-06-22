@@ -8,7 +8,7 @@ const schema = buildSchema(`
 
     type User {
         email: String!
-        theme: String!
+        theme: String
         subscriptions: [Subscription]
     }
 
@@ -21,7 +21,7 @@ const schema = buildSchema(`
 
     type Mutation {
         addSubscription(email: String!, name: String!): Subscription
-        changeTheme(email: String!, theme: String!): String
+        theme(theme: String): String
     }
 `);
 
