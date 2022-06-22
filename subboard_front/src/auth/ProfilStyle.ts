@@ -1,17 +1,19 @@
-import styled from '@emotion/styled';
+import { css, Theme } from '@emotion/react';
+import { TRANSITION_TIME } from '../resources/Constants';
 
-export const ProfilContainerStyled = styled.div<{clicked: boolean}>`
-    background-color: ${(props) => props.theme.color.primary};
-    position: absolute;
-    top: ${(props) => (props.clicked ? '50%' : '10px')};
-    right: ${(props) => (props.clicked ? '50%' : '10px')};
-    transition: all 1s;
-    transform: ${(props) => (props.clicked ? 'translate(-50%, -50%)' : '')};
-`;
-
-export const ProfilPictureStyled = styled.img<{clicked: boolean}>`
-    width: ${(props) => (props.clicked ? '200px' : '50px')};
-    height: ${(props) => (props.clicked ? '200px' : '50px')};
-    border-radius: 50%;
-    transition: all 1s;
-`;
+export const ProfilStyle = (theme: Theme, clicked: boolean) => ({
+    ProfilContainer: css`
+        background-color: ${theme.color.primary};
+        position: absolute;
+        top: ${clicked ? '50%' : '10px'};
+        right: ${clicked ? '50%' : '10px'};
+        transition: ${TRANSITION_TIME}ms;
+        transform: ${clicked ? 'translate(-50%, -50%)' : ''};
+    `,
+    ProfilPicture: css`
+        width: ${clicked ? '200px' : '50px'};
+        height: ${clicked ? '200px' : '50px'};
+        border-radius: 50%;
+        transition: ${TRANSITION_TIME}ms;
+    `,
+});

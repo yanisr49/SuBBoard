@@ -9,6 +9,7 @@ const schema = buildSchema(`
     type User {
         email: String!
         theme: String
+        profilPicture: String
         subscriptions: [Subscription]
     }
 

@@ -2,13 +2,14 @@ import { gql } from 'graphql-request';
 import { Query } from './generated/graphql';
 import { graphQLClient } from './graphqlClient';
 
-const getCurrentUser = gql`
-query User {
-  user {
-    email
-    theme
-  }
-}
+const fetchCurrentUser = gql`
+    query User {
+        user {
+            email
+            theme
+            profilPicture
+        }
+    }
 `;
 
-export const getCurrentUserQuery = (): Promise<Query> => graphQLClient.request(getCurrentUser);
+export const fetchCurrentUserQuery = (): Promise<Pick<Query, 'user'>> => graphQLClient.request(fetchCurrentUser);

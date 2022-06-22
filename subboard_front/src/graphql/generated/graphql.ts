@@ -43,6 +43,19 @@ export type Subscription = {
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
+  profilPicture?: Maybe<Scalars['String']>;
   subscriptions?: Maybe<Array<Maybe<Subscription>>>;
   theme?: Maybe<Scalars['String']>;
 };
+
+export type UserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', email: string, theme?: string | null, profilPicture?: string | null } | null };
+
+export type ChangeThemeMutationVariables = Exact<{
+  theme: Scalars['String'];
+}>;
+
+
+export type ChangeThemeMutation = { __typename?: 'Mutation', theme?: string | null };

@@ -53,22 +53,19 @@ app.post('/login', async (req, res) => {
 
     // Récupère l'utilisateur en base ou le créer
     try {
-        const user = await UserModel.findOne({ email: userEmail });
-
-        // Créer le token
-        const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' });
+        let user = await UserModel.findOne({ email: userEmail });
 
         if (user) {
-            res.status(200).redirect(REDIRECT_UI + token);
+            res.status(200).redirect(REDIRECT_UI + jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }));
         } else {
             // Create user in our database
-            await UserModel.create({
+            user = await UserModel.create({
                 email: userEmail,
                 profilPicture: userPicture,
             });
 
             // save user token
-            res.status(201).redirect(REDIRECT_UI + token);
+            res.status(201).redirect(REDIRECT_UI + jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }));
         }
     } catch (err) {
         res.status(500).send(err);

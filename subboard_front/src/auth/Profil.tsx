@@ -3,19 +3,25 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable consistent-return */
 /* eslint-disable no-promise-executor-return */
+/** @jsxImportSource @emotion/react */
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { useQuery } from 'react-query';
 import { useOutsideClick } from '../hooks/useOutsideClick';
 import DelayUnmounting from '../components/DelayUnmounting';
-import { ProfilContainerStyled, ProfilPictureStyled } from './ProfilStyle';
 import { TRANSITION_TIME } from '../resources/Constants';
 import { Select } from '../components/Select';
-import { selectToken } from '../redux/tokenSlice';
+import { selectToken, updateToken } from '../redux/tokenSlice';
 import {
-    changeTheme, fetchUser, selectTheme, updateUser,
-} from '../redux/userSlice';
+    changeTheme, selectTheme, updateTheme,
+} from '../redux/themeSlice';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
+import { fetchCurrentUserQuery } from '../graphql/queries';
+import DarkTheme from '../theme/DarkTheme';
+import LightTheme from '../theme/LightTheme';
+import themes, { isThemesKey } from '../theme';
+import { ProfilStyle } from './ProfilStyle';
 
 export default function Profil() {
     const [clicked, setClicked] = React.useState<boolean>(false);
@@ -23,37 +29,43 @@ export default function Profil() {
     const ref = useRef<HTMLDivElement>(null);
     useOutsideClick(ref, () => setClicked(false));
 
-    const dispatch = useAppDispatch();
-
     const token = useAppSelector(selectToken);
     const theme = useAppSelector(selectTheme);
 
+    const style = ProfilStyle(theme.value, clicked);
+
+    const dispatch = useAppDispatch();
+
+    const connectedUser = useQuery('fetchUser', fetchCurrentUserQuery, { enabled: Boolean(token) });
+
     useEffect(() => {
-        if (token) {
-            dispatch(fetchUser());
-        } else {
-            dispatch(updateUser(undefined));
+        if (
+            connectedUser.data?.user?.theme
+            && isThemesKey(connectedUser.data?.user?.theme)
+            && theme.value !== themes[connectedUser.data.user.theme]
+        ) {
+            dispatch(updateTheme(connectedUser.data.user.theme));
         }
-    }, [token]);
+    }, [connectedUser.data]);
 
     const logout = () => {
-        // updateToken(undefined);
+        dispatch(updateToken(undefined));
         navigate('/');
     };
 
     return (
         <div>
-            <ProfilContainerStyled clicked={clicked} onClick={() => setClicked(true)} ref={ref}>
+            <div css={style.ProfilContainer} onClick={() => setClicked(true)} ref={ref}>
                 <Helmet>
                     <script src="https://accounts.google.com/gsi/client" async defer />
                 </Helmet>
 
                 {token ? (
                     <div className="ProfilPreferences">
-                        <ProfilPictureStyled
-                            clicked={clicked}
+                        <img
+                            css={style.ProfilPicture}
                             id="profilPicture"
-                            src=""
+                            src={connectedUser.data?.user?.profilPicture ?? ''}
                             alt="Profil"
                         />
                     </div>
@@ -87,7 +99,7 @@ export default function Profil() {
                             id="theme3"
                             checked
                             label="lsdjvb"
-                            onChange={() => dispatch(fetchUser())}
+                            onChange={() => {}}
                         />
                         <div id="profilContentEmail" />
                         <input
@@ -95,14 +107,14 @@ export default function Profil() {
                             id="theme1"
                             onChange={() => dispatch(changeTheme('dark'))}
                             name="theme1"
-                            checked={theme === 'dark'}
+                            checked={theme.value === DarkTheme}
                         />
                         <input
                             type="radio"
                             id="theme2"
                             onChange={() => dispatch(changeTheme('light'))}
                             name="theme2"
-                            checked={theme === 'light'}
+                            checked={theme.value === LightTheme}
                         />
                         <div id="profilContentLogout">
                             <button onClick={logout} type="button">
@@ -112,7 +124,7 @@ export default function Profil() {
                     </div>
                 </DelayUnmounting>
 
-            </ProfilContainerStyled>
+            </div>
         </div>
     );
 }

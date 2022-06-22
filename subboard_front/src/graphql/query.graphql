@@ -1,10 +1,11 @@
 query User {
-  user {
-    email
-    theme
-  }
+    user {
+        email
+        theme
+        profilPicture
+    }
 }
 
 mutation changeTheme($theme: String!) {
-  theme(theme: $theme)
+    theme(theme: $theme)
 }
