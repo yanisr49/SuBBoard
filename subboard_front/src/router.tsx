@@ -13,8 +13,8 @@ function Router() {
             </header>
             <Routes>
                 <Route path="/" element={<Navigate to={`${process.env.REACT_APP_PUBLIC_URL}`} />} />
-                <Route path="/" element={<Subscriptions />} />
-                <Route path="/login/:newToken" element={<Auth />} />
+                <Route path={`${process.env.REACT_APP_PUBLIC_URL}/subscriptions`} element={<Subscriptions />} />
+                <Route path={`${process.env.REACT_APP_PUBLIC_URL}/login/:newToken`} element={<Auth />} />
             </Routes>
         </BrowserRouter>
     );
