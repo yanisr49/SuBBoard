@@ -9,7 +9,7 @@
     "express-unless": "^2.1.0",
     "google-auth-library": "^8.0.2",
     "googleapis": "^101.0.0",
-    "graphql": "^16.5.0",
+    "graphql": "^15.3.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.6",
     "path": "^0.12.7"
