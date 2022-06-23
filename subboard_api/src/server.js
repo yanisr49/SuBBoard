@@ -50,7 +50,10 @@ app.post('/login', async (req, res) => {
         return { userEmail: payload['email'], userPicture: payload['picture'] };
     }
     const { userEmail, userPicture } = await verify().catch((reason) =>
-        res.status(403).send(reason)
+        {
+            console.log('a', reason);
+            res.status(403).send(reason)
+        }
     );
 
     // Récupère l'utilisateur en base ou le créer
@@ -58,6 +61,7 @@ app.post('/login', async (req, res) => {
         let user = await UserModel.findOne({ email: userEmail });
 
         if (user) {
+            console.log('b');
             res.status(200).redirect(REDIRECT_UI + jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }));
         } else {
             // Create user in our database
@@ -67,9 +71,11 @@ app.post('/login', async (req, res) => {
             });
 
             // save user token
+            console.log('c');
             res.status(201).redirect(REDIRECT_UI + jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }));
         }
     } catch (err) {
+        console.log('d');
         res.status(500).send(err);
     }
 });
