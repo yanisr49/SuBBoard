@@ -8,19 +8,16 @@ import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useQuery } from 'react-query';
+import { Skeleton } from '@mui/material';
 import { useOutsideClick } from '../hooks/useOutsideClick';
 import DelayUnmounting from '../components/DelayUnmounting';
 import { TRANSITION_TIME } from '../resources/Constants';
 import { Select } from '../components/Select';
 import { selectToken, updateToken } from '../redux/tokenSlice';
-import {
-    changeTheme, selectTheme, updateTheme,
-} from '../redux/themeSlice';
+import { selectTheme, updateTheme } from '../redux/themeSlice';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { fetchCurrentUserQuery } from '../graphql/queries';
-import DarkTheme from '../theme/DarkTheme';
-import LightTheme from '../theme/LightTheme';
-import themes, { isThemesKey } from '../theme';
+import themes, { isThemesKey, themesKeys } from '../theme';
 import { ProfilStyle } from './ProfilStyle';
 
 export default function Profil() {
@@ -32,17 +29,18 @@ export default function Profil() {
     const token = useAppSelector(selectToken);
     const theme = useAppSelector(selectTheme);
 
-    const style = ProfilStyle(theme.value, clicked);
+    const style = ProfilStyle(themes[theme.value], clicked);
 
     const dispatch = useAppDispatch();
 
-    const connectedUser = useQuery('fetchUser', fetchCurrentUserQuery, { enabled: Boolean(token) });
+    const connectedUser = useQuery('fetchUser', fetchCurrentUserQuery, {
+        enabled: Boolean(token),
+    });
 
     useEffect(() => {
         if (
             connectedUser.data?.user?.theme
             && isThemesKey(connectedUser.data?.user?.theme)
-            && theme.value !== themes[connectedUser.data.user.theme]
         ) {
             dispatch(updateTheme(connectedUser.data.user.theme));
         }
@@ -62,12 +60,29 @@ export default function Profil() {
 
                 {token ? (
                     <div className="ProfilPreferences">
-                        <img
-                            css={style.ProfilPicture}
-                            id="profilPicture"
-                            src={connectedUser.data?.user?.profilPicture ?? ''}
-                            alt="Profil"
-                        />
+                        {!connectedUser.data
+                            ? (
+                                <Skeleton
+                                    variant="circular"
+                                    css={style.ProfilPicture}
+                                    animation="wave"
+                                >
+                                    <img
+                                        css={style.ProfilPicture}
+                                        id="profilPicture"
+                                        src=""
+                                        alt="Profil"
+                                    />
+                                </Skeleton>
+                            )
+                            : (
+                                <img
+                                    css={style.ProfilPicture}
+                                    id="profilPicture"
+                                    src={connectedUser.data?.user?.profilPicture ?? ''}
+                                    alt="Profil"
+                                />
+                            )}
                     </div>
                 )
                     : (
@@ -95,27 +110,29 @@ export default function Profil() {
 
                 <DelayUnmounting delay={TRANSITION_TIME} mounted={!!token && clicked}>
                     <div id="profilContent">
-                        <Select
-                            id="theme3"
-                            checked
-                            label="lsdjvb"
-                            onChange={() => {}}
-                        />
-                        <div id="profilContentEmail" />
-                        <input
-                            type="radio"
-                            id="theme1"
-                            onChange={() => dispatch(changeTheme('dark'))}
-                            name="theme1"
-                            checked={theme.value === DarkTheme}
-                        />
-                        <input
-                            type="radio"
-                            id="theme2"
-                            onChange={() => dispatch(changeTheme('light'))}
-                            name="theme2"
-                            checked={theme.value === LightTheme}
-                        />
+                        {!connectedUser.data
+                            ? (
+                                <Skeleton animation="wave">
+                                    <Select
+                                        id="themes"
+                                        label="TODO"
+                                        options={[...themesKeys]}
+                                        getOptionLabel={(option) => option}
+                                        onChange={(option) => { dispatch(updateTheme(option)); }}
+                                        initialValue={theme.value}
+                                    />
+                                </Skeleton>
+                            )
+                            : (
+                                <Select
+                                    id="themes"
+                                    label="TODO"
+                                    options={[...themesKeys]}
+                                    getOptionLabel={(option) => option}
+                                    onChange={(option) => { dispatch(updateTheme(option)); }}
+                                    initialValue={theme.value}
+                                />
+                            ) }
                         <div id="profilContentLogout">
                             <button onClick={logout} type="button">
                                 Logout

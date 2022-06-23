@@ -9,4 +9,6 @@ const changeTheme = gql`
     }
 `;
 
-export const changeThemeMutation = (theme: keyof Themes): Promise<Pick<Mutation, 'theme'>> => graphQLClient.request(changeTheme, { theme });
+export const changeThemeMutation = (theme: keyof Themes): Promise<Pick<Mutation, 'theme'>> => graphQLClient.request(changeTheme, {
+    theme,
+});

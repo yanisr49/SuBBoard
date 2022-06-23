@@ -47,14 +47,19 @@
                 "code": 150
             }
         ],
+        "object-curly-newline": [
+            "error",
+            {
+                "ObjectExpression": {
+                    "minProperties": 1
+                }
+            }
+        ],
         "import/prefer-default-export": "off",
         "react/prop-types": "off",
         // suppress errors for missing 'import React' in files
         "react/react-in-jsx-scope": "off",
-        "linebreak-style": [
-            "error",
-            "windows"
-        ],
+        "linebreak-style": 0,
         "@typescript-eslint/no-empty-function": [
             "off"
         ],
@@ -94,7 +99,8 @@
                     "state"
                 ]
             }
-        ]
+        ],
+        "react/require-default-props": "off"
     },
     "settings": {
         "import/resolver": {

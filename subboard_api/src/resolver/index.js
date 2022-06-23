@@ -2,6 +2,7 @@ const { UserModel } = require('../model');
 
 const resolvers = {
     user: async (_, {email}) => {
+        // await new Promise(resolve => setTimeout(resolve, 5000));
         return UserModel.findOne({ email: email });
     },
     addSubscription: async ({ email, name }) => {
