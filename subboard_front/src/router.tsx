@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-    BrowserRouter,
-    Route,
-    Routes,
-} from 'react-router-dom';
+import { Navigate, BrowserRouter, Route, Routes } from 'react-router-dom';
 import Auth from './auth/Auth';
 import Profil from './auth/Profil';
 import Subscriptions from './components/home/Subscriptions';
@@ -16,6 +12,7 @@ function Router() {
                 <Profil />
             </header>
             <Routes>
+                <Route path="/" element={<Navigate to={`${process.env.REACT_APP_PUBLIC_URL}`} />} />
                 <Route path="/" element={<Subscriptions />} />
                 <Route path="/login/:newToken" element={<Auth />} />
             </Routes>
