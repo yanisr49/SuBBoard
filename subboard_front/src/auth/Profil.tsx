@@ -133,11 +133,11 @@ export default function Profil() {
                                     initialValue={theme.value}
                                 />
                             ) }
-                        <div id="profilContentLogout">
+                        {/* <div id="profilContentLogout">
                             <button onClick={logout} type="button">
                                 Logout
                             </button>
-                        </div>
+                        </div> */}
                     </div>
                 </DelayUnmounting>
 
