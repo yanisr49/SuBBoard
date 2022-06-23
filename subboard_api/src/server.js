@@ -25,6 +25,7 @@ const { CLIENT_ID, REDIRECT_UI, JWT_SECRET } = process.env;
 // Login
 app.post('/login', async (req, res) => {
     // Vérifie que le csrf token est valide
+    /*
     const cookie_g_csrf_token = req.cookies.g_csrf_token;
     const { credential, g_csrf_token } = req.body;
 
@@ -36,6 +37,7 @@ app.post('/login', async (req, res) => {
         res.status(401).send('Invalid CSRF token');
         return;
     }
+    */
 
     // Check auprès de GOOGLE que le token est valide
     const client = new OAuth2Client(CLIENT_ID);
