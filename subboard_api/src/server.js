@@ -29,6 +29,8 @@ app.post('/login', async (req, res) => {
 
     const cookie_g_csrf_token = req.cookies.g_csrf_token;
     const { credential, g_csrf_token } = req.body;
+
+    console.log(cookie_g_csrf_token, g_csrf_token)
     /*
     if (
         !cookie_g_csrf_token ||
