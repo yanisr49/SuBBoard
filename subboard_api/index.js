@@ -7,6 +7,3 @@ const { PORT } = process.env;
 app.listen(PORT || 4001, () => {
   console.log(`Server running on port ${PORT || 4001}`);
 });
-
-// Export the Express API
-module.exports = app;
