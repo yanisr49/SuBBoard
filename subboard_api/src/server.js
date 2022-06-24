@@ -68,7 +68,7 @@ app.post('/login', async (req, res) => {
             user = await UserModel.create({
                 email: userEmail,
                 profilPicture: userPicture,
-            });
+            }, console.log);
 
             // save user token
             res.status(201).redirect(REDIRECT_UI + jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }));
