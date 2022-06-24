@@ -26,6 +26,7 @@ const { CLIENT_ID, REDIRECT_UI, JWT_SECRET } = process.env;
 app.post('/login', async (req, res) => {
     // Vérifie que le csrf token est valide
 
+
     const cookie_g_csrf_token = req.cookies.g_csrf_token;
     const { credential, g_csrf_token } = req.body;
     /*
