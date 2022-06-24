@@ -39,16 +39,21 @@ app.post('/login', async (req, res) => {
         return;
     }
     */
-
+console.log("a")
     // Check auprès de GOOGLE que le token est valide
     const client = new OAuth2Client(CLIENT_ID);
+    console.log("b")
     async function verify() {
+        console.log("c")
         const ticket = await client.verifyIdToken({
             idToken: credential,
             audience: CLIENT_ID,
         });
+        console.log("d")
         const payload = ticket.getPayload();
+        console.log("e")
         return { userEmail: payload['email'], userPicture: payload['picture'] };
+        console.log("f")
     }
     const { userEmail, userPicture } = await verify().catch((reason) =>
         {
@@ -56,15 +61,18 @@ app.post('/login', async (req, res) => {
             res.status(403).send(reason)
         }
     );
+    console.log("g")
 
     // Récupère l'utilisateur en base ou le créer
     try {
         let user = await UserModel.findOne({ email: userEmail });
 
+        console.log("h")
         if (user) {
-            console.log('b');
+            console.log('i');
             res.status(200).redirect(REDIRECT_UI + jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }));
         } else {
+            console.log("j")
             // Create user in our database
             user = await UserModel.create({
                 email: userEmail,
@@ -72,11 +80,11 @@ app.post('/login', async (req, res) => {
             });
 
             // save user token
-            console.log('c');
+            console.log('k');
             res.status(201).redirect(REDIRECT_UI + jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }));
         }
     } catch (err) {
-        console.log('d');
+        console.log('l');
         res.status(500).send(err);
     }
 });
