@@ -63,6 +63,7 @@ app.post('/login', async (req, res) => {
         let user = await UserModel.findOne({ email: userEmail });
 
         if (user) {
+            console.log(REDIRECT_UI, user, JWT_SECRET)
             res.status(200).redirect(REDIRECT_UI + jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }));
         } else {
             console.log(userEmail, userPicture)
