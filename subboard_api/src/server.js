@@ -29,8 +29,6 @@ app.post('/login', async (req, res) => {
 
     const cookie_g_csrf_token = req.cookies.g_csrf_token;
     const { credential, g_csrf_token } = req.body;
-
-    console.log(cookie_g_csrf_token, g_csrf_token)
     /*
     if (
         !cookie_g_csrf_token ||
@@ -63,10 +61,8 @@ app.post('/login', async (req, res) => {
         let user = await UserModel.findOne({ email: userEmail });
 
         if (user) {
-            console.log(REDIRECT_UI, user, JWT_SECRET)
             res.status(200).redirect(REDIRECT_UI + jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }));
         } else {
-            console.log(userEmail, userPicture)
             // Create user in our database
             user = await UserModel.create({
                 email: userEmail,

@@ -2,7 +2,7 @@ import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import './App.scss';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import Router from './router';
+import Router from './router/router';
 
 function App() {
     const queryClient = new QueryClient();
