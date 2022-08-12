@@ -1,0 +1,54 @@
+#list {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    position: absolute;
+    top: 30px;
+    bottom: 30px;
+    left: 30px;
+
+    width: 400px;
+
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: rgb(30, 30, 30);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 6px;
+        background-color: rgb(40, 40, 40);
+    }
+
+    .kanjiList {
+        font-size: 1.5em;
+        border: 0;
+        margin: 10px;
+        padding: 30px;
+        color: white;
+        background-color: rgb(40, 40, 40);
+
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        &.selected {
+            background-color: rgb(14, 209, 14);
+            color:rgb(0, 0, 0)
+        }
+
+        &:hover {
+            cursor: pointer;
+            transform: scale(1.02);
+
+            &:active {
+                transform: scale(1.04);
+            }
+        }
+    }
+}

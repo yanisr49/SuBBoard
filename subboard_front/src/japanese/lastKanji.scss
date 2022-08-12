@@ -1,0 +1,35 @@
+#lastKanji {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 400px;
+    color: white;
+
+    position: absolute;
+    top: 30px;
+    bottom: 30px;
+    right: 30px;
+
+    p {
+        margin: 0;
+    }
+    .kanji {
+        font-size: 10em;
+    }
+    div {
+        font-size: 1em;
+        p:first-child {
+            display: inline-block;
+            width: 100%;
+            font-size: 2em;
+            position: relative;
+            top: -20px;
+            color: rgb(90, 90, 90);
+        }
+        p:last-child {
+            display: inline-block;
+            width: 100%;
+            font-size: 4em;
+        }
+    }
+}
