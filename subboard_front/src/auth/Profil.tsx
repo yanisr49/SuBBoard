@@ -51,6 +51,8 @@ export default function Profil() {
         navigate('/');
     };
 
+    console.log(token, connectedUser.data);
+
     return (
         <div>
             <div css={style.ProfilContainer} onClick={() => setClicked(true)} ref={ref}>
