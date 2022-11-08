@@ -8,6 +8,7 @@ declare module '@emotion/react' {
       ternary: string
     },
     color: {
+        text: string
         primary: string
     }
   }

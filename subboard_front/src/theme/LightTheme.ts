@@ -5,6 +5,7 @@ export default {
         ternary: 'rgb(160, 160, 160)',
     },
     color: {
+        text: 'black',
         primary: 'black',
     },
 };

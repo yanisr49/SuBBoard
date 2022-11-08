@@ -26,7 +26,17 @@ export default function DayCard({ name, day, selected, onClick } : Props) {
             role="button"
             tabIndex={0}
         >
-            {`${name} ${day}`}
+            <span
+                css={style.CardName}
+            >
+                {name}
+
+            </span>
+            <span
+                css={style.CardNumber}
+            >
+                {day}
+            </span>
             {selected && <FontAwesomeIcon icon={faHouseLaptop} size="3x" />}
         </div>
     );
