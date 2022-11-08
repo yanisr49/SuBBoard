@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const { MONGO_URI } = process.env;
 
 exports.connect = () => {
-    console.log(MONGO_URI)
     // Connecting to the database
     mongoose
         .connect(MONGO_URI)

@@ -15,6 +15,8 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   addSubscription?: Maybe<Subscription>;
+  addTTDay?: Maybe<TtDays>;
+  removeTTDay?: Maybe<TtDays>;
   theme?: Maybe<Scalars['String']>;
 };
 
@@ -25,19 +27,49 @@ export type MutationAddSubscriptionArgs = {
 };
 
 
+export type MutationAddTtDayArgs = {
+  day: Scalars['Int'];
+  month: Scalars['Int'];
+  year: Scalars['Int'];
+};
+
+
+export type MutationRemoveTtDayArgs = {
+  day: Scalars['Int'];
+  month: Scalars['Int'];
+  year: Scalars['Int'];
+};
+
+
 export type MutationThemeArgs = {
   theme?: InputMaybe<Scalars['String']>;
 };
 
 export type Query = {
   __typename?: 'Query';
+  ttDays?: Maybe<Array<Maybe<TtDays>>>;
   user?: Maybe<User>;
+};
+
+
+export type QueryTtDaysArgs = {
+  day?: InputMaybe<Scalars['Int']>;
+  month?: InputMaybe<Scalars['Int']>;
+  year?: InputMaybe<Scalars['Int']>;
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
   color?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
+};
+
+export type TtDays = {
+  __typename?: 'TTDays';
+  day: Scalars['Int'];
+  month: Scalars['Int'];
+  userEmail: Scalars['String'];
+  year: Scalars['Int'];
 };
 
 export type User = {

@@ -1,3 +1,5 @@
+import { TtDays } from '../graphql/generated/graphql';
+
 const Utils = {
     hex2rgba: (hex: string, alpha = 1): string => {
         if (alpha > 1 || alpha < 0) {
@@ -10,6 +12,13 @@ const Utils = {
 
         return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
     },
+};
+
+export const compareTTDays = (day1: TtDays, day2: Date) => {
+    const date1 = new Date(day1.year, day1.month - 1, day1.day);
+    if (date1 < day2) return -1;
+    if (date1 > day2) return 1;
+    return 0;
 };
 
 export default Utils;

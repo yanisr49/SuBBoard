@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { changeThemeMutation } from '../graphql/mutations';
-import { RootState } from './store';
 import { isThemesKey, ThemesKeys } from '../theme';
 
 export interface ThemeState {
@@ -47,7 +46,5 @@ export const themeSlice = createSlice({
 });
 
 export const { updateTheme } = themeSlice.actions;
-
-export const selectTheme = (state: RootState) => state.theme;
 
 export default themeSlice.reducer;

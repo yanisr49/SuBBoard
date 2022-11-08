@@ -55,6 +55,10 @@ export function Select<T>({ id, label, options, initialValue, onChange, getOptio
                         key={id + getOptionLabel(option)}
                         {...itemProps[index]}
                         onClick={() => handleClick(option)}
+                        style={{
+                            backgroundColor: 'red',
+                            fontSize: '2rem',
+                        }}
                     >
                         {getOptionLabel(option)}
                     </a>

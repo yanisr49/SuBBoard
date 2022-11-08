@@ -1,6 +1,10 @@
 export default {
+    backgroundColor: {
+        primary: 'rgb(60, 64, 67)',
+        secondary: 'rgb(53, 54, 58)',
+        ternary: 'rgb(32, 33, 36)',
+    },
     color: {
-        primary: 'rgb(25, 25, 25)',
-        secondary: 'rgb(50, 50, 50)',
+        primary: 'white',
     },
 };

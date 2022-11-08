@@ -17,3 +17,6 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
+
+export const selectTheme = (state: RootState) => state.theme;
+export const selectToken = (state: RootState) => state.token;

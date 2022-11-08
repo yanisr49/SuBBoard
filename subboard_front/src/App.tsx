@@ -7,6 +7,12 @@ import Router from './router/router';
 function App() {
     const queryClient = new QueryClient();
 
+    queryClient.setDefaultOptions({
+        queries: {
+            staleTime: Infinity,
+        },
+    });
+
     return (
         <div id="main">
             <HelmetProvider>

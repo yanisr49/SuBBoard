@@ -13,12 +13,13 @@ import { useOutsideClick } from '../hooks/useOutsideClick';
 import DelayUnmounting from '../components/DelayUnmounting';
 import { TRANSITION_TIME } from '../resources/Constants';
 import { Select } from '../components/Select';
-import { selectToken, updateToken } from '../redux/tokenSlice';
-import { selectTheme, updateTheme } from '../redux/themeSlice';
+import { resetToken } from '../redux/tokenSlice';
+import { changeTheme, updateTheme } from '../redux/themeSlice';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
 import { fetchCurrentUserQuery } from '../graphql/queries';
 import themes, { isThemesKey, themesKeys } from '../theme';
 import { ProfilStyle } from './ProfilStyle';
+import { selectTheme, selectToken } from '../redux/store';
 
 export default function Profil() {
     const [clicked, setClicked] = React.useState<boolean>(false);
@@ -34,7 +35,7 @@ export default function Profil() {
     const dispatch = useAppDispatch();
 
     const connectedUser = useQuery('fetchUser', fetchCurrentUserQuery, {
-        enabled: Boolean(token),
+        enabled: Boolean(token.expirationDate > new Date().getTime()),
     });
 
     useEffect(() => {
@@ -47,20 +48,21 @@ export default function Profil() {
     }, [connectedUser.data]);
 
     const logout = () => {
-        dispatch(updateToken(undefined));
+        setClicked(false);
+        dispatch(resetToken());
         navigate('/');
     };
 
-    console.log(token, connectedUser.data);
+    const tokenActif = token.expirationDate > new Date().getTime();
 
     return (
         <div>
-            <div css={style.ProfilContainer} onClick={() => setClicked(true)} ref={ref}>
+            <div css={style.ProfilContainer} onClick={() => !clicked && setClicked(true)} ref={ref}>
                 <Helmet>
                     <script src="https://accounts.google.com/gsi/client" async defer />
                 </Helmet>
 
-                {token ? (
+                {tokenActif && (
                     <div className="ProfilPreferences">
                         {!connectedUser.data
                             ? (
@@ -82,36 +84,43 @@ export default function Profil() {
                                     css={style.ProfilPicture}
                                     id="profilPicture"
                                     src={connectedUser.data?.user?.profilPicture ?? ''}
+                                    referrerPolicy="no-referrer"
                                     alt="Profil"
                                 />
                             )}
                     </div>
-                )
-                    : (
-                        <div>
-                            <div
-                                id="g_id_onload"
-                                data-client_id={`${process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}`}
-                                data-login_uri={`${process.env.REACT_APP_API_ENDPOINT}/login`}
-                                data-context="signin"
-                                data-auto_prompt="false"
-                            />
-                            <div
-                                className="g_id_signin"
-                                data-type="standard"
-                                data-size="large"
-                                data-theme="filled_black"
-                                data-shape="circle"
-                                data-logo_alignment="left"
-                                data-text="signin"
-                                data-locale="fr"
-                            />
+                )}
 
-                        </div>
-                    )}
+                <div style={{
+                    width: tokenActif ? '0' : 'auto',
+                    height: tokenActif ? '0' : 'auto',
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    overflow: 'hidden',
+                }}
+                >
+                    <div
+                        id="g_id_onload"
+                        data-client_id={`${process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}`}
+                        data-login_uri={`${process.env.REACT_APP_API_ENDPOINT}/login`}
+                        data-context="signin"
+                        data-auto_prompt="false"
+                    />
+                    <div
+                        className="g_id_signin"
+                        data-type="standard"
+                        data-size="large"
+                        data-theme="filled_black"
+                        data-shape="circle"
+                        data-logo_alignment="left"
+                        data-text="signin"
+                        data-locale="fr"
+                    />
+                </div>
 
-                <DelayUnmounting delay={TRANSITION_TIME} mounted={!!token && clicked}>
-                    <div id="profilContent">
+                <DelayUnmounting delay={TRANSITION_TIME} mounted={tokenActif && clicked}>
+                    <div id="profilContent" css={style.Test}>
                         {!connectedUser.data
                             ? (
                                 <Skeleton animation="wave">
@@ -120,7 +129,7 @@ export default function Profil() {
                                         label="TODO"
                                         options={[...themesKeys]}
                                         getOptionLabel={(option) => option}
-                                        onChange={(option) => { dispatch(updateTheme(option)); }}
+                                        onChange={(option) => { dispatch(changeTheme(option)); }}
                                         initialValue={theme.value}
                                     />
                                 </Skeleton>
@@ -131,15 +140,20 @@ export default function Profil() {
                                     label="TODO"
                                     options={[...themesKeys]}
                                     getOptionLabel={(option) => option}
-                                    onChange={(option) => { dispatch(updateTheme(option)); }}
+                                    onChange={(option) => { dispatch(changeTheme(option)); }}
                                     initialValue={theme.value}
                                 />
                             ) }
-                        {/* <div id="profilContentLogout">
-                            <button onClick={logout} type="button">
+                        <div
+                            id="profilContentLogout"
+                        >
+                            <button
+                                onClick={logout}
+                                type="button"
+                            >
                                 Logout
                             </button>
-                        </div> */}
+                        </div>
                     </div>
                 </DelayUnmounting>
 

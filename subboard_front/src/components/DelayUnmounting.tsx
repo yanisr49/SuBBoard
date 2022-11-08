@@ -1,5 +1,7 @@
+/** @jsxImportSource @emotion/react */
 // Create a component that delays dismount of children with delay props and assign class before and at the time of dismounting
 
+import { Interpolation, Theme } from '@emotion/react';
 import { useEffect, useState } from 'react';
 
 interface Props {
