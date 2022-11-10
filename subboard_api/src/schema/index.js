@@ -1,10 +1,12 @@
-const { buildSchema } = require('graphql');
+const { buildSchema,  } = require('graphql');
 
 // Construct a schema, using GraphQL schema language
 const schema = buildSchema(`
+    scalar Date
+
     type Query {
         user: User
-        ttDays(day: Int, month: Int, year: Int): [TTDays]
+        ttDays(startDate: Date!, endDate: Date!): [TTDays]
     }
 
     type User {
@@ -21,9 +23,7 @@ const schema = buildSchema(`
 
     type TTDays {
         userEmail: String!
-        day: Int!
-        month: Int!
-        year: Int!
+        date: Date!
     }
 
 
@@ -31,9 +31,23 @@ const schema = buildSchema(`
     type Mutation {
         addSubscription(email: String!, name: String!): Subscription
         theme(theme: String): String
-        addTTDay(day: Int!, month: Int!, year: Int!): TTDays
-        removeTTDay(day: Int!, month: Int!, year: Int!): TTDays
+        addTTDay(date: Date!): TTDays
+        removeTTDay(date: Date!): TTDays
     }
 `);
+
+Object.assign(schema._typeMap.Date, {
+    name: 'Date',
+    description: 'Date custom scalar type',
+    parseValue(value) {
+      return new Date(value) // value from the client
+    },
+    serialize(value) {
+      return value // value sent to the client
+    },
+    parseLiteral(ast) {
+        return ast
+    }
+  })
 
 module.exports = schema;

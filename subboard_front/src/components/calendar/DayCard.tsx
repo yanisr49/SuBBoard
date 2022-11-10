@@ -1,43 +1,101 @@
 /** @jsxImportSource @emotion/react */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouseLaptop } from '@fortawesome/free-solid-svg-icons';
-import React from 'react';
+import { faHouseLaptop, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { useMutation, useQueryClient } from 'react-query';
+import { Calendar, CalendarItem } from 'react-calendar-hook';
 import { useAppSelector } from '../../hooks/reduxHooks';
 import { selectTheme } from '../../redux/store';
 import themes from '../../theme';
 import { CalendarStyle } from './CalendarStyle';
+import Spinner from '../../resources/common/Spinner';
+import { addTTDay, removeTTDay } from '../../graphql/mutations';
+import { Query } from '../../graphql/generated/graphql';
+import { QUERY_NAMES } from '../../resources/Constants';
 
 interface Props {
-    name: string;
-    day: number;
+    item: CalendarItem;
     selected?: boolean;
-    onClick: () => void;
+    calendar: Calendar;
 }
 
-export default function DayCard({ name, day, selected, onClick } : Props) {
+export default function DayCard({ item, selected, calendar } : Props) {
+    const queryClient = useQueryClient();
     const theme = useAppSelector(selectTheme);
     const style = CalendarStyle(themes[theme.value], selected);
+
+    const addTTDayMutation = useMutation(addTTDay, {
+        onSuccess: (data) => {
+            queryClient.setQueryData([QUERY_NAMES.selectedDaysCurrentMonth, calendar], (oldData: Pick<Query, 'ttDays'> | undefined) => {
+                const newData = {
+                    ttDays: oldData?.ttDays ?? [],
+                };
+                if (data.addTTDay) {
+                    newData.ttDays.push(data.addTTDay);
+                }
+                return newData;
+            });
+        },
+    });
+
+    const removeTTDayMutation = useMutation(removeTTDay, {
+        onSuccess: (data) => {
+            queryClient.setQueryData([QUERY_NAMES.selectedDaysCurrentMonth, calendar], (oldData: Pick<Query, 'ttDays'> | undefined) => {
+                const newData: Pick<Query, 'ttDays'> | undefined = {
+                    ttDays: oldData?.ttDays ?? [],
+                };
+
+                if (newData?.ttDays?.length && data.removeTTDay) {
+                    newData.ttDays = newData.ttDays.filter((oldDate) => oldDate?.date
+                    && data.removeTTDay?.date
+                    && new Date(oldDate.date).getTime() !== new Date(data.removeTTDay?.date).getTime());
+                }
+
+                return newData;
+            });
+        },
+    });
+
+    const handleClick = () => {
+        if (!selected) {
+            addTTDayMutation.mutate(item.fullDate);
+        } else {
+            removeTTDayMutation.mutate(item.fullDate);
+        }
+    };
 
     return (
         <div
             css={style.CardContainer}
-            onClick={onClick}
-            onKeyDown={(ev) => ev.key === 'Enter' && onClick()}
+            onClick={handleClick}
+            onKeyDown={(ev) => ev.key === 'Enter' && handleClick()}
             role="button"
             tabIndex={0}
         >
-            <span
+            {' '}
+            <div
+                className="cardName"
                 css={style.CardName}
             >
-                {name}
+                {item.name}
 
-            </span>
-            <span
+            </div>
+            <div
+                className="cardNumber"
                 css={style.CardNumber}
             >
-                {day}
-            </span>
-            {selected && <FontAwesomeIcon icon={faHouseLaptop} size="3x" />}
+                {item.date}
+            </div>
+            <div
+                className="cardTTLogo"
+                css={style.CardTTLogo}
+            >
+                <FontAwesomeIcon icon={faHouseLaptop} />
+            </div>
+            <Spinner
+                loading={(addTTDayMutation.isLoading || removeTTDayMutation.isLoading)}
+                success={(addTTDayMutation.isSuccess || removeTTDayMutation.isSuccess)}
+                color={selected ? themes[theme.value].backgroundColor.primary : themes[theme.value].color.primary}
+            />
         </div>
     );
 }

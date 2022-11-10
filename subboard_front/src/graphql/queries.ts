@@ -14,19 +14,16 @@ const fetchCurrentUser = gql`
 
 export const fetchCurrentUserQuery = (): Promise<Pick<Query, 'user'>> => graphQLClient.request(fetchCurrentUser);
 
-const fetchCurrentMonthTTDays = gql`
-    query TTDays($day: Int, $month: Int, $year: Int) {
-        ttDays(day: $day, month: $month, year: $year) {
-            day
-            month
-            year
+const fetchTTDays = gql`
+    query TTDays($startDate: Date!, $endDate: Date!) {
+        ttDays(startDate: $startDate, endDate: $endDate) {
+            date
         }
     }
 `;
 
 // eslint-disable-next-line max-len
-export const fetchCurrentMonthTTDaysQuery = (filters: {day?: number, month?: number, year?: number}): Promise<Pick<Query, 'ttDays'>> => graphQLClient.request(fetchCurrentMonthTTDays, {
-    day: filters.day,
-    month: filters.month,
-    year: filters.year,
+export const fetchTTDaysQuery = (filters: {startDate: Date, endDate: Date}): Promise<Pick<Query, 'ttDays'>> => graphQLClient.request(fetchTTDays, {
+    startDate: filters.startDate,
+    endDate: filters.endDate,
 });

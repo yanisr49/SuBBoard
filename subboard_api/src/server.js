@@ -92,8 +92,8 @@ app.use(
         schema: graphQlSchema,
         rootValue: graphQlResolvers,
         context: {
-            email: "yanisrichard21@gmail.com"
-            // email: jwt.decode(req.headers.authorization.split('Bearer ')[1]).email,
+            // email: "yanisrichard21@gmail.com"
+            email: jwt.decode(req.headers.authorization.split('Bearer ')[1]).email,
         },
         graphiql: true,
     }))

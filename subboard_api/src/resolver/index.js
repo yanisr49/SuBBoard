@@ -28,31 +28,28 @@ const resolvers = {
 
         return theme;
     },
-    ttDays: async ({day, month, year}, {email}) => {
-        const filters = {userEmail: email, day, month, year};
-        Object.keys(filters).forEach(key => !filters[key] && delete filters[key])
-        return TTDaysModel.find(filters);
+    ttDays: async ({startDate, endDate}, {email}) => {
+        return TTDaysModel.find({userEmail: email}).where({date: {
+            $gte: startDate,
+            $lt: endDate,
+        }});
     },
-    addTTDay: async ({ day, month, year }, { email }) => {
+    addTTDay: async ({ date }, { email }) => {
         const newTTDay = new TTDaysModel({
             userEmail: email,
-            day,
-            month,
-            year,
+            date,
         });
+
         await newTTDay.save();
 
         await sleep(1000);
 
         return newTTDay;
     },
-    removeTTDay: async ({ day, month, year }, { email }) => {
-        const filters = {userEmail: email, day, month, year};
-        Object.keys(filters).forEach(key => !filters[key] && delete filters[key])
+    removeTTDay: async ({ date }, { email }) => {
+        const returnData = TTDaysModel.findOne({userEmail: email, date}).cast();
 
-        const returnData = TTDaysModel.findOne(filters).cast();
-
-        await TTDaysModel.deleteMany(filters);
+        await TTDaysModel.deleteMany({userEmail: email, date});
 
         await sleep(1000);
 

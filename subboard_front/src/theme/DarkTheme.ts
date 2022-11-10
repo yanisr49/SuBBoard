@@ -6,6 +6,6 @@ export default {
     },
     color: {
         text: 'white',
-        primary: 'rgb(50, 200, 50)',
+        primary: 'rgb(50, 150, 50)',
     },
 };

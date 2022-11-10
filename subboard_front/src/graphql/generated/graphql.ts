@@ -10,6 +10,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Date: any;
 };
 
 export type Mutation = {
@@ -28,16 +29,12 @@ export type MutationAddSubscriptionArgs = {
 
 
 export type MutationAddTtDayArgs = {
-  day: Scalars['Int'];
-  month: Scalars['Int'];
-  year: Scalars['Int'];
+  date: Scalars['Date'];
 };
 
 
 export type MutationRemoveTtDayArgs = {
-  day: Scalars['Int'];
-  month: Scalars['Int'];
-  year: Scalars['Int'];
+  date: Scalars['Date'];
 };
 
 
@@ -53,9 +50,8 @@ export type Query = {
 
 
 export type QueryTtDaysArgs = {
-  day?: InputMaybe<Scalars['Int']>;
-  month?: InputMaybe<Scalars['Int']>;
-  year?: InputMaybe<Scalars['Int']>;
+  endDate: Scalars['Date'];
+  startDate: Scalars['Date'];
 };
 
 export type Subscription = {
@@ -66,10 +62,8 @@ export type Subscription = {
 
 export type TtDays = {
   __typename?: 'TTDays';
-  day: Scalars['Int'];
-  month: Scalars['Int'];
+  date: Scalars['Date'];
   userEmail: Scalars['String'];
-  year: Scalars['Int'];
 };
 
 export type User = {
@@ -79,15 +73,3 @@ export type User = {
   subscriptions?: Maybe<Array<Maybe<Subscription>>>;
   theme?: Maybe<Scalars['String']>;
 };
-
-export type UserQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', email: string, theme?: string | null, profilPicture?: string | null } | null };
-
-export type ChangeThemeMutationVariables = Exact<{
-  theme: Scalars['String'];
-}>;
-
-
-export type ChangeThemeMutation = { __typename?: 'Mutation', theme?: string | null };

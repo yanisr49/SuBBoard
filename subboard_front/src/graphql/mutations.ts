@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request';
-import { Mutation, TtDays } from './generated/graphql';
+import { Mutation } from './generated/graphql';
 import { graphQLClient } from './graphqlClient';
 import { Themes } from '../theme';
 
@@ -14,33 +14,25 @@ export const changeThemeMutation = (theme: keyof Themes): Promise<Pick<Mutation,
 });
 
 const addTTDayMutation = gql`
-    mutation addTTDay($day: Int!, $month: Int!, $year: Int!) {
-        addTTDay(day: $day, month: $month, year: $year) {
-            day,
-            month,
-            year
+    mutation addTTDay($date: Date!) {
+        addTTDay(date: $date) {
+            date
         }
     }
 `;
 
-export const addTTDay = (ttDay: Omit<TtDays, 'userEmail'>): Promise<Pick<Mutation, 'addTTDay'>> => graphQLClient.request(addTTDayMutation, {
-    day: ttDay.day,
-    month: ttDay.month,
-    year: ttDay.year,
+export const addTTDay = (date: Date): Promise<Pick<Mutation, 'addTTDay'>> => graphQLClient.request(addTTDayMutation, {
+    date: date.toString(),
 });
 
 const removeTTDayMutation = gql`
-    mutation removeTTDay($day: Int!, $month: Int!, $year: Int!) {
-        removeTTDay(day: $day, month: $month, year: $year) {
-            day,
-            month,
-            year
+    mutation removeTTDay($date: Date!) {
+        removeTTDay(date: $date) {
+            date
         }
     }
 `;
 
-export const removeTTDay = (ttDay: Omit<TtDays, 'userEmail'>): Promise<Pick<Mutation, 'removeTTDay'>> => graphQLClient.request(removeTTDayMutation, {
-    day: ttDay.day,
-    month: ttDay.month,
-    year: ttDay.year,
+export const removeTTDay = (date: Date): Promise<Pick<Mutation, 'removeTTDay'>> => graphQLClient.request(removeTTDayMutation, {
+    date: date.toString(),
 });

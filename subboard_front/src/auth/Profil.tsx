@@ -119,7 +119,7 @@ export default function Profil() {
                     />
                 </div>
 
-                <DelayUnmounting delay={TRANSITION_TIME} mounted={tokenActif && clicked}>
+                <DelayUnmounting delay={TRANSITION_TIME.short} mounted={tokenActif && clicked}>
                     <div id="profilContent" css={style.Test}>
                         {!connectedUser.data
                             ? (
