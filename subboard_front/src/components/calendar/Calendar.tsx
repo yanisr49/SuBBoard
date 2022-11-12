@@ -1,19 +1,12 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
-/* eslint-disable consistent-return */
-/* eslint-disable no-promise-executor-return */
 /** @jsxImportSource @emotion/react */
 import { useQuery } from 'react-query';
 import {
     useCalendar, // Hook shown bellow
-    dayNames, // Monday, Tuesday, etc...
-    shortDayNames, // Mon, Tue, etc...
-    monthNames, // January, February, etc...
-    shortMonthNames, // Jan, Feb, etc...
     CalendarItem, // Type shown bellow
 } from 'react-calendar-hook';
 import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchTTDaysQuery } from '../../graphql/queries';
 import { useAppSelector } from '../../hooks/reduxHooks';
 import { selectTheme } from '../../redux/store';
@@ -50,6 +43,7 @@ export default function Calendar() {
                 item={item}
                 selected={isDaySelected(item)}
                 calendar={calendar}
+                loading={selectedDaysCurrentMonth.isLoading}
             />,
         ));
     }
@@ -57,12 +51,19 @@ export default function Calendar() {
     return (
         <div css={style.CalendarContainer}>
             <div css={style.CalendarHeaderContainer}>
-                <span onClick={() => calendar.prevMonth()}>{'<<<'}</span>
-                {calendar.month.name}
-                <span onClick={() => calendar.nextMonth()}>{'>>>'}</span>
+                <FontAwesomeIcon
+                    icon={faChevronLeft}
+                    onClick={calendar.prevMonth}
+                    cursor="pointer"
+                />
+                <div css={style.MonthName}>{calendar.month.name}</div>
+                <FontAwesomeIcon
+                    icon={faChevronRight}
+                    onClick={calendar.nextMonth}
+                    cursor="pointer"
+                />
             </div>
-            {}
-            {rows.map((row) => <div css={style.CardRow}>{row}</div>)}
+            {rows.map((row) => row)}
         </div>
     );
 }

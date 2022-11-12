@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouseLaptop, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { faHouseLaptop } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQueryClient } from 'react-query';
 import { Calendar, CalendarItem } from 'react-calendar-hook';
+import Skeleton from 'react-loading-skeleton';
 import { useAppSelector } from '../../hooks/reduxHooks';
 import { selectTheme } from '../../redux/store';
 import themes from '../../theme';
@@ -16,12 +17,12 @@ interface Props {
     item: CalendarItem;
     selected?: boolean;
     calendar: Calendar;
+    loading: boolean;
 }
 
-export default function DayCard({ item, selected, calendar } : Props) {
+export default function DayCard({ item, selected, calendar, loading } : Props) {
     const queryClient = useQueryClient();
     const theme = useAppSelector(selectTheme);
-    const style = CalendarStyle(themes[theme.value], selected);
 
     const addTTDayMutation = useMutation(addTTDay, {
         onSuccess: (data) => {
@@ -36,6 +37,8 @@ export default function DayCard({ item, selected, calendar } : Props) {
             });
         },
     });
+
+    const style = CalendarStyle(themes[theme.value], selected, loading, addTTDayMutation.isLoading);
 
     const removeTTDayMutation = useMutation(removeTTDay, {
         onSuccess: (data) => {
@@ -71,19 +74,27 @@ export default function DayCard({ item, selected, calendar } : Props) {
             role="button"
             tabIndex={0}
         >
-            {' '}
             <div
                 className="cardName"
                 css={style.CardName}
             >
-                {item.name}
-
+                {loading ? (
+                    <Skeleton
+                        baseColor={themes[theme.value].backgroundColor.primary}
+                        highlightColor={themes[theme.value].color.primary}
+                    />
+                ) : item.name }
             </div>
             <div
                 className="cardNumber"
                 css={style.CardNumber}
             >
-                {item.date}
+                {loading ? (
+                    <Skeleton
+                        baseColor={themes[theme.value].backgroundColor.primary}
+                        highlightColor={themes[theme.value].color.primary}
+                    />
+                ) : item.date}
             </div>
             <div
                 className="cardTTLogo"
