@@ -30,7 +30,7 @@ export default function Profil() {
     const token = useAppSelector(selectToken);
     const theme = useAppSelector(selectTheme);
 
-    const style = ProfilStyle(themes[theme.value], clicked);
+    const style = ProfilStyle(themes[theme.key], clicked);
 
     const dispatch = useAppDispatch();
 
@@ -56,108 +56,106 @@ export default function Profil() {
     const tokenActif = token.expirationDate > new Date().getTime();
 
     return (
-        <div>
-            <div css={style.ProfilContainer} onClick={() => !clicked && setClicked(true)} ref={ref}>
-                <Helmet>
-                    <script src="https://accounts.google.com/gsi/client" async defer />
-                </Helmet>
+        <div css={style.ProfilContainer} onClick={() => !clicked && setClicked(true)} ref={ref}>
+            <Helmet>
+                <script src="https://accounts.google.com/gsi/client" async defer />
+            </Helmet>
 
-                {tokenActif && (
-                    <div className="ProfilPreferences">
-                        {!connectedUser.data
-                            ? (
-                                <Skeleton
-                                    variant="circular"
-                                    css={style.ProfilPicture}
-                                    animation="wave"
-                                >
-                                    <img
-                                        css={style.ProfilPicture}
-                                        id="profilPicture"
-                                        src=""
-                                        alt="Profil"
-                                    />
-                                </Skeleton>
-                            )
-                            : (
+            {tokenActif && (
+                <div className="ProfilPreferences">
+                    {!connectedUser.data
+                        ? (
+                            <Skeleton
+                                variant="circular"
+                                css={style.ProfilPicture}
+                                animation="wave"
+                            >
                                 <img
                                     css={style.ProfilPicture}
                                     id="profilPicture"
-                                    src={connectedUser.data?.user?.profilPicture ?? ''}
-                                    referrerPolicy="no-referrer"
+                                    src=""
                                     alt="Profil"
                                 />
-                            )}
-                    </div>
-                )}
-
-                <div style={{
-                    width: tokenActif ? '0' : 'auto',
-                    height: tokenActif ? '0' : 'auto',
-                    position: 'absolute',
-                    top: '10px',
-                    right: '10px',
-                    overflow: 'hidden',
-                }}
-                >
-                    <div
-                        id="g_id_onload"
-                        data-client_id={`${process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}`}
-                        data-login_uri={`${process.env.REACT_APP_API_ENDPOINT}/login`}
-                        data-context="signin"
-                        data-auto_prompt="false"
-                    />
-                    <div
-                        className="g_id_signin"
-                        data-type="standard"
-                        data-size="large"
-                        data-theme="filled_black"
-                        data-shape="circle"
-                        data-logo_alignment="left"
-                        data-text="signin"
-                        data-locale="fr"
-                    />
+                            </Skeleton>
+                        )
+                        : (
+                            <img
+                                css={style.ProfilPicture}
+                                id="profilPicture"
+                                src={connectedUser.data?.user?.profilPicture ?? ''}
+                                referrerPolicy="no-referrer"
+                                alt="Profil"
+                            />
+                        )}
                 </div>
+            )}
 
-                <DelayUnmounting delay={TRANSITION_TIME.short} mounted={tokenActif && clicked}>
-                    <div id="profilContent" css={style.Test}>
-                        {!connectedUser.data
-                            ? (
-                                <Skeleton animation="wave">
-                                    <Select
-                                        id="themes"
-                                        label="TODO"
-                                        options={[...themesKeys]}
-                                        getOptionLabel={(option) => option}
-                                        onChange={(option) => { dispatch(changeTheme(option)); }}
-                                        initialValue={theme.value}
-                                    />
-                                </Skeleton>
-                            )
-                            : (
+            <div style={{
+                width: tokenActif ? '0' : 'auto',
+                height: tokenActif ? '0' : 'auto',
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                overflow: 'hidden',
+            }}
+            >
+                <div
+                    id="g_id_onload"
+                    data-client_id={`${process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}`}
+                    data-login_uri={`${process.env.REACT_APP_API_ENDPOINT}/login`}
+                    data-context="signin"
+                    data-auto_prompt="false"
+                />
+                <div
+                    className="g_id_signin"
+                    data-type="standard"
+                    data-size="large"
+                    data-theme="filled_black"
+                    data-shape="circle"
+                    data-logo_alignment="left"
+                    data-text="signin"
+                    data-locale="fr"
+                />
+            </div>
+
+            <DelayUnmounting delay={TRANSITION_TIME.short} mounted={tokenActif && clicked}>
+                <div id="profilContent" css={style.Test}>
+                    {!connectedUser.data
+                        ? (
+                            <Skeleton animation="wave">
                                 <Select
                                     id="themes"
                                     label="TODO"
                                     options={[...themesKeys]}
                                     getOptionLabel={(option) => option}
                                     onChange={(option) => { dispatch(changeTheme(option)); }}
-                                    initialValue={theme.value}
+                                    initialValue={theme.key}
                                 />
-                            ) }
-                        <div
-                            id="profilContentLogout"
+                            </Skeleton>
+                        )
+                        : (
+                            <Select
+                                id="themes"
+                                label="TODO"
+                                options={[...themesKeys]}
+                                getOptionLabel={(option) => option}
+                                onChange={(option) => { dispatch(changeTheme(option)); }}
+                                initialValue={theme.key}
+                            />
+                        ) }
+                    <div
+                        id="profilContentLogout"
+                    >
+                        <button
+                            onClick={logout}
+                            type="button"
                         >
-                            <button
-                                onClick={logout}
-                                type="button"
-                            >
-                                Logout
-                            </button>
-                        </div>
+                            Logout
+                        </button>
                     </div>
-                </DelayUnmounting>
+                </div>
+            </DelayUnmounting>
 
-            </div>
         </div>
     );
 }

@@ -42,7 +42,7 @@ const resolvers = {
 
         await newTTDay.save();
 
-        await sleep(1000);
+        // await sleep(1000);
 
         return newTTDay;
     },
@@ -51,7 +51,7 @@ const resolvers = {
 
         await TTDaysModel.deleteMany({userEmail: email, date});
 
-        await sleep(1000);
+        // await sleep(1000);
 
         return returnData;
     }

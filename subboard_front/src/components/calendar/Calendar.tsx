@@ -11,14 +11,13 @@ import { fetchTTDaysQuery } from '../../graphql/queries';
 import { useAppSelector } from '../../hooks/reduxHooks';
 import { selectTheme } from '../../redux/store';
 import DayCard from './DayCard';
-import themes from '../../theme';
 import { CalendarStyle } from './CalendarStyle';
 import { QUERY_NAMES } from '../../resources/Constants';
 
 export default function Calendar() {
     const calendar = useCalendar(new Date());
-    const theme = useAppSelector(selectTheme);
-    const style = CalendarStyle(themes[theme.value]);
+    const theme = useAppSelector(selectTheme).value;
+    const style = CalendarStyle(theme, undefined, undefined, undefined, 5);
 
     const selectedDaysCurrentMonth = useQuery([QUERY_NAMES.selectedDaysCurrentMonth, calendar], () => fetchTTDaysQuery({
         startDate: calendar.items[0].fullDate,

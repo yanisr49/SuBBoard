@@ -1,14 +1,19 @@
+import { Theme } from '@emotion/react';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { changeThemeMutation } from '../graphql/mutations';
-import { isThemesKey, ThemesKeys } from '../theme';
+import themes, { isThemesKey, ThemesKeys } from '../theme';
 
 export interface ThemeState {
-        value: ThemesKeys;
+        key: ThemesKeys;
+        value: Theme;
         status: 'idle' | 'loading' | 'failed';
   }
 
+const defaultKey = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 const initialState: ThemeState = {
-    value: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light', status: 'idle',
+    key: defaultKey,
+    value: themes[defaultKey],
+    status: 'idle',
 };
 
 export const changeTheme = createAsyncThunk(
@@ -21,7 +26,8 @@ export const themeSlice = createSlice({
     initialState,
     reducers: {
         updateTheme: (state, action: PayloadAction<ThemesKeys>) => {
-            state.value = action.payload;
+            state.key = action.payload;
+            state.value = themes[action.payload];
         },
     },
     extraReducers: (builder) => {
