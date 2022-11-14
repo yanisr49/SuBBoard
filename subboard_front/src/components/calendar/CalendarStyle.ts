@@ -9,7 +9,6 @@ export const CalendarStyle = (theme: Theme, selected?: boolean, loading?: boolea
         justifyContent: 'space-between',
         alignItems: 'center',
         position: 'sticky',
-        top: '6%',
         width: '100%',
         height: '10%',
         padding: '1vw 3vw',
