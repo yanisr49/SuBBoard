@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
+import { useState } from 'react';
 import { useQuery } from 'react-query';
 import {
     useCalendar, // Hook shown bellow
     CalendarItem, // Type shown bellow
 } from 'react-calendar-hook';
-import { EmotionJSX } from '@emotion/react/types/jsx-namespace';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchTTDaysQuery } from '../../graphql/queries';
@@ -16,13 +16,17 @@ import { QUERY_NAMES } from '../../resources/Constants';
 
 export default function Calendar() {
     const calendar = useCalendar(new Date());
+    const nbWeeksToDisplay = Math.ceil((calendar.items.slice(7).findIndex((value) => value.date === 1) + 7) / 7);
     const theme = useAppSelector(selectTheme).value;
-    const style = CalendarStyle(theme, undefined, undefined, undefined, 5);
+    const style = CalendarStyle(theme, nbWeeksToDisplay);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const selectedDaysCurrentMonth = useQuery([QUERY_NAMES.selectedDaysCurrentMonth, calendar], () => fetchTTDaysQuery({
         startDate: calendar.items[0].fullDate,
         endDate: calendar.items.slice(-1)[0].fullDate,
-    }));
+    }), {
+        onSuccess: () => setLoading(false),
+    });
 
     const isDaySelected = (day: CalendarItem): boolean => {
         if (!selectedDaysCurrentMonth.data?.ttDays || selectedDaysCurrentMonth.data.ttDays.length === 0) {
@@ -33,36 +37,43 @@ export default function Calendar() {
             && new Date(selectedDay.date).getTime() === new Date(day.fullDate).getTime()) > -1;
     };
 
-    const rows: EmotionJSX.Element[][] = [];
-    for (let i = 0; i < 4 || (calendar.items.length > i * 7 && calendar.items[i * 7].date > 14); i += 1) {
-        rows.push([]);
-        calendar.items.slice(i * 7, i * 7 + 7).map((item) => rows[i].push(
-            <DayCard
-                key={item.fullDate.toString()}
-                item={item}
-                selected={isDaySelected(item)}
-                calendar={calendar}
-                loading={selectedDaysCurrentMonth.isLoading}
-            />,
-        ));
-    }
+    const handlePrevMonth = () => {
+        calendar.prevMonth();
+        setLoading(true);
+    };
+
+    const handleNextMonth = () => {
+        calendar.nextMonth();
+        setLoading(true);
+    };
 
     return (
         <div css={style.CalendarContainer}>
-            <div css={style.CalendarHeaderContainer}>
-                <FontAwesomeIcon
-                    icon={faChevronLeft}
-                    onClick={calendar.prevMonth}
-                    cursor="pointer"
-                />
-                <div css={style.MonthName}>{calendar.month.name}</div>
-                <FontAwesomeIcon
-                    icon={faChevronRight}
-                    onClick={calendar.nextMonth}
-                    cursor="pointer"
-                />
-            </div>
-            {rows.map((row) => row)}
+            <>
+                <div css={style.CalendarHeaderContainer}>
+                    <FontAwesomeIcon
+                        icon={faChevronLeft}
+                        onClick={handlePrevMonth}
+                        cursor="pointer"
+                    />
+                    <div css={style.MonthName}>{`${calendar.month.name} ${calendar.year}`}</div>
+                    <FontAwesomeIcon
+                        icon={faChevronRight}
+                        onClick={handleNextMonth}
+                        cursor="pointer"
+                    />
+                </div>
+                {calendar.items.slice(0, nbWeeksToDisplay * 7).map((item) => (
+                    <DayCard
+                        key={item.fullDate.toString()}
+                        item={item}
+                        selected={isDaySelected(item)}
+                        calendar={calendar}
+                        nbWeeks={nbWeeksToDisplay}
+                        loading={loading}
+                    />
+                ))}
+            </>
         </div>
     );
 }

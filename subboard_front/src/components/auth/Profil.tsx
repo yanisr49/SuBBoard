@@ -4,22 +4,22 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-promise-executor-return */
 /** @jsxImportSource @emotion/react */
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useQuery } from 'react-query';
 import { Skeleton } from '@mui/material';
-import { useOutsideClick } from '../hooks/useOutsideClick';
-import DelayUnmounting from '../components/DelayUnmounting';
-import { TRANSITION_TIME } from '../resources/Constants';
-import { Select } from '../components/Select';
-import { resetToken } from '../redux/tokenSlice';
-import { changeTheme, updateTheme } from '../redux/themeSlice';
-import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
-import { fetchCurrentUserQuery } from '../graphql/queries';
-import themes, { isThemesKey, themesKeys } from '../theme';
+import { useOutsideClick } from '../../hooks/useOutsideClick';
+import DelayUnmounting from '../DelayUnmounting';
+import { TRANSITION_TIME } from '../../resources/Constants';
+import { Select } from '../Select';
+import { resetToken } from '../../redux/tokenSlice';
+import { changeTheme, updateTheme } from '../../redux/themeSlice';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
+import { fetchCurrentUserQuery } from '../../graphql/queries';
+import { isThemesKey, themesKeys } from '../../theme';
 import { ProfilStyle } from './ProfilStyle';
-import { selectTheme, selectToken } from '../redux/store';
+import { selectTheme, selectToken } from '../../redux/store';
 
 export default function Profil() {
     const [clicked, setClicked] = React.useState<boolean>(false);
@@ -30,22 +30,14 @@ export default function Profil() {
     const token = useAppSelector(selectToken);
     const theme = useAppSelector(selectTheme);
 
-    const style = ProfilStyle(themes[theme.key], clicked);
+    const style = ProfilStyle(theme.value, clicked);
 
     const dispatch = useAppDispatch();
 
-    const connectedUser = useQuery('fetchUser', fetchCurrentUserQuery, {
-        enabled: Boolean(token.expirationDate > new Date().getTime()),
+    const connectedUser = useQuery(['fetchUser', token.value], fetchCurrentUserQuery, {
+        enabled: Boolean(token.value),
+        onSuccess: (data) => data?.user?.theme && isThemesKey(data.user.theme) && dispatch(updateTheme(data.user.theme)),
     });
-
-    useEffect(() => {
-        if (
-            connectedUser.data?.user?.theme
-            && isThemesKey(connectedUser.data?.user?.theme)
-        ) {
-            dispatch(updateTheme(connectedUser.data.user.theme));
-        }
-    }, [connectedUser.data]);
 
     const logout = () => {
         setClicked(false);
@@ -53,7 +45,7 @@ export default function Profil() {
         navigate('/');
     };
 
-    const tokenActif = token.expirationDate > new Date().getTime();
+    const tokenActif = Boolean(token.value);
 
     return (
         <div css={style.ProfilContainer} onClick={() => !clicked && setClicked(true)} ref={ref}>

@@ -101,7 +101,8 @@
                 ]
             }
         ],
-        "react/require-default-props": "off"
+        "react/require-default-props": "off",
+        "react/jsx-no-useless-fragment": "off"
     },
     "settings": {
         "import/resolver": {

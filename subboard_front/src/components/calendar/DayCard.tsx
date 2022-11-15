@@ -4,26 +4,25 @@ import { faHouseLaptop } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQueryClient } from 'react-query';
 import { Calendar, CalendarItem } from 'react-calendar-hook';
 import Skeleton from 'react-loading-skeleton';
-import { useState } from 'react';
 import { useAppSelector } from '../../hooks/reduxHooks';
 import { selectTheme } from '../../redux/store';
-import { CalendarStyle } from './CalendarStyle';
 import Spinner from '../../resources/common/Spinner';
 import { addTTDay, removeTTDay } from '../../graphql/mutations';
 import { Query } from '../../graphql/generated/graphql';
 import { QUERY_NAMES } from '../../resources/Constants';
+import { DayCardStyle } from './DayCardStyle';
 
 interface Props {
     item: CalendarItem;
     selected: boolean;
     calendar: Calendar;
+    nbWeeks: number;
     loading: boolean;
 }
 
-export default function DayCard({ item, selected, calendar, loading } : Props) {
+export default function DayCard({ item, selected, calendar, nbWeeks, loading } : Props) {
     const queryClient = useQueryClient();
     const theme = useAppSelector(selectTheme).value;
-    const [isSelected, setSelected] = useState<boolean>(selected);
 
     const addTTDayMutation = useMutation(addTTDay, {
         onSuccess: (data) => {
@@ -34,8 +33,6 @@ export default function DayCard({ item, selected, calendar, loading } : Props) {
                 if (data.addTTDay) {
                     newData.ttDays.push(data.addTTDay);
                 }
-
-                setSelected(!isSelected);
 
                 return newData;
             });
@@ -55,22 +52,22 @@ export default function DayCard({ item, selected, calendar, loading } : Props) {
                     && new Date(oldDate.date).getTime() !== new Date(data.removeTTDay?.date).getTime());
                 }
 
-                setSelected(!isSelected);
-
                 return newData;
             });
         },
     });
 
-    const style = CalendarStyle(theme, isSelected, loading, addTTDayMutation.isLoading || removeTTDayMutation.isLoading, 5);
-
     const handleClick = () => {
-        if (!isSelected) {
+        if (!selected) {
             addTTDayMutation.mutate(item.fullDate);
         } else {
             removeTTDayMutation.mutate(item.fullDate);
         }
     };
+
+    const inDisplayedMonth = item.fullDate.getMonth() === calendar.items[6].fullDate.getMonth();
+
+    const style = DayCardStyle(theme, selected, loading, addTTDayMutation.isLoading || removeTTDayMutation.isLoading, nbWeeks, inDisplayedMonth);
 
     return (
         <div
@@ -111,7 +108,7 @@ export default function DayCard({ item, selected, calendar, loading } : Props) {
             <Spinner
                 loading={(addTTDayMutation.isLoading || removeTTDayMutation.isLoading)}
                 success={(addTTDayMutation.isSuccess || removeTTDayMutation.isSuccess)}
-                color={isSelected ? theme.backgroundColor.primary : theme.color.primary}
+                color={selected ? theme.backgroundColor.primary : theme.color.primary}
                 cssStyle={style.CardSpinner}
             />
         </div>

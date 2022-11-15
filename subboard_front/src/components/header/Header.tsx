@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import Profil from '../../auth/Profil';
+import Profil from '../auth/Profil';
 import { useAppSelector } from '../../hooks/reduxHooks';
 import { selectTheme } from '../../redux/store';
 import SubboardLogo from '../../img/logo.png';

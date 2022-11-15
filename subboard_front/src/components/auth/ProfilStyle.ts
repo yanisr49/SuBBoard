@@ -1,5 +1,5 @@
 import { css, Theme } from '@emotion/react';
-import { TRANSITION_TIME } from '../resources/Constants';
+import { TRANSITION_TIME } from '../../resources/Constants';
 
 export const ProfilStyle = (theme: Theme, clicked: boolean) => ({
     ProfilContainer: css({

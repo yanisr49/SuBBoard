@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAppDispatch } from '../hooks/reduxHooks';
-import { updateToken } from '../redux/tokenSlice';
+import { useAppDispatch } from '../../hooks/reduxHooks';
+import { updateToken } from '../../redux/tokenSlice';
 
 export default function Auth() {
     const navigate = useNavigate();
@@ -10,7 +10,7 @@ export default function Auth() {
 
     React.useEffect(() => {
         dispatch(updateToken(newToken));
-        navigate('/subscriptions');
+        navigate('/');
     }, []);
 
     return (
