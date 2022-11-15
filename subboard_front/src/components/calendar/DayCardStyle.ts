@@ -80,7 +80,7 @@ export const DayCardStyle = (theme: Theme, selected: boolean, loading: boolean, 
             opacity: inDisplayedMonth ? 1 : 0.4,
             ':hover': loading ? {} : {
                 cursor: 'pointer',
-                boxShadow: `0px 0px 15px -8px ${theme.color.primary}`,
+                boxShadow: `0px 0px 5px 0px ${theme.color.primary}`,
                 '.cardNumber': {
                     top: `calc(${cardWidth(nbRow)} * 0.08)`,
                     right: `calc(${cardWidth(nbRow)} * 0.09)`,

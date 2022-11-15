@@ -29,9 +29,6 @@ const resolvers = {
         return theme;
     },
     ttDays: async ({startDate, endDate}, {email}) => {
-
-        await sleep(1000);
-
         return TTDaysModel.find({userEmail: email}).where({date: {
             $gte: startDate,
             $lt: endDate,
