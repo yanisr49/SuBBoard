@@ -10,13 +10,17 @@ export const WelcomePageStyle = (theme: Theme) => ({
         position: 'absolute',
         width: '100%',
         height: '100%',
+        '.welcome': {
+            color: theme.color.text,
+            fontSize: '15vw',
+        },
         '.welcomeButton': {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            width: '99vw',
-            height: '49vh',
+            width: '80vw',
+            height: '30vh',
             margin: '1vw',
             fontSize: '8vw',
             fontWeight: 'bold',
@@ -32,13 +36,15 @@ export const WelcomePageStyle = (theme: Theme) => ({
             ':active': {
                 transform: 'scale(0.99)',
             },
-
             '@media only screen and (min-width: 600px)': {
                 flexDirection: 'row',
                 width: '294px',
                 margin: '6px',
                 fontSize: '24px',
             },
+        },
+        '@media only screen and (min-width: 600px)': {
+            flexDirection: 'row',
         },
     }),
 });

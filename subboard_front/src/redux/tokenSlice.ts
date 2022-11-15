@@ -21,7 +21,7 @@ export const tokenSlice = createSlice({
             state.expirationDate = new Date().getTime() + TOKEN_EXPIRATION_TIME;
         },
         resetToken: (state) => {
-            window.localStorage.setItem(TOKEN_STORE_NAME, '');
+            window.localStorage.removeItem(TOKEN_STORE_NAME);
             state.value = undefined;
             state.expirationDate = 0;
         },

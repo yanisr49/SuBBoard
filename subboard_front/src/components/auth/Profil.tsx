@@ -20,19 +20,21 @@ import { fetchCurrentUserQuery } from '../../graphql/queries';
 import { isThemesKey, themesKeys } from '../../theme';
 import { ProfilStyle } from './ProfilStyle';
 import { selectTheme, selectToken } from '../../redux/store';
+import PP from './PP';
 
 export default function Profil() {
     const [clicked, setClicked] = React.useState<boolean>(false);
-    const navigate = useNavigate();
     const ref = useRef<HTMLDivElement>(null);
     useOutsideClick(ref, () => setClicked(false));
 
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
     const token = useAppSelector(selectToken);
+    const loggedIn = Boolean(token.value);
     const theme = useAppSelector(selectTheme);
 
-    const style = ProfilStyle(theme.value, clicked);
-
-    const dispatch = useAppDispatch();
+    const style = ProfilStyle(theme.value, loggedIn, clicked);
 
     const connectedUser = useQuery(['fetchUser', token.value], fetchCurrentUserQuery, {
         enabled: Boolean(token.value),
@@ -45,52 +47,21 @@ export default function Profil() {
         navigate('/');
     };
 
-    const tokenActif = Boolean(token.value);
-
     return (
         <div css={style.ProfilContainer} onClick={() => !clicked && setClicked(true)} ref={ref}>
             <Helmet>
                 <script src="https://accounts.google.com/gsi/client" async defer />
             </Helmet>
 
-            {tokenActif && (
-                <div className="ProfilPreferences">
-                    {!connectedUser.data
-                        ? (
-                            <Skeleton
-                                variant="circular"
-                                css={style.ProfilPicture}
-                                animation="wave"
-                            >
-                                <img
-                                    css={style.ProfilPicture}
-                                    id="profilPicture"
-                                    src=""
-                                    alt="Profil"
-                                />
-                            </Skeleton>
-                        )
-                        : (
-                            <img
-                                css={style.ProfilPicture}
-                                id="profilPicture"
-                                src={connectedUser.data?.user?.profilPicture ?? ''}
-                                referrerPolicy="no-referrer"
-                                alt="Profil"
-                            />
-                        )}
-                </div>
-            )}
+            <PP
+                profilPicture={connectedUser.data?.user?.profilPicture ?? ''}
+                email={connectedUser.data?.user?.email ?? ''}
+                expended={clicked}
+                loading={false}
+                onLogOut={logout}
+            />
 
-            <div style={{
-                width: tokenActif ? '0' : 'auto',
-                height: tokenActif ? '0' : 'auto',
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                overflow: 'hidden',
-            }}
-            >
+            <div css={style.signInButton}>
                 <div
                     id="g_id_onload"
                     data-client_id={`${process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID}`}
@@ -109,45 +80,6 @@ export default function Profil() {
                     data-locale="fr"
                 />
             </div>
-
-            <DelayUnmounting delay={TRANSITION_TIME.short} mounted={tokenActif && clicked}>
-                <div id="profilContent" css={style.Test}>
-                    {!connectedUser.data
-                        ? (
-                            <Skeleton animation="wave">
-                                <Select
-                                    id="themes"
-                                    label="TODO"
-                                    options={[...themesKeys]}
-                                    getOptionLabel={(option) => option}
-                                    onChange={(option) => { dispatch(changeTheme(option)); }}
-                                    initialValue={theme.key}
-                                />
-                            </Skeleton>
-                        )
-                        : (
-                            <Select
-                                id="themes"
-                                label="TODO"
-                                options={[...themesKeys]}
-                                getOptionLabel={(option) => option}
-                                onChange={(option) => { dispatch(changeTheme(option)); }}
-                                initialValue={theme.key}
-                            />
-                        ) }
-                    <div
-                        id="profilContentLogout"
-                    >
-                        <button
-                            onClick={logout}
-                            type="button"
-                        >
-                            Logout
-                        </button>
-                    </div>
-                </div>
-            </DelayUnmounting>
-
         </div>
     );
 }

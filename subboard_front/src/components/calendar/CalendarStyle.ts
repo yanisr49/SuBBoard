@@ -7,10 +7,10 @@ export const CalendarStyle = (theme: Theme, nbRow: number) => ({
         alignItems: 'center',
         position: 'sticky',
         width: '100%',
-        height: '10%',
+        height: '10vh',
         padding: '1vw 3vw',
         textAlign: 'center',
-        fontSize: '10vw',
+        fontSize: '9vw',
         color: theme.color.text,
         backgroundColor: theme.color.primary,
         boxShadow: '0px 0px 3px 0px rgb(0,0,0)',
@@ -33,9 +33,12 @@ export const CalendarStyle = (theme: Theme, nbRow: number) => ({
     CalendarContainer: css({
         width: '100%',
         maxWidth: `min(1324px, calc(90vh * 7 / ${nbRow}))`,
-        height: '100%',
+        backgroundColor: theme.backgroundColor.ternary,
         textAlign: 'center',
         fontSize: '0',
         boxSizing: 'border-box',
+        '@media only screen and (min-width: 600px)': {
+            height: '100%',
+        },
     }),
 });

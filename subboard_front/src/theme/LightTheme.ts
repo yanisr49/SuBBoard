@@ -1,3 +1,5 @@
+import { Theme } from '@emotion/react';
+
 export default {
     backgroundColor: {
         primary: 'rgb(240, 240, 240)',
@@ -7,5 +9,6 @@ export default {
     color: {
         text: 'black',
         primary: 'black',
+        error: 'red',
     },
-};
+} as Theme;
