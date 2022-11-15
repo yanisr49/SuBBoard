@@ -1,23 +1,14 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
-/* eslint-disable consistent-return */
-/* eslint-disable no-promise-executor-return */
 /** @jsxImportSource @emotion/react */
 import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useQuery } from 'react-query';
-import { Skeleton } from '@mui/material';
 import { useOutsideClick } from '../../hooks/useOutsideClick';
-import DelayUnmounting from '../DelayUnmounting';
-import { TRANSITION_TIME } from '../../resources/Constants';
-import { Select } from '../Select';
 import { resetToken } from '../../redux/tokenSlice';
-import { changeTheme, updateTheme } from '../../redux/themeSlice';
+import { updateTheme } from '../../redux/themeSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { fetchCurrentUserQuery } from '../../graphql/queries';
-import { isThemesKey, themesKeys } from '../../theme';
+import { isThemesKey } from '../../theme';
 import { ProfilStyle } from './ProfilStyle';
 import { selectTheme, selectToken } from '../../redux/store';
 import PP from './PP';
@@ -48,18 +39,27 @@ export default function Profil() {
     };
 
     return (
-        <div css={style.ProfilContainer} onClick={() => !clicked && setClicked(true)} ref={ref}>
+        <div
+            css={style.ProfilContainer}
+            onClick={() => !clicked && setClicked(true)}
+            onKeyDown={(ev) => ev.key === 'Enter' && !clicked && setClicked(true)}
+            role="button"
+            tabIndex={0}
+            ref={ref}
+        >
             <Helmet>
                 <script src="https://accounts.google.com/gsi/client" async defer />
             </Helmet>
 
-            <PP
-                profilPicture={connectedUser.data?.user?.profilPicture ?? ''}
-                email={connectedUser.data?.user?.email ?? ''}
-                expended={clicked}
-                loading={false}
-                onLogOut={logout}
-            />
+            {loggedIn && (
+                <PP
+                    profilPicture={connectedUser.data?.user?.profilPicture ?? ''}
+                    email={connectedUser.data?.user?.email ?? ''}
+                    expended={clicked}
+                    loading={false}
+                    onLogOut={logout}
+                />
+            )}
 
             <div css={style.signInButton}>
                 <div

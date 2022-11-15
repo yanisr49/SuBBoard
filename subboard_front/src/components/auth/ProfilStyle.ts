@@ -7,7 +7,7 @@ export const ProfilStyle = (theme: Theme, loggedIn: boolean, expended: boolean) 
         position: 'fixed',
         right: expended ? '50%' : '30px',
         bottom: expended ? '50%' : '30px',
-        width: expended ? 'auto' : '75px',
+        width: expended || !loggedIn ? 'auto' : '75px',
         padding: expended ? '10px' : '0',
         overflow: 'hidden',
         borderRadius: expended ? '5px' : '37.5px',
@@ -59,9 +59,6 @@ export const ProfilStyle = (theme: Theme, loggedIn: boolean, expended: boolean) 
     signInButton: css({
         width: loggedIn ? '0' : 'auto',
         height: loggedIn ? '0' : 'auto',
-        position: 'absolute',
-        top: '10px',
-        right: '10px',
         borderRadius: '20px',
         overflow: 'hidden',
     }),

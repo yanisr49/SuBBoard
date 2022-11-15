@@ -71,7 +71,7 @@ export const DayCardStyle = (theme: Theme, selected: boolean, loading: boolean, 
         boxSizing: 'border-box',
         backgroundColor: selected ? theme.color.primary : theme.backgroundColor.secondary,
         overflow: 'hidden',
-        boxShadow: '0px 0px 20px -10px rgba(0,0,0,0.50)',
+        boxShadow: '0px 0px 4px -2px rgba(0,0,0)',
         transition: loading ? 'none' : `all ${TRANSITION_TIME.short}ms`,
         '@media only screen and (min-width: 600px)': {
             display: 'inline-block',

@@ -1,23 +1,10 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
-/* eslint-disable consistent-return */
-/* eslint-disable no-promise-executor-return */
 /** @jsxImportSource @emotion/react */
-import React, { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
-import { useQuery } from 'react-query';
-import { Skeleton } from '@mui/material';
-import { useOutsideClick } from '../../hooks/useOutsideClick';
 import { Select } from '../Select';
-import { resetToken } from '../../redux/tokenSlice';
-import { changeTheme, updateTheme } from '../../redux/themeSlice';
+import { changeTheme } from '../../redux/themeSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
-import { fetchCurrentUserQuery } from '../../graphql/queries';
-import { isThemesKey, themesKeys } from '../../theme';
+import { themesKeys } from '../../theme';
 import { ProfilStyle } from './ProfilStyle';
-import { selectTheme, selectToken } from '../../redux/store';
+import { selectTheme } from '../../redux/store';
 
 interface Props {
     profilPicture: string;
