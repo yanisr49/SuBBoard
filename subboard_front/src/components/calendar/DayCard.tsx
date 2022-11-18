@@ -4,6 +4,7 @@ import { faHouseLaptop } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQueryClient } from 'react-query';
 import { Calendar, CalendarItem } from 'react-calendar-hook';
 import Skeleton from 'react-loading-skeleton';
+import moment from 'moment-ferie-fr';
 import { useAppSelector } from '../../hooks/reduxHooks';
 import { selectTheme } from '../../redux/store';
 import Spinner from '../../resources/common/Spinner';
@@ -23,6 +24,7 @@ interface Props {
 export default function DayCard({ item, selected, calendar, nbWeeks, loading } : Props) {
     const queryClient = useQueryClient();
     const theme = useAppSelector(selectTheme).value;
+    const holiday = moment(item.fullDate);
 
     const addTTDayMutation = useMutation(addTTDay, {
         onSuccess: (data) => {
@@ -67,7 +69,15 @@ export default function DayCard({ item, selected, calendar, nbWeeks, loading } :
 
     const inDisplayedMonth = item.fullDate.getMonth() === calendar.items[6].fullDate.getMonth();
 
-    const style = DayCardStyle(theme, selected, loading, addTTDayMutation.isLoading || removeTTDayMutation.isLoading, nbWeeks, inDisplayedMonth);
+    const style = DayCardStyle(
+        theme,
+        selected,
+        loading,
+        addTTDayMutation.isLoading || removeTTDayMutation.isLoading,
+        nbWeeks,
+        inDisplayedMonth,
+        holiday.isFerie(),
+    );
 
     return (
         <div
@@ -104,6 +114,14 @@ export default function DayCard({ item, selected, calendar, nbWeeks, loading } :
                 css={style.CardTTLogo}
             >
                 <FontAwesomeIcon icon={faHouseLaptop} />
+            </div>
+            <div
+                className="cardHolidayName"
+                css={style.CardHolidayName}
+            >
+                {
+                    holiday.getFerie()
+                }
             </div>
             <Spinner
                 loading={(addTTDayMutation.isLoading || removeTTDayMutation.isLoading)}

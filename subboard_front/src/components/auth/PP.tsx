@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Select } from '../Select';
+import { Select } from '../../resources/common/Select';
 import { changeTheme } from '../../redux/themeSlice';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import { themesKeys } from '../../theme';
@@ -10,15 +10,14 @@ interface Props {
     profilPicture: string;
     email: string;
     expended: boolean;
-    loading: boolean;
     onLogOut: () => void;
 }
 
-export default function PP({ profilPicture, email, expended, loading, onLogOut } : Props) {
+export default function PP({ profilPicture, email, expended, onLogOut } : Props) {
     const dispatch = useAppDispatch();
     const theme = useAppSelector(selectTheme);
 
-    const style = ProfilStyle(theme.value, true, expended);
+    const style = ProfilStyle(theme.value, expended);
 
     return (
         <div>
@@ -38,11 +37,12 @@ export default function PP({ profilPicture, email, expended, loading, onLogOut }
             >
                 <Select
                     id="themes"
-                    label="TODO"
+                    label="Thème"
                     options={[...themesKeys]}
                     getOptionLabel={(option) => option}
                     onChange={(option) => { dispatch(changeTheme(option)); }}
                     initialValue={theme.key}
+                    extraCSS={style.Select}
                 />
                 <button
                     css={style.logoutButton}

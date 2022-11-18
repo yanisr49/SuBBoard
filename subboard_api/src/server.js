@@ -24,23 +24,7 @@ const { CLIENT_ID, REDIRECT_UI, JWT_SECRET } = process.env;
 
 // Login
 app.post('/login', async (req, res) => {
-    // Vérifie que le csrf token est valide
-
-
-    const cookie_g_csrf_token = req.cookies.g_csrf_token;
-    const { credential, g_csrf_token } = req.body;
-
-    console.log('crsf TOKEN : ', cookie_g_csrf_token, g_csrf_token)
-    /*
-    if (
-        !cookie_g_csrf_token ||
-        !g_csrf_token ||
-        cookie_g_csrf_token !== g_csrf_token
-    ) {
-        res.status(401).send('Invalid CSRF token');
-        return;
-    }
-    */
+    const { credential } = req.body;
 
     // Check auprès de GOOGLE que le token est valide
     const client = new OAuth2Client(CLIENT_ID);
@@ -63,7 +47,11 @@ app.post('/login', async (req, res) => {
         let user = await UserModel.findOne({ email: userEmail });
 
         if (user) {
-            res.status(200).redirect(REDIRECT_UI + jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }));
+            res.status(200).json({
+                message: 'Login successfully',
+                user,
+                token: jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }),
+            });
         } else {
             // Create user in our database
             user = await UserModel.create({
@@ -72,7 +60,11 @@ app.post('/login', async (req, res) => {
             });
 
             // save user token
-            res.status(201).redirect(REDIRECT_UI + jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }));
+            res.status(201).json({
+                message: 'Signup successfully',
+                user,
+                token: jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }),
+            });
         }
     } catch (err) {
         res.status(500).send(err);

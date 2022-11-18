@@ -1,25 +1,42 @@
 import { css, Theme } from '@emotion/react';
 import { TRANSITION_TIME } from '../../resources/Constants';
 
-export const ProfilStyle = (theme: Theme, loggedIn: boolean, expended: boolean) => ({
-    ProfilContainer: css({
-        backgroundColor: theme.backgroundColor.ternary,
+export const ProfilStyle = (theme: Theme, expended: boolean) => ({
+    ProfilBlurContainer: css({
         position: 'fixed',
-        right: expended ? '50%' : '30px',
-        bottom: expended ? '50%' : '30px',
-        width: expended || !loggedIn ? 'auto' : '75px',
-        padding: expended ? '10px' : '0',
+        right: expended ? '0' : '30px',
+        bottom: expended ? '0' : '30px',
+        width: expended ? '100%' : '75px',
+        height: expended ? '100%' : '75px',
+        textAlign: 'center',
+        backdropFilter: 'blur(10px)',
+        borderRadius: expended ? '5px' : '37.5px',
+        transition: `${TRANSITION_TIME.medium}ms`,
         overflow: 'hidden',
+        zIndex: 9,
+        '@media only screen and (min-width: 600px)': {
+            top: expended ? '0' : '30px',
+            right: expended ? '0' : '30px',
+            bottom: 'auto',
+        },
+        '&:hover': {
+            cursor: expended ? 'auto' : 'pointer',
+        },
+    }),
+    ProfilContainer: css({
+        position: 'absolute',
+        top: expended ? '50%' : '0',
+        left: expended ? '50%' : '0',
+        transform: expended ? 'translate(-50%, -50%)' : 'none',
+        backgroundColor: theme.backgroundColor.ternary,
+        padding: expended ? '10px' : '0',
+        width: 'min-content',
         borderRadius: expended ? '5px' : '37.5px',
         boxShadow: '0px 0px 7px -2px rgba(0,0,0)',
-        transform: expended ? 'translate(50%, 50%)' : 'none',
         transition: `${TRANSITION_TIME.medium}ms`,
         zIndex: 10,
-        '@media only screen and (min-width: 600px)': {
-            top: expended ? '50%' : '30px',
-            right: expended ? '50%' : '30px',
-            bottom: 'auto',
-            transform: expended ? 'translate(50%, -50%)' : 'none',
+        '&:hover': {
+            cursor: expended ? 'auto' : 'pointer',
         },
     }),
     PPContainer: css({
@@ -38,10 +55,10 @@ export const ProfilStyle = (theme: Theme, loggedIn: boolean, expended: boolean) 
         borderRadius: '37.5px',
     }),
     Preferences: css({
-        width: expended ? 'auto' : '0px',
-        height: expended ? 'auto' : '0px',
         textAlign: 'center',
-        overflow: 'hidden',
+    }),
+    Select: css({
+        margin: '10px',
     }),
     logoutButton: css({
         backgroundColor: theme.color.error,
@@ -57,9 +74,8 @@ export const ProfilStyle = (theme: Theme, loggedIn: boolean, expended: boolean) 
         },
     }),
     signInButton: css({
-        width: loggedIn ? '0' : 'auto',
-        height: loggedIn ? '0' : 'auto',
-        borderRadius: '20px',
-        overflow: 'hidden',
+        position: 'absolute',
+        top: '0',
+        right: '0',
     }),
 });

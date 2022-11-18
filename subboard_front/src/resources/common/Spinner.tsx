@@ -8,7 +8,7 @@ export const SpinnerStyle = (color?: string, success?: boolean) => ({
     spinnerStyle: css({
         color,
         opacity: success ? '0' : '1',
-        transition: success ? `opacity ${TRANSITION_TIME.long}ms ease-in` : 'none',
+        transition: success ? `opacity ${TRANSITION_TIME.veryLong}ms ease-in` : 'none',
     }),
 });
 

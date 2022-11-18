@@ -1,9 +1,18 @@
+/* eslint-disable no-nested-ternary */
 import { css, Theme } from '@emotion/react';
 import { TRANSITION_TIME } from '../../resources/Constants';
 
 const cardWidth = (nbRow?: number) => `clamp(0px, min(calc((100vw - 56px) / 7), calc((90vh - 48px) / ${nbRow})), 180px)`;
 
-export const DayCardStyle = (theme: Theme, selected: boolean, loading: boolean, cardLoading: boolean, nbRow: number, inDisplayedMonth: boolean) => ({
+export const DayCardStyle = (
+    theme: Theme,
+    selected: boolean,
+    loading: boolean,
+    cardLoading: boolean,
+    nbRow: number,
+    inDisplayedMonth: boolean,
+    holiday: boolean,
+) => ({
     CardName: css({
         position: 'absolute',
         top: '3.5vw',
@@ -25,7 +34,7 @@ export const DayCardStyle = (theme: Theme, selected: boolean, loading: boolean, 
         width: loading ? '50%' : 'auto',
         height: loading ? '50%' : 'auto',
         fontSize: (selected || cardLoading) && !loading ? '5vw' : '20vw',
-        color: theme.color.text,
+        color: holiday ? theme.color.error : theme.color.text,
         transform: (selected || cardLoading) && !loading ? 'none' : 'translate(50%, -50%)',
         transition: loading ? 'none' : `all ${TRANSITION_TIME.short}ms`,
         '@media only screen and (min-width: 600px)': {
@@ -39,7 +48,7 @@ export const DayCardStyle = (theme: Theme, selected: boolean, loading: boolean, 
         top: '60%',
         right: '50%',
         fontSize: selected || cardLoading ? '20vw' : '0',
-        color: theme.backgroundColor.primary,
+        color: holiday ? theme.color.error : theme.backgroundColor.primary,
         transform: 'translate(50%, -50%)',
         transition: loading ? 'none' : `all ${TRANSITION_TIME.short}ms`,
         ':active': {
@@ -47,6 +56,20 @@ export const DayCardStyle = (theme: Theme, selected: boolean, loading: boolean, 
         },
         '@media only screen and (min-width: 600px)': {
             fontSize: selected || cardLoading ? `calc(${cardWidth(nbRow)} * 0.4)` : '0',
+        },
+    }),
+    CardHolidayName: css({
+        position: 'absolute',
+        bottom: '3.5vw',
+        left: '4.2vw',
+        width: '60%',
+        textAlign: 'left',
+        fontSize: '3vw',
+        color: theme.color.text,
+        '@media only screen and (min-width: 600px)': {
+            bottom: `calc(${cardWidth(nbRow)} * 0.08)`,
+            left: `calc(${cardWidth(nbRow)} * 0.09)`,
+            fontSize: `calc(${cardWidth(nbRow)} * 0.07)`,
         },
     }),
     CardSpinner: css({
@@ -77,7 +100,7 @@ export const DayCardStyle = (theme: Theme, selected: boolean, loading: boolean, 
             display: 'inline-block',
             width: `${cardWidth(nbRow)}`,
             height: `${cardWidth(nbRow)}`,
-            opacity: inDisplayedMonth ? 1 : 0.4,
+            opacity: inDisplayedMonth ? 1 : 0.5,
             ':hover': loading ? {} : {
                 cursor: 'pointer',
                 boxShadow: `0px 0px 5px 0px ${theme.color.primary}`,
