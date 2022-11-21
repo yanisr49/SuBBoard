@@ -1,42 +1,40 @@
 import { css, Theme } from '@emotion/react';
 import { TRANSITION_TIME } from '../../resources/Constants';
 
-export const ProfilStyle = (theme: Theme, expended: boolean) => ({
+export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, expendedDelayed: boolean) => ({
     ProfilBlurContainer: css({
-        position: 'fixed',
-        right: expended ? '0' : '30px',
-        bottom: expended ? '0' : '30px',
-        width: expended ? '100%' : '75px',
-        height: expended ? '100%' : '75px',
-        textAlign: 'center',
-        backdropFilter: 'blur(10px)',
-        borderRadius: expended ? '5px' : '37.5px',
-        transition: `${TRANSITION_TIME.medium}ms`,
-        overflow: 'hidden',
+        position: 'absolute',
+        top: '0',
+        right: '0',
+        width: expended || expendedDelayed ? '100%' : '0',
+        height: expended || expendedDelayed ? '100%' : '0',
+        backdropFilter: expended ? 'blur(15px)' : 'none',
+        backgroundColor: expended ? 'rgb(0, 0, 0, 0.5)' : 'transparent',
+        transition: `
+            backdrop-filter ${TRANSITION_TIME.medium}ms,
+            background-color ${TRANSITION_TIME.medium}ms
+        `,
         zIndex: 9,
-        '@media only screen and (min-width: 600px)': {
-            top: expended ? '0' : '30px',
-            right: expended ? '0' : '30px',
-            bottom: 'auto',
-        },
-        '&:hover': {
-            cursor: expended ? 'auto' : 'pointer',
-        },
     }),
     ProfilContainer: css({
-        position: 'absolute',
-        top: expended ? '50%' : '0',
-        left: expended ? '50%' : '0',
-        transform: expended ? 'translate(-50%, -50%)' : 'none',
         backgroundColor: theme.backgroundColor.ternary,
+        position: 'fixed',
+        right: expended ? '50%' : '30px',
+        bottom: expended ? '50%' : '30px',
+        maxWidth: expended || !loggedIn ? '100%' : '75px',
+        maxHeight: expended || !loggedIn ? '100%' : '75px',
         padding: expended ? '10px' : '0',
-        width: 'min-content',
+        overflow: expended && expendedDelayed ? 'visible' : 'hidden',
         borderRadius: expended ? '5px' : '37.5px',
         boxShadow: '0px 0px 7px -2px rgba(0,0,0)',
+        transform: expended ? 'translate(50%, 50%)' : 'none',
         transition: `${TRANSITION_TIME.medium}ms`,
         zIndex: 10,
-        '&:hover': {
-            cursor: expended ? 'auto' : 'pointer',
+        '@media only screen and (min-width: 600px)': {
+            top: expended ? '50%' : '30px',
+            right: expended ? '50%' : '30px',
+            bottom: 'auto',
+            transform: expended ? 'translate(50%, -50%)' : 'none',
         },
     }),
     PPContainer: css({

@@ -17,7 +17,7 @@ export default function PP({ profilPicture, email, expended, onLogOut } : Props)
     const dispatch = useAppDispatch();
     const theme = useAppSelector(selectTheme);
 
-    const style = ProfilStyle(theme.value, expended);
+    const style = ProfilStyle(theme.value, expended, true, expended);
 
     return (
         <div>
@@ -43,11 +43,13 @@ export default function PP({ profilPicture, email, expended, onLogOut } : Props)
                     onChange={(option) => { dispatch(changeTheme(option)); }}
                     initialValue={theme.key}
                     extraCSS={style.Select}
+                    tabIndex={expended ? 0 : -1}
                 />
                 <button
                     css={style.logoutButton}
                     onClick={onLogOut}
                     type="button"
+                    tabIndex={expended ? 0 : -1}
                 >
                     Logout
                 </button>

@@ -31,7 +31,6 @@ export const SelectStyle = (theme: Theme, open: boolean) => ({
             position: 'absolute',
             marginTop: '10px',
             borderRadius: '5px',
-            overflow: 'hidden',
             '& a': {
                 display: 'block',
                 color: theme.color.text,
