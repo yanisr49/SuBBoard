@@ -26,6 +26,8 @@ const resolvers = {
         user.theme = theme;
         await user.save();
 
+        await sleep(1000);
+
         return theme;
     },
     ttDays: async ({startDate, endDate}, {email}) => {
@@ -42,7 +44,7 @@ const resolvers = {
 
         await newTTDay.save();
 
-        // await sleep(1000);
+        await sleep(1000);
 
         return newTTDay;
     },
@@ -51,7 +53,7 @@ const resolvers = {
 
         await TTDaysModel.deleteMany({userEmail: email, date});
 
-        // await sleep(1000);
+        await sleep(1000);
 
         return returnData;
     }

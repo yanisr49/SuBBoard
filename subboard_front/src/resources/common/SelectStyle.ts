@@ -16,6 +16,7 @@ export const SelectStyle = (theme: Theme, open: boolean) => ({
             borderRadius: '5px',
             color: theme.color.text,
             padding: '10px',
+            marginRight: '10px',
             '& svg': {
                 marginLeft: '30px',
                 transform: open ? 'rotate(180deg)' : 'none',
@@ -24,22 +25,25 @@ export const SelectStyle = (theme: Theme, open: boolean) => ({
                 cursor: 'pointer',
             },
         },
-        '& div': {
-            backgroundColor: theme.backgroundColor.secondary,
-            border: `1px solid ${theme.backgroundColor.primary}`,
-            visibility: open ? 'visible' : 'hidden',
-            position: 'absolute',
-            marginTop: '10px',
-            borderRadius: '5px',
-            '& a': {
-                display: 'block',
-                color: theme.color.text,
-                fontSize: '1.5em',
-                padding: '10px 50px 10px 20px',
-                '&:hover': {
-                    cursor: 'pointer',
-                    backgroundColor: theme.color.primary,
-                },
+    }),
+    SelectSpinner: css({
+        display: 'inline-block',
+    }),
+    Menu: css({
+        backgroundColor: theme.backgroundColor.secondary,
+        border: `1px solid ${theme.backgroundColor.primary}`,
+        visibility: open ? 'visible' : 'hidden',
+        position: 'absolute',
+        marginTop: '10px',
+        borderRadius: '5px',
+        '& a': {
+            display: 'block',
+            color: theme.color.text,
+            fontSize: '1.5em',
+            padding: '10px 50px 10px 20px',
+            '&:hover': {
+                cursor: 'pointer',
+                backgroundColor: theme.color.primary,
             },
         },
     }),

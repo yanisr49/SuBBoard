@@ -8,7 +8,7 @@ import {
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { fetchTTDaysQuery } from '../../graphql/queries';
-import { useAppSelector } from '../../hooks/reduxHooks';
+import { useAppSelector } from '../../redux/reduxHooks';
 import { selectTheme } from '../../redux/store';
 import DayCard from './DayCard';
 import { CalendarStyle } from './CalendarStyle';

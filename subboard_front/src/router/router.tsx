@@ -1,6 +1,6 @@
 import { Navigate, BrowserRouter, Route, Routes } from 'react-router-dom';
 import Profil from '../components/auth/Profil';
-import { useAppSelector } from '../hooks/reduxHooks';
+import { useAppSelector } from '../redux/reduxHooks';
 import { selectToken } from '../redux/store';
 import { ROUTES } from './routes';
 

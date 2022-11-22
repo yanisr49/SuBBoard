@@ -4,11 +4,11 @@ import { faCircleNotch, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import { css, SerializedStyles } from '@emotion/react';
 import { TRANSITION_TIME } from '../Constants';
 
-export const SpinnerStyle = (color?: string, success?: boolean) => ({
+export const SpinnerStyle = (color?: string, loading?: boolean) => ({
     spinnerStyle: css({
         color,
-        opacity: success ? '0' : '1',
-        transition: success ? `opacity ${TRANSITION_TIME.veryLong}ms ease-in` : 'none',
+        opacity: loading ? '1' : '0',
+        transition: loading ? 'none' : `opacity ${TRANSITION_TIME.veryLong}ms ease-in`,
     }),
 });
 
@@ -20,11 +20,10 @@ interface Props {
 }
 
 export default function Spinner({ loading, success, color, cssStyle } : Props) {
-    const style = SpinnerStyle(color, !loading && success);
+    const style = SpinnerStyle(color, loading);
 
     return (
         <div css={[style.spinnerStyle, cssStyle]}>
-            {' '}
             {loading && <FontAwesomeIcon icon={faCircleNotch} spin />}
             {!loading && success && <FontAwesomeIcon icon={faCircleCheck} />}
         </div>

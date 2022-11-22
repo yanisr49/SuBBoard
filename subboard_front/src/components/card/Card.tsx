@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Chip from '../chip/Chip';
-import image from '../../img/netflix_logo.png';
+import image from '../../resources/img/netflix_logo.png';
 import SubscriptionModel from '../../models/SubscriptionModel';
 
 interface Props {

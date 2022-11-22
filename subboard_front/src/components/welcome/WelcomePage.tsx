@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/reduxHooks';
+import { useAppSelector } from '../../redux/reduxHooks';
 import { selectTheme, selectToken } from '../../redux/store';
 import { WelcomePageStyle } from './WelcomePageStyle';
 

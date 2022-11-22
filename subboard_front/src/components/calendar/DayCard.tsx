@@ -5,11 +5,11 @@ import { useMutation, useQueryClient } from 'react-query';
 import { Calendar, CalendarItem } from 'react-calendar-hook';
 import Skeleton from 'react-loading-skeleton';
 import moment from 'moment-ferie-fr';
-import { useAppSelector } from '../../hooks/reduxHooks';
+import { useAppSelector } from '../../redux/reduxHooks';
 import { selectTheme } from '../../redux/store';
 import Spinner from '../../resources/common/Spinner';
 import { addTTDay, removeTTDay } from '../../graphql/mutations';
-import { Query } from '../../graphql/generated/graphql';
+import { Query, TtDays } from '../../graphql/generated/graphql';
 import { QUERY_NAMES } from '../../resources/Constants';
 import { DayCardStyle } from './DayCardStyle';
 
@@ -27,34 +27,86 @@ export default function DayCard({ item, selected, calendar, nbWeeks, loading } :
     const holiday = moment(item.fullDate);
 
     const addTTDayMutation = useMutation(addTTDay, {
-        onSuccess: (data) => {
-            queryClient.setQueryData([QUERY_NAMES.selectedDaysCurrentMonth, calendar], (oldData: Pick<Query, 'ttDays'> | undefined) => {
-                const newData = {
-                    ttDays: oldData?.ttDays ?? [],
-                };
-                if (data.addTTDay) {
-                    newData.ttDays.push(data.addTTDay);
-                }
+        onMutate: async (data) => {
+            await queryClient.cancelQueries({
+                queryKey: [QUERY_NAMES.selectedDaysCurrentMonth, calendar],
+            });
 
-                return newData;
+            // Snapshot the previous value
+            const previousData: Pick<Query, 'ttDays'> | undefined = queryClient.getQueryData([QUERY_NAMES.selectedDaysCurrentMonth, calendar]);
+
+            const newData = queryClient.setQueryData(
+                [QUERY_NAMES.selectedDaysCurrentMonth, calendar],
+                (oldData: Pick<Query, 'ttDays'> | undefined) => {
+                    if (oldData?.ttDays) {
+                        return {
+                            ttDays: [
+                                ...oldData.ttDays,
+                        {
+                            date: data,
+                        } as TtDays,
+                            ],
+                        };
+                    }
+                    return {
+                        ttDays: [] as TtDays[],
+                    };
+                },
+            );
+
+            return {
+                previousData, newData,
+            };
+        },
+        onError: (err, newData, context) => {
+            queryClient.setQueryData(
+                [QUERY_NAMES.selectedDaysCurrentMonth, calendar],
+                context?.previousData,
+            );
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_NAMES.selectedDaysCurrentMonth, calendar],
             });
         },
     });
 
     const removeTTDayMutation = useMutation(removeTTDay, {
-        onSuccess: (data) => {
-            queryClient.setQueryData([QUERY_NAMES.selectedDaysCurrentMonth, calendar], (oldData: Pick<Query, 'ttDays'> | undefined) => {
-                const newData: Pick<Query, 'ttDays'> | undefined = {
-                    ttDays: oldData?.ttDays ?? [],
-                };
+        onMutate: async (data) => {
+            await queryClient.cancelQueries({
+                queryKey: [QUERY_NAMES.selectedDaysCurrentMonth, calendar],
+            });
 
-                if (newData?.ttDays?.length && data.removeTTDay) {
-                    newData.ttDays = newData.ttDays.filter((oldDate) => oldDate?.date
-                    && data.removeTTDay?.date
-                    && new Date(oldDate.date).getTime() !== new Date(data.removeTTDay?.date).getTime());
-                }
+            // Snapshot the previous value
+            const previousData: Pick<Query, 'ttDays'> | undefined = queryClient.getQueryData([QUERY_NAMES.selectedDaysCurrentMonth, calendar]);
 
-                return newData;
+            const newData = queryClient.setQueryData(
+                [QUERY_NAMES.selectedDaysCurrentMonth, calendar],
+                (oldData: Pick<Query, 'ttDays'> | undefined) => {
+                    if (data) {
+                        return {
+                            ttDays: oldData?.ttDays?.filter((oldDate) => new Date(oldDate?.date).getTime() !== new Date(data).getTime()) ?? [],
+                        };
+                    }
+                    return {
+                        ttDays: [] as TtDays[],
+                    };
+                },
+            );
+
+            return {
+                previousData, newData,
+            };
+        },
+        onError: (err, newData, context) => {
+            queryClient.setQueryData(
+                [QUERY_NAMES.selectedDaysCurrentMonth, calendar],
+                context?.previousData,
+            );
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_NAMES.selectedDaysCurrentMonth, calendar],
             });
         },
     });
@@ -91,23 +143,13 @@ export default function DayCard({ item, selected, calendar, nbWeeks, loading } :
                 className="cardName"
                 css={style.CardName}
             >
-                {loading ? (
-                    <Skeleton
-                        baseColor={theme.backgroundColor.primary}
-                        highlightColor={theme.color.primary}
-                    />
-                ) : item.name }
+                {loading ? <Skeleton /> : item.name }
             </div>
             <div
                 className="cardNumber"
                 css={style.CardNumber}
             >
-                {loading ? (
-                    <Skeleton
-                        baseColor={theme.backgroundColor.primary}
-                        highlightColor={theme.color.primary}
-                    />
-                ) : item.date}
+                {loading ? <Skeleton /> : item.date}
             </div>
             <div
                 className="cardTTLogo"
@@ -119,9 +161,7 @@ export default function DayCard({ item, selected, calendar, nbWeeks, loading } :
                 className="cardHolidayName"
                 css={style.CardHolidayName}
             >
-                {
-                    holiday.getFerie()
-                }
+                {holiday.getFerie()}
             </div>
             <Spinner
                 loading={(addTTDayMutation.isLoading || removeTTDayMutation.isLoading)}

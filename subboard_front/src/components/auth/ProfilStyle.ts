@@ -3,13 +3,14 @@ import { TRANSITION_TIME } from '../../resources/Constants';
 
 export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, expendedDelayed: boolean) => ({
     ProfilBlurContainer: css({
-        position: 'absolute',
+        position: 'fixed',
         top: '0',
         right: '0',
         width: expended || expendedDelayed ? '100%' : '0',
         height: expended || expendedDelayed ? '100%' : '0',
-        backdropFilter: expended ? 'blur(15px)' : 'none',
-        backgroundColor: expended ? 'rgb(0, 0, 0, 0.5)' : 'transparent',
+        backdropFilter: expended ? 'blur(10px)' : 'none',
+        backgroundColor: expended ? 'rgb(0, 0, 0, 0.2)' : 'transparent',
+        overflow: 'hidden',
         transition: `
             backdrop-filter ${TRANSITION_TIME.medium}ms,
             background-color ${TRANSITION_TIME.medium}ms
@@ -21,10 +22,10 @@ export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, 
         position: 'fixed',
         right: expended ? '50%' : '30px',
         bottom: expended ? '50%' : '30px',
-        maxWidth: expended || !loggedIn ? '100%' : '75px',
-        maxHeight: expended || !loggedIn ? '100%' : '75px',
+        maxWidth: expended ? '100%' : '75px',
+        maxHeight: expended ? '100%' : '75px',
         padding: expended ? '10px' : '0',
-        overflow: expended && expendedDelayed ? 'visible' : 'hidden',
+        overflow: (expended && expendedDelayed) || !loggedIn ? 'visible' : 'hidden',
         borderRadius: expended ? '5px' : '37.5px',
         boxShadow: '0px 0px 7px -2px rgba(0,0,0)',
         transform: expended ? 'translate(50%, 50%)' : 'none',
@@ -35,6 +36,9 @@ export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, 
             right: expended ? '50%' : '30px',
             bottom: 'auto',
             transform: expended ? 'translate(50%, -50%)' : 'none',
+        },
+        '&:hover': {
+            cursor: 'pointer',
         },
     }),
     PPContainer: css({
