@@ -12,8 +12,8 @@ export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, 
         backgroundColor: expended ? 'rgb(0, 0, 0, 0.2)' : 'transparent',
         overflow: 'hidden',
         transition: `
-            backdrop-filter ${TRANSITION_TIME.medium}ms,
-            background-color ${TRANSITION_TIME.medium}ms
+            backdrop-filter ${TRANSITION_TIME.short}ms,
+            background-color ${TRANSITION_TIME.short}ms
         `,
         zIndex: 9,
     }),
@@ -29,7 +29,7 @@ export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, 
         borderRadius: expended ? '5px' : '37.5px',
         boxShadow: '0px 0px 7px -2px rgba(0,0,0)',
         transform: expended ? 'translate(50%, 50%)' : 'none',
-        transition: `${TRANSITION_TIME.medium}ms`,
+        transition: `all ${TRANSITION_TIME.short}ms ease-in`,
         zIndex: 10,
         '@media only screen and (min-width: 600px)': {
             top: expended ? '50%' : '30px',
@@ -38,7 +38,7 @@ export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, 
             transform: expended ? 'translate(50%, -50%)' : 'none',
         },
         '&:hover': {
-            cursor: 'pointer',
+            cursor: expended && expendedDelayed ? 'auto' : 'pointer',
         },
     }),
     PPContainer: css({
@@ -77,7 +77,7 @@ export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, 
     }),
     signInButton: css({
         position: 'absolute',
-        top: '0',
+        top: '-40px',
         right: '0',
     }),
 });

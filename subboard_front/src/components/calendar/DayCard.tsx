@@ -77,7 +77,6 @@ export default function DayCard({ item, selected, calendar, nbWeeks, loading } :
                 queryKey: [QUERY_NAMES.selectedDaysCurrentMonth, calendar],
             });
 
-            // Snapshot the previous value
             const previousData: Pick<Query, 'ttDays'> | undefined = queryClient.getQueryData([QUERY_NAMES.selectedDaysCurrentMonth, calendar]);
 
             const newData = queryClient.setQueryData(

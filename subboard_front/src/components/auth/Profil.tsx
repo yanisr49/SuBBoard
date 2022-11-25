@@ -11,6 +11,7 @@ import { selectTheme, selectToken } from '../../redux/store';
 import PP from './PP';
 import { TRANSITION_TIME } from '../../resources/Constants';
 import useDelayedState from '../../resources/hooks/useDelayedState';
+import useMyCalendar from '../../resources/hooks/useMyCalendar';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const google: any;
@@ -25,6 +26,8 @@ interface Credentials {
 export default function Profil() {
     const [expended, expendedDelayed, setExpended] = useDelayedState<boolean>(false);
     const [wasLoggedIn, setWasLoggedIn] = React.useState<boolean>(false);
+
+    useMyCalendar();
 
     const ref = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
