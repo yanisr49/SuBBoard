@@ -2,6 +2,7 @@ import Auth from '../components/auth/Auth';
 import Calendar from '../components/calendar/Calendar';
 import Subscriptions from '../components/home/Subscriptions';
 import WelcomePage from '../components/welcome/WelcomePage';
+import ROUTES_PATHS from './RoutesPath';
 
 type Route = {
     path: string,
@@ -9,25 +10,29 @@ type Route = {
     loggedIn: boolean,
 }
 
-export const ROUTES: Route[] = [
-    {
-        path: '/',
+type Routes = {
+    [key: string]: Route;
+}
+
+export const ROUTES: Routes = {
+    welcomePage: {
+        path: ROUTES_PATHS.welcomePage,
         element: WelcomePage,
         loggedIn: false,
     },
-    {
-        path: '/teletravail',
+    workFromHome: {
+        path: ROUTES_PATHS.workFromHome,
         element: Calendar,
         loggedIn: true,
     },
-    {
-        path: '/login/:newToken',
+    tokenPath: {
+        path: ROUTES_PATHS.tokenPath,
         element: Auth,
         loggedIn: false,
     },
-    {
-        path: `${process.env.REACT_APP_PUBLIC_URL}/subscriptions`,
+    subscriptions: {
+        path: ROUTES_PATHS.subscriptions,
         element: Subscriptions,
         loggedIn: true,
     },
-];
+};

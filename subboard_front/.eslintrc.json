@@ -103,7 +103,15 @@
         ],
         "react/require-default-props": "off",
         "react/jsx-no-useless-fragment": "off",
-        "react/jsx-props-no-spreading": "off"
+        "react/jsx-props-no-spreading": "off",
+        "react/no-unknown-property": [
+            "error",
+            {
+                "ignore": [
+                    "css"
+                ]
+            }
+        ]
     },
     "settings": {
         "import/resolver": {

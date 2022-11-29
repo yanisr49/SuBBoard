@@ -11,7 +11,8 @@ function Router() {
         <BrowserRouter>
             <Profil />
             <Routes>
-                {ROUTES.map((newRoute) => {
+                {Object.keys(ROUTES).map((routeIndex) => {
+                    const newRoute = ROUTES[routeIndex];
                     if (newRoute.loggedIn) {
                         if (token.value) {
                             return <Route key={newRoute.path} path={newRoute.path} element={<newRoute.element />} />;
