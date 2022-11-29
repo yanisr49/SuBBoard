@@ -9,4 +9,30 @@ export const TOKEN_EXPIRATION_TIME = 600000;
 
 export const QUERY_NAMES = {
     selectedDaysCurrentMonth: 'fetchSelectedTTDaysCurrentMonth',
+    fetchUser: 'fetchUser',
 };
+
+export const DAYS_NAME = [
+    'Lundi',
+    'Mardi',
+    'Mercredi',
+    'Jeudi',
+    'Vendredi',
+    'Samedi',
+    'Dimanche',
+];
+
+export const MONTHS_NAME = [
+    'Janvier',
+    'Février',
+    'Mars',
+    'Avril',
+    'Mai',
+    'Juin',
+    'Juillet',
+    'août',
+    'Septembre',
+    'Octobre',
+    'Novembre',
+    'Décembre',
+];

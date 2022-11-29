@@ -26,8 +26,8 @@ function App() {
             <HelmetProvider>
                 <QueryClientProvider client={queryClient}>
                     <SkeletonTheme
-                        baseColor={theme.backgroundColor.primary}
-                        highlightColor={theme.color.primary}
+                        baseColor={theme.backgroundColor.secondary}
+                        highlightColor={theme.backgroundColor.primaryIntermediate}
                     >
                         <Router />
                     </SkeletonTheme>

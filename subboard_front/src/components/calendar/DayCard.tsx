@@ -2,7 +2,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouseLaptop } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQueryClient } from 'react-query';
-import { Calendar, CalendarItem } from 'react-calendar-hook';
 import Skeleton from 'react-loading-skeleton';
 import moment from 'moment-ferie-fr';
 import { useAppSelector } from '../../redux/reduxHooks';
@@ -12,9 +11,10 @@ import { addTTDay, removeTTDay } from '../../graphql/mutations';
 import { Query, TtDays } from '../../graphql/generated/graphql';
 import { QUERY_NAMES } from '../../resources/Constants';
 import { DayCardStyle } from './DayCardStyle';
+import { Day, Calendar } from '../../resources/hooks/useMyCalendar';
 
 interface Props {
-    item: CalendarItem;
+    item: Day;
     selected: boolean;
     calendar: Calendar;
     nbWeeks: number;
@@ -24,7 +24,7 @@ interface Props {
 export default function DayCard({ item, selected, calendar, nbWeeks, loading } : Props) {
     const queryClient = useQueryClient();
     const theme = useAppSelector(selectTheme).value;
-    const holiday = moment(item.fullDate);
+    const holiday = moment(item);
 
     const addTTDayMutation = useMutation(addTTDay, {
         onMutate: async (data) => {
@@ -48,6 +48,7 @@ export default function DayCard({ item, selected, calendar, nbWeeks, loading } :
                             ],
                         };
                     }
+
                     return {
                         ttDays: [] as TtDays[],
                     };
@@ -118,15 +119,12 @@ export default function DayCard({ item, selected, calendar, nbWeeks, loading } :
         }
     };
 
-    const inDisplayedMonth = item.fullDate.getMonth() === calendar.items[6].fullDate.getMonth();
-
     const style = DayCardStyle(
         theme,
         selected,
         loading,
-        addTTDayMutation.isLoading || removeTTDayMutation.isLoading,
         nbWeeks,
-        inDisplayedMonth,
+        item.inDisplayedMonth,
         holiday.isFerie(),
     );
 
@@ -138,36 +136,40 @@ export default function DayCard({ item, selected, calendar, nbWeeks, loading } :
             role="button"
             tabIndex={0}
         >
-            <div
-                className="cardName"
-                css={style.CardName}
-            >
-                {loading ? <Skeleton /> : item.name }
-            </div>
-            <div
-                className="cardNumber"
-                css={style.CardNumber}
-            >
-                {loading ? <Skeleton /> : item.date}
-            </div>
-            <div
-                className="cardTTLogo"
-                css={style.CardTTLogo}
-            >
-                <FontAwesomeIcon icon={faHouseLaptop} />
-            </div>
-            <div
-                className="cardHolidayName"
-                css={style.CardHolidayName}
-            >
-                {holiday.getFerie()}
-            </div>
-            <Spinner
-                loading={(addTTDayMutation.isLoading || removeTTDayMutation.isLoading)}
-                success={(addTTDayMutation.isSuccess || removeTTDayMutation.isSuccess)}
-                color={selected ? theme.backgroundColor.primary : theme.color.primary}
-                cssStyle={style.CardSpinner}
-            />
+            {loading ? <Skeleton css={style.CardSkeleton} /> : (
+                <>
+                    <div
+                        className="cardName"
+                        css={style.CardName}
+                    >
+                        {item.day}
+                    </div>
+                    <div
+                        className="cardNumber"
+                        css={style.CardNumber}
+                    >
+                        {item.dayNumber}
+                    </div>
+                    <div
+                        className="cardTTLogo"
+                        css={style.CardTTLogo}
+                    >
+                        <FontAwesomeIcon icon={faHouseLaptop} />
+                    </div>
+                    <div
+                        className="cardHolidayName"
+                        css={style.CardHolidayName}
+                    >
+                        {holiday.getFerie()}
+                    </div>
+                    <Spinner
+                        loading={(addTTDayMutation.isLoading || removeTTDayMutation.isLoading)}
+                        success={(addTTDayMutation.isSuccess || removeTTDayMutation.isSuccess)}
+                        color={selected ? theme.backgroundColor.primary : theme.color.primary}
+                        cssStyle={style.CardSpinner}
+                    />
+                </>
+            )}
         </div>
     );
 }

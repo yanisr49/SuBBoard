@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { resetToken, updateToken } from '../../redux/tokenSlice';
 import { updateTheme } from '../../redux/themeSlice';
@@ -9,9 +9,8 @@ import { isThemesKey } from '../../theme';
 import { ProfilStyle } from './ProfilStyle';
 import { selectTheme, selectToken } from '../../redux/store';
 import PP from './PP';
-import { TRANSITION_TIME } from '../../resources/Constants';
+import { QUERY_NAMES, TRANSITION_TIME } from '../../resources/Constants';
 import useDelayedState from '../../resources/hooks/useDelayedState';
-import useMyCalendar from '../../resources/hooks/useMyCalendar';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const google: any;
@@ -25,10 +24,7 @@ interface Credentials {
 
 export default function Profil() {
     const [expended, expendedDelayed, setExpended] = useDelayedState<boolean>(false);
-    const [wasLoggedIn, setWasLoggedIn] = React.useState<boolean>(false);
-
-    useMyCalendar();
-
+    const [loggining, setLoggining] = useState<boolean>(false);
     const ref = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     useLayoutEffect(
@@ -55,14 +51,14 @@ export default function Profil() {
 
     const dispatch = useAppDispatch();
 
-    const token = useAppSelector(selectToken);
-    const loggedIn = Boolean(token.value);
+    const token = useAppSelector(selectToken).value;
+    const loggedIn = Boolean(token);
     const theme = useAppSelector(selectTheme);
 
-    const style = ProfilStyle(theme.value, expended, loggedIn, expendedDelayed);
+    const style = ProfilStyle(theme.value, expended, loggedIn, expendedDelayed, loggining);
 
-    const connectedUser = useQuery(['fetchUser', token.value], fetchCurrentUserQuery, {
-        enabled: Boolean(token.value),
+    const connectedUser = useQuery([QUERY_NAMES.fetchUser, token], fetchCurrentUserQuery, {
+        enabled: Boolean(token),
         onSuccess: (data) => data?.user?.theme && isThemesKey(data.user.theme) && dispatch(updateTheme(data.user.theme)),
 
     });
@@ -77,23 +73,29 @@ export default function Profil() {
             credential: response.credential,
         }),
     }), {
+        onMutate: () => setLoggining(true),
         onSuccess: (data) => {
             data.json().then((res) => dispatch(updateToken(res.token)));
+            setLoggining(false);
         },
     });
 
     const logout = () => {
-        setWasLoggedIn(true);
+        if (google?.accounts) {
+            google.accounts.id.disableAutoSelect();
+        }
+
         setExpended(false, true, TRANSITION_TIME.medium);
         dispatch(resetToken());
     };
 
     useLayoutEffect(() => {
-        if (!loggedIn && google.accounts) {
+        if (!loggedIn && google?.accounts) {
             google.accounts.id.initialize({
                 client_id: process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID,
                 callback: (response: Credentials) => login.mutate(response),
                 auto_select: true,
+                cancel_on_tap_outside: false,
             });
             google.accounts.id.renderButton(
                 document.getElementById('buttonDiv'),
@@ -107,9 +109,7 @@ export default function Profil() {
                     locale: 'fr',
                 }, // customization attributes
             );
-            if (!wasLoggedIn) {
-                google.accounts.id.prompt(); // also display the One Tap dialog
-            }
+            google.accounts.id.prompt(); // also display the One Tap dialog
         }
     }, [loggedIn]);
 
