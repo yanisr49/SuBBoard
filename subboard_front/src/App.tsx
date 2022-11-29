@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { HelmetProvider } from 'react-helmet-async';
 import './App.scss';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { SkeletonTheme } from 'react-loading-skeleton';
@@ -23,16 +22,14 @@ function App() {
 
     return (
         <div id="main" css={style.main}>
-            <HelmetProvider>
-                <QueryClientProvider client={queryClient}>
-                    <SkeletonTheme
-                        baseColor={theme.backgroundColor.secondary}
-                        highlightColor={theme.backgroundColor.primaryIntermediate}
-                    >
-                        <Router />
-                    </SkeletonTheme>
-                </QueryClientProvider>
-            </HelmetProvider>
+            <QueryClientProvider client={queryClient}>
+                <SkeletonTheme
+                    baseColor={theme.backgroundColor.secondary}
+                    highlightColor={theme.backgroundColor.primaryIntermediate}
+                >
+                    <Router />
+                </SkeletonTheme>
+            </QueryClientProvider>
         </div>
     );
 }
