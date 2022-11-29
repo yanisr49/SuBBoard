@@ -39,15 +39,11 @@ export const DayCardStyle = (
     }),
     CardSkeleton: css({
         display: 'inline-block',
-        width: 'calc(50% - 16px)',
-        height: 'calc(50vw - 16px)',
+        width: '100%',
+        height: '100%',
         margin: '0',
         padding: '0',
-        // borderRadius: '3px',
-        // boxSizing: 'border-box',
         '@media only screen and (min-width: 600px)': {
-            width: `${cardWidth(nbRow)}`,
-            height: `${cardWidth(nbRow)}`,
             opacity: inDisplayedMonth ? 1 : 0.5,
         },
     }),

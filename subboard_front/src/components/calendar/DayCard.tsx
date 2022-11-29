@@ -136,7 +136,7 @@ export default function DayCard({ item, selected, calendar, nbWeeks, loading } :
             role="button"
             tabIndex={0}
         >
-            {loading ? <Skeleton css={style.CardSkeleton} /> : (
+            {true ? <Skeleton css={style.CardSkeleton} /> : (
                 <>
                     <div
                         className="cardName"
