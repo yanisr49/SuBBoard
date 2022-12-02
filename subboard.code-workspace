@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "subboard_api"
+		},
+		{
+			"path": "subboard_front"
+		}
+	],
+    "settings": {}
+}
