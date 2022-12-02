@@ -4,31 +4,31 @@ import React from 'react';
 import useDropdownMenu from 'react-accessible-dropdown-menu-hook';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { useAppSelector } from '../../hooks/reduxHooks';
 import { selectTheme } from '../../redux/store';
 import { SelectStyle } from './SelectStyle';
+import { useAppSelector } from '../../redux/reduxHooks';
+import Spinner from './Spinner';
 
 interface Props<T> {
     id: string;
     label: string;
-    readonly options: T[];
-    initialValue?: T;
+    options: readonly T[];
+    value?: T;
     extraCSS?: SerializedStyles;
     onChange: (value: T) => void;
     getOptionLabel: (option: T) => string;
     tabIndex: number;
+    loading?: boolean;
 }
 
-export function Select<T>({ id, label, options, initialValue, extraCSS, onChange, getOptionLabel, tabIndex }: Props<T>) {
+export function Select<T>({ id, label, options, value, extraCSS, onChange, getOptionLabel, tabIndex, loading }: Props<T>) {
     const { buttonProps, itemProps, isOpen, setIsOpen } = useDropdownMenu(options.length);
-    const [selectedValue, setSelectedValue] = React.useState<T | undefined>(initialValue);
-    const selectedValueLabel = selectedValue ? getOptionLabel(selectedValue) : '';
+    const selectedValueLabel = value ? getOptionLabel(value) : '';
 
-    const theme = useAppSelector(selectTheme);
-    const style = SelectStyle(theme.value, isOpen);
+    const theme = useAppSelector(selectTheme).value;
+    const style = SelectStyle(theme, isOpen);
 
     const handleClick = (option: T) => {
-        setSelectedValue(option);
         onChange(option);
         setIsOpen(false);
     };
@@ -44,7 +44,13 @@ export function Select<T>({ id, label, options, initialValue, extraCSS, onChange
                 {selectedValueLabel}
                 <FontAwesomeIcon icon={faChevronDown} />
             </button>
-            <div role="menu">
+            <Spinner
+                loading={loading}
+                success={!loading}
+                color={theme.color.primary}
+                cssStyle={style.SelectSpinner}
+            />
+            <div role="menu" css={style.Menu}>
                 {options.map((option, index) => (
                     <a
                         key={id + getOptionLabel(option)}

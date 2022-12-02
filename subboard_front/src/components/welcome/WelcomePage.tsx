@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../../hooks/reduxHooks';
+import { useAppSelector } from '../../redux/reduxHooks';
 import { selectTheme, selectToken } from '../../redux/store';
+import ROUTES_PATHS from '../../router/RoutesPath';
 import { WelcomePageStyle } from './WelcomePageStyle';
 
 export default function WelcomePage() {
@@ -16,14 +17,20 @@ export default function WelcomePage() {
             {!token ? <div className="welcome">Welcome</div>
                 : (
                     <>
-                        <div className="welcomeButton">
+                        <div
+                            className="welcomeButton"
+                            onClick={() => navigate(ROUTES_PATHS.subscriptions)}
+                            onKeyDown={(ev) => ev.key === 'Enter' && navigate(ROUTES_PATHS.subscriptions)}
+                            role="button"
+                            tabIndex={0}
+                        >
                             WIP
                             <p>(SuBBoard)</p>
                         </div>
                         <div
                             className="welcomeButton"
-                            onClick={() => navigate('/teletravail')}
-                            onKeyDown={(ev) => ev.key === 'Enter' && navigate('/')}
+                            onClick={() => navigate(ROUTES_PATHS.workFromHome)}
+                            onKeyDown={(ev) => ev.key === 'Enter' && navigate(ROUTES_PATHS.workFromHome)}
                             role="button"
                             tabIndex={0}
                         >

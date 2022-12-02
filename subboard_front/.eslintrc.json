@@ -103,7 +103,16 @@
         ],
         "react/require-default-props": "off",
         "react/jsx-no-useless-fragment": "off",
-        "react/jsx-props-no-spreading": "off"
+        "react/jsx-props-no-spreading": "off",
+        "react/no-unknown-property": [
+            "error",
+            {
+                "ignore": [
+                    "css"
+                ]
+            }
+        ],
+        "jsx-a11y/label-has-associated-control": "off"
     },
     "settings": {
         "import/resolver": {

@@ -1,6 +1,6 @@
 import { Navigate, BrowserRouter, Route, Routes } from 'react-router-dom';
 import Profil from '../components/auth/Profil';
-import { useAppSelector } from '../hooks/reduxHooks';
+import { useAppSelector } from '../redux/reduxHooks';
 import { selectToken } from '../redux/store';
 import { ROUTES } from './routes';
 
@@ -11,7 +11,8 @@ function Router() {
         <BrowserRouter>
             <Profil />
             <Routes>
-                {ROUTES.map((newRoute) => {
+                {Object.keys(ROUTES).map((routeIndex) => {
+                    const newRoute = ROUTES[routeIndex];
                     if (newRoute.loggedIn) {
                         if (token.value) {
                             return <Route key={newRoute.path} path={newRoute.path} element={<newRoute.element />} />;

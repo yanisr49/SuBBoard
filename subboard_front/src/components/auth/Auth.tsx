@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAppDispatch } from '../../hooks/reduxHooks';
+import { useAppDispatch } from '../../redux/reduxHooks';
 import { updateToken } from '../../redux/tokenSlice';
 
 export default function Auth() {

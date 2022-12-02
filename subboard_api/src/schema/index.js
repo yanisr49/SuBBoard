@@ -7,18 +7,39 @@ const schema = buildSchema(`
     type Query {
         user: User
         ttDays(startDate: Date!, endDate: Date!): [TTDays]
+        subscriptions(name: String): [Subscription]
     }
 
     type User {
         email: String!
         theme: String
         profilPicture: String
-        subscriptions: [Subscription]
     }
 
     type Subscription {
-        name: String
-        color: String
+        userEmail: String!
+        initDate: Date!
+        name: String!
+        logo: String!
+        color: String!
+        dueDate: Date!
+        frequency: Frequency!
+        customFrequency: Int
+        price: Float!
+        promotion: Float
+        endDatePromotion: Date
+    }
+
+    enum Frequency {
+        DAILY
+        WEEKLY
+        BIMONTHLY
+        MONTHLY
+        BIQUARTERLY
+        QUARTERLY
+        BIANNUAL
+        ANNUAL
+        CUSTOM
     }
 
     type TTDays {
@@ -28,8 +49,9 @@ const schema = buildSchema(`
 
 
 
+
     type Mutation {
-        addSubscription(email: String!, name: String!): Subscription
+        addSubscription(name: String!, logo: String!, color: String!, dueDate: Date!, frequency: Frequency!, customFrequency: Int, price: Float!, promotion: Float, endDatePromotion: Date): Subscription
         theme(theme: String): String
         addTTDay(date: Date!): TTDays
         removeTTDay(date: Date!): TTDays

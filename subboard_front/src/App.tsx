@@ -1,34 +1,35 @@
 /** @jsxImportSource @emotion/react */
-import { HelmetProvider } from 'react-helmet-async';
 import './App.scss';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { SkeletonTheme } from 'react-loading-skeleton';
 import Router from './router/router';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { AppStyle } from './AppStyle';
-import themes from './theme';
 import { selectTheme } from './redux/store';
-import { useAppSelector } from './hooks/reduxHooks';
+import { useAppSelector } from './redux/reduxHooks';
 
 function App() {
     const queryClient = new QueryClient();
-    const theme = useAppSelector(selectTheme);
-    const style = AppStyle(themes[theme.key]);
+    const theme = useAppSelector(selectTheme).value;
+    const style = AppStyle(theme);
 
-    /*
     queryClient.setDefaultOptions({
         queries: {
-            staleTime: Infinity,
+            refetchOnWindowFocus: false,
+            // staleTime: Infinity,
         },
     });
-*/
 
     return (
         <div id="main" css={style.main}>
-            <HelmetProvider>
-                <QueryClientProvider client={queryClient}>
+            <QueryClientProvider client={queryClient}>
+                <SkeletonTheme
+                    baseColor={theme.backgroundColor.secondary}
+                    highlightColor={theme.backgroundColor.primaryIntermediate}
+                >
                     <Router />
-                </QueryClientProvider>
-            </HelmetProvider>
+                </SkeletonTheme>
+            </QueryClientProvider>
         </div>
     );
 }

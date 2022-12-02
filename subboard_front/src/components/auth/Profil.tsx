@@ -1,17 +1,16 @@
 /** @jsxImportSource @emotion/react */
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import useDelayedState from 'use-delayed-state';
-import { useOutsideClick } from '../../hooks/useOutsideClick';
 import { resetToken, updateToken } from '../../redux/tokenSlice';
 import { updateTheme } from '../../redux/themeSlice';
-import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from '../../redux/reduxHooks';
 import { fetchCurrentUserQuery } from '../../graphql/queries';
 import { isThemesKey } from '../../theme';
 import { ProfilStyle } from './ProfilStyle';
 import { selectTheme, selectToken } from '../../redux/store';
 import PP from './PP';
-import { TRANSITION_TIME } from '../../resources/Constants';
+import { QUERY_NAMES, TRANSITION_TIME } from '../../resources/Constants';
+import useDelayedState from '../../resources/hooks/useDelayedState';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const google: any;
@@ -24,27 +23,42 @@ interface Credentials {
 }
 
 export default function Profil() {
-    const [expended, setExpended] = React.useState<boolean>(false);
-    const [expendedDelayed, setExpendedDelayed, cancelSetExpendedDelayed] = useDelayedState<boolean>(expended);
-    const [wasLoggedIn, setWasLoggedIn] = React.useState<boolean>(false);
+    const [expended, expendedDelayed, setExpended] = useDelayedState<boolean>(false);
+    const [loggining, setLoggining] = useState<boolean>(false);
     const ref = useRef<HTMLDivElement>(null);
-    useOutsideClick(ref, () => {
-        setExpended(false);
-        cancelSetExpendedDelayed();
-        setExpendedDelayed(true);
-        setExpendedDelayed(false, TRANSITION_TIME.medium);
-    });
+    const containerRef = useRef<HTMLDivElement>(null);
+    useLayoutEffect(
+        () => {
+            const handleClick = (e: MouseEvent) => {
+                if (
+                    expended
+                    && ref.current
+                    && !ref.current.contains(e.target as Node)
+                    && containerRef.current
+                    && containerRef.current !== (e.target as Node)
+                ) {
+                    setExpended(false, true, TRANSITION_TIME.medium);
+                }
+            };
+            document.addEventListener('click', handleClick);
+
+            return () => {
+                document.removeEventListener('click', handleClick);
+            };
+        },
+        [expended],
+    );
 
     const dispatch = useAppDispatch();
 
-    const token = useAppSelector(selectToken);
-    const loggedIn = Boolean(token.value);
+    const token = useAppSelector(selectToken).value;
+    const loggedIn = Boolean(token);
     const theme = useAppSelector(selectTheme);
 
-    const style = ProfilStyle(theme.value, expended, loggedIn, expendedDelayed);
+    const style = ProfilStyle(theme.value, expended, loggedIn, expendedDelayed, loggining);
 
-    const connectedUser = useQuery(['fetchUser', token.value], fetchCurrentUserQuery, {
-        enabled: Boolean(token.value),
+    const connectedUser = useQuery([QUERY_NAMES.fetchUser, token], fetchCurrentUserQuery, {
+        enabled: Boolean(token),
         onSuccess: (data) => data?.user?.theme && isThemesKey(data.user.theme) && dispatch(updateTheme(data.user.theme)),
 
     });
@@ -59,26 +73,29 @@ export default function Profil() {
             credential: response.credential,
         }),
     }), {
+        onMutate: () => setLoggining(true),
         onSuccess: (data) => {
             data.json().then((res) => dispatch(updateToken(res.token)));
+            setLoggining(false);
         },
     });
 
     const logout = () => {
-        setWasLoggedIn(true);
-        setExpended(false);
-        cancelSetExpendedDelayed();
-        setExpendedDelayed(true);
-        setExpendedDelayed(false, TRANSITION_TIME.medium);
+        if (google?.accounts) {
+            google.accounts.id.disableAutoSelect();
+        }
+
+        setExpended(false, true, TRANSITION_TIME.medium);
         dispatch(resetToken());
     };
 
     useLayoutEffect(() => {
-        if (!loggedIn && google.accounts) {
+        if (!loggedIn && google?.accounts) {
             google.accounts.id.initialize({
                 client_id: process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID,
                 callback: (response: Credentials) => login.mutate(response),
                 auto_select: true,
+                cancel_on_tap_outside: false,
             });
             google.accounts.id.renderButton(
                 document.getElementById('buttonDiv'),
@@ -92,51 +109,51 @@ export default function Profil() {
                     locale: 'fr',
                 }, // customization attributes
             );
-            if (!wasLoggedIn) {
-                google.accounts.id.prompt(); // also display the One Tap dialog
-            }
+            google.accounts.id.prompt(); // also display the One Tap dialog
         }
     }, [loggedIn]);
 
-    const handleClick = (ev?: React.KeyboardEvent<HTMLDivElement>) => {
-        if (!ev && !expended) {
-            setExpended(true);
-            cancelSetExpendedDelayed();
-            setExpendedDelayed(false);
-            setExpendedDelayed(true, TRANSITION_TIME.medium);
+    const handleClick = () => {
+        if (!expended) {
+            setExpended(true, false, TRANSITION_TIME.medium);
         }
     };
 
-    const handleFocus = () => {
-        console.log(expended, ref.current, document.activeElement);
-        if (document.activeElement === ref.current && !expended) {
-            setExpended(true);
-            cancelSetExpendedDelayed();
-            setExpendedDelayed(false);
-            setExpendedDelayed(true, TRANSITION_TIME.medium);
-        } else if (expended && !ref.current?.contains(document.activeElement)) {
-            setExpended(false);
-            cancelSetExpendedDelayed();
-            setExpendedDelayed(true);
-            setExpendedDelayed(false, TRANSITION_TIME.medium);
+    const handleKeyDown = (e?: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e?.key === 'Escape' && expended) {
+            setExpended(false, true, TRANSITION_TIME.medium);
+        } else if (e?.key === 'Enter' && !expended) {
+            setExpended(true, false, TRANSITION_TIME.medium);
+        } else if (e?.key === 'Tab' && !e.shiftKey && (e.target as HTMLDivElement).innerText === 'Logout') {
+            setExpended(false, true, TRANSITION_TIME.medium);
+        }
+    };
+
+    const handleFocus = (e: React.FocusEvent<HTMLDivElement, Element>) => {
+        if (!expended && e.target === ref.current) {
+            setExpended(true, false, TRANSITION_TIME.medium);
         }
     };
 
     return (
-        <div>
-            <div css={style.ProfilBlurContainer} />
+        <div
+            ref={containerRef}
+        >
+            <div
+                css={style.ProfilBlurContainer}
+            />
             <div
                 css={style.ProfilContainer}
-                onClick={() => handleClick()}
-                onKeyDown={(ev) => ev.key === 'Enter' && handleClick()}
+                onClick={handleClick}
+                onKeyDown={handleKeyDown}
                 onFocus={handleFocus}
-                onBlur={(e) => console.log(document.activeElement)}
                 role="button"
-                ref={ref}
                 tabIndex={0}
+                ref={ref}
             >
                 {loggedIn && (
                     <PP
+                        loading={connectedUser.isLoading}
                         profilPicture={connectedUser.data?.user?.profilPicture ?? ''}
                         email={connectedUser.data?.user?.email ?? ''}
                         expended={expended}
@@ -148,8 +165,6 @@ export default function Profil() {
                     <div
                         css={style.signInButton}
                         id="buttonDiv"
-                        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                        tabIndex={expended ? 0 : -1}
                     />
                 )}
             </div>

@@ -6,6 +6,7 @@ export const CalendarStyle = (theme: Theme, nbRow: number) => ({
         justifyContent: 'space-between',
         alignItems: 'center',
         position: 'sticky',
+        top: '0',
         width: '100%',
         height: '10vh',
         padding: '1vw 3vw',
@@ -15,6 +16,7 @@ export const CalendarStyle = (theme: Theme, nbRow: number) => ({
         backgroundColor: theme.color.primary,
         boxShadow: '0px 0px 3px 0px rgb(0,0,0)',
         boxSizing: 'border-box',
+        zIndex: '10',
         '@media only screen and (min-width: 600px)': {
             justifyContent: 'center',
             position: 'static',
