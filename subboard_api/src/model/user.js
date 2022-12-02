@@ -1,12 +1,9 @@
 const mongoose = require('mongoose');
-const { SubscriptionSchema } = require('./subscription');
-const { TTDaysSchema } = require('./ttDays');
 
 const userSchema = new mongoose.Schema({
     email: { type: String, unique: true },
     profilPicture: { type: String },
     theme: { type: String, default: 'light' },
-    subscriptions: [SubscriptionSchema],
 });
 
 module.exports = {

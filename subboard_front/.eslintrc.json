@@ -111,7 +111,8 @@
                     "css"
                 ]
             }
-        ]
+        ],
+        "jsx-a11y/label-has-associated-control": "off"
     },
     "settings": {
         "import/resolver": {

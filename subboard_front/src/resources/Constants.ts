@@ -10,6 +10,7 @@ export const TOKEN_EXPIRATION_TIME = 600000;
 export const QUERY_NAMES = {
     selectedDaysCurrentMonth: 'fetchSelectedTTDaysCurrentMonth',
     fetchUser: 'fetchUser',
+    fetchSubscription: 'fetchSubscription',
 };
 
 export const DAYS_NAME = [

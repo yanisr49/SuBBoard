@@ -1,4 +1,4 @@
-const { UserModel } = require('../model');
+const { UserModel, SubscriptionModel } = require('../model');
 const { TTDaysSchema, TTDaysModel } = require('../model/ttDays');
 
 function sleep(ms) {
@@ -11,14 +11,28 @@ const resolvers = {
     user: async (_, {email}) => {
         return UserModel.findOne({ email: email });
     },
-    addSubscription: async ({ email, name }) => {
-        const newSubscription = {
+    subscriptions: async ({ name }, { email }) => {
+        if(name) {
+            return SubscriptionModel.find({ userEmail: email, name });
+        } else {
+            return SubscriptionModel.find({ userEmail: email });
+        }
+    },
+    addSubscription: async ({ name, logo, color, dueDate, frequency, customFrequency, price, promotion, endDatePromotion }, { email }) => {
+        const newSubscription = new SubscriptionModel({
+            userEmail: email,
+            initDate: new Date(),
             name,
-            color: '#' + Math.floor(Math.random() * 16777215).toString(16),
-        };
-        const user = await UserModel.findOne({ email });
-        user.subscriptions.push(newSubscription);
-        await user.save();
+            logo,
+            color,
+            dueDate,
+            frequency,
+            customFrequency,
+            price,
+            promotion,
+            endDatePromotion,
+        });
+        await newSubscription.save();
         return newSubscription;
     },
     theme: async ({ theme }, { email }) => {

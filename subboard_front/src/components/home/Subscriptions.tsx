@@ -1,22 +1,39 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-promise-executor-return */
+/** @jsxImportSource @emotion/react */
 import React from 'react';
+import { useLocation } from 'react-router-dom';
+import { useQuery } from 'react-query';
 import Card from '../card/Card';
 import SubscriptionModel from '../../models/SubscriptionModel';
-// import SubscriptionService from '../../services/SubscriptionService';
-import './SubscriptionsStyle.scss';
-
-// background-color: ${(props) => (props.theme.color === 'dark' ? COLORS.DARK_1 : COLORS.LIGHT_1)};
-// const { color, toggleColor } = useContext(ThemeContext);
+import { SubscriptionStyle } from './SubscriptionStyle';
+import { useAppSelector } from '../../redux/reduxHooks';
+import { selectTheme } from '../../redux/store';
+import { QUERY_NAMES } from '../../resources/Constants';
+import { fetchSubscriptionsQuery } from '../../graphql/queries';
+import { Maybe, Subscription } from '../../graphql/generated/graphql';
 
 export default function Subscriptions() {
-    // const [cards, loading, refetch] = SubscriptionService.useAllSubscriptions(1);
+    const location = useLocation();
+    const theme = useAppSelector(selectTheme).value;
+    const style = SubscriptionStyle(theme);
+
+    const subscriptions = useQuery([QUERY_NAMES.fetchSubscription], () => fetchSubscriptionsQuery());
+    console.log('subscriptions', subscriptions);
+    console.log(location.pathname.split('/')[2]);
     const [displayCards] = React.useState<SubscriptionModel[]>([]);
 
+    const [expended, setExpended] = React.useState<boolean>(false);
+
     return (
-        <div className="subscriptions">
-            {displayCards.map((subscription: SubscriptionModel) => (
-                <Card key={subscription.id} subscription={subscription} />
+        <div css={style.SubscriptionContainer}>
+            <Card
+                key="blablabla"
+                expended={expended}
+                onClick={() => setExpended(!expended)}
+            />
+            {subscriptions.data?.subscriptions?.map((subscription?: Maybe<Subscription>) => (
+                <Card key={`Card-${subscription?.name}`} expended={false} />
             ))}
         </div>
     );

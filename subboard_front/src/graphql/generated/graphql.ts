@@ -13,6 +13,18 @@ export type Scalars = {
   Date: any;
 };
 
+export enum Frequency {
+  Annual = 'ANNUAL',
+  Biannual = 'BIANNUAL',
+  Bimonthly = 'BIMONTHLY',
+  Biquarterly = 'BIQUARTERLY',
+  Custom = 'CUSTOM',
+  Daily = 'DAILY',
+  Monthly = 'MONTHLY',
+  Quarterly = 'QUARTERLY',
+  Weekly = 'WEEKLY'
+}
+
 export type Mutation = {
   __typename?: 'Mutation';
   addSubscription?: Maybe<Subscription>;
@@ -23,8 +35,15 @@ export type Mutation = {
 
 
 export type MutationAddSubscriptionArgs = {
-  email: Scalars['String'];
+  color: Scalars['String'];
+  customFrequency?: InputMaybe<Scalars['Int']>;
+  dueDate: Scalars['Date'];
+  endDatePromotion?: InputMaybe<Scalars['Date']>;
+  frequency: Frequency;
+  logo: Scalars['String'];
   name: Scalars['String'];
+  price: Scalars['Float'];
+  promotion?: InputMaybe<Scalars['Float']>;
 };
 
 
@@ -44,8 +63,14 @@ export type MutationThemeArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  subscriptions?: Maybe<Array<Maybe<Subscription>>>;
   ttDays?: Maybe<Array<Maybe<TtDays>>>;
   user?: Maybe<User>;
+};
+
+
+export type QuerySubscriptionsArgs = {
+  name?: InputMaybe<Scalars['Date']>;
 };
 
 
@@ -56,8 +81,17 @@ export type QueryTtDaysArgs = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  color?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
+  color: Scalars['String'];
+  customFrequency?: Maybe<Scalars['Int']>;
+  dueDate: Scalars['Date'];
+  endDatePromotion?: Maybe<Scalars['Date']>;
+  frequency: Frequency;
+  initDate: Scalars['Date'];
+  logo: Scalars['String'];
+  name: Scalars['String'];
+  price: Scalars['Float'];
+  promotion?: Maybe<Scalars['Float']>;
+  userEmail: Scalars['String'];
 };
 
 export type TtDays = {
@@ -70,6 +104,5 @@ export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   profilPicture?: Maybe<Scalars['String']>;
-  subscriptions?: Maybe<Array<Maybe<Subscription>>>;
   theme?: Maybe<Scalars['String']>;
 };
