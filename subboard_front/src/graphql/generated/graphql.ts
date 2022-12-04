@@ -27,28 +27,30 @@ export enum Frequency {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addSubscription?: Maybe<Subscription>;
   addTTDay?: Maybe<TtDays>;
+  createSubscription?: Maybe<Subscription>;
+  editSubscription?: Maybe<Subscription>;
   removeTTDay?: Maybe<TtDays>;
   theme?: Maybe<Scalars['String']>;
 };
 
 
-export type MutationAddSubscriptionArgs = {
-  color: Scalars['String'];
-  customFrequency?: InputMaybe<Scalars['Int']>;
-  dueDate: Scalars['Date'];
-  endDatePromotion?: InputMaybe<Scalars['Date']>;
-  frequency: Frequency;
-  logo: Scalars['String'];
-  name: Scalars['String'];
-  price: Scalars['Float'];
-  promotion?: InputMaybe<Scalars['Float']>;
+export type MutationAddTtDayArgs = {
+  date: Scalars['Date'];
 };
 
 
-export type MutationAddTtDayArgs = {
-  date: Scalars['Date'];
+export type MutationEditSubscriptionArgs = {
+  color?: InputMaybe<Scalars['String']>;
+  customFrequency?: InputMaybe<Scalars['Int']>;
+  dueDate?: InputMaybe<Scalars['Date']>;
+  endDatePromotion?: InputMaybe<Scalars['Date']>;
+  frequency?: InputMaybe<Frequency>;
+  id?: InputMaybe<Scalars['String']>;
+  logo?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  price?: InputMaybe<Scalars['Float']>;
+  promotion?: InputMaybe<Scalars['Float']>;
 };
 
 
@@ -70,7 +72,7 @@ export type Query = {
 
 
 export type QuerySubscriptionsArgs = {
-  name?: InputMaybe<Scalars['Date']>;
+  id?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -81,15 +83,16 @@ export type QueryTtDaysArgs = {
 
 export type Subscription = {
   __typename?: 'Subscription';
-  color: Scalars['String'];
+  color?: Maybe<Scalars['String']>;
   customFrequency?: Maybe<Scalars['Int']>;
-  dueDate: Scalars['Date'];
+  dueDate?: Maybe<Scalars['Date']>;
   endDatePromotion?: Maybe<Scalars['Date']>;
-  frequency: Frequency;
+  frequency?: Maybe<Frequency>;
+  id: Scalars['String'];
   initDate: Scalars['Date'];
-  logo: Scalars['String'];
-  name: Scalars['String'];
-  price: Scalars['Float'];
+  logo?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
   promotion?: Maybe<Scalars['Float']>;
   userEmail: Scalars['String'];
 };

@@ -1,6 +1,6 @@
 import Auth from '../components/auth/Auth';
 import Calendar from '../components/calendar/Calendar';
-import Subscriptions from '../components/home/Subscriptions';
+import Subscriptions from '../components/subscriptions/Subscriptions';
 import WelcomePage from '../components/welcome/WelcomePage';
 import ROUTES_PATHS from './RoutesPath';
 
@@ -31,7 +31,7 @@ export const ROUTES: Routes = {
         loggedIn: false,
     },
     subscriptions: {
-        path: ROUTES_PATHS.subscriptions,
+        path: `${ROUTES_PATHS.subscriptions}/*`,
         element: Subscriptions,
         loggedIn: true,
     },

@@ -4,12 +4,12 @@ import { TRANSITION_TIME } from '../../resources/Constants';
 export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, expendedDelayed: boolean, loggining: boolean) => ({
     ProfilBlurContainer: css({
         position: 'fixed',
-        top: '0',
-        right: '0',
-        width: loggining || expended || expendedDelayed ? '100%' : '0',
-        height: loggining || expended || expendedDelayed ? '100%' : '0',
-        backdropFilter: loggining || expended ? 'blur(10px)' : 'none',
-        backgroundColor: loggining || expended ? 'rgb(0, 0, 0, 0.2)' : 'transparent',
+        top: '-100%',
+        right: '-100%',
+        width: loggining || expended || expendedDelayed ? '300%' : '0',
+        height: loggining || expended || expendedDelayed ? '300%' : '0',
+        backdropFilter: loggining || expended ? 'blur(30px)' : 'none',
+        backgroundColor: loggining || expended ? 'rgb(0, 0, 0, 0.7)' : 'transparent',
         overflow: 'hidden',
         transition: `
             backdrop-filter ${TRANSITION_TIME.medium}ms,

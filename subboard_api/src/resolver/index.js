@@ -1,5 +1,6 @@
 const { UserModel, SubscriptionModel } = require('../model');
 const { TTDaysSchema, TTDaysModel } = require('../model/ttDays');
+const { v4: uuidv4 } = require('uuid');
 
 function sleep(ms) {
     return new Promise((resolve) => {
@@ -11,29 +12,31 @@ const resolvers = {
     user: async (_, {email}) => {
         return UserModel.findOne({ email: email });
     },
-    subscriptions: async ({ name }, { email }) => {
-        if(name) {
-            return SubscriptionModel.find({ userEmail: email, name });
+    subscriptions: async ({ id }, { email }) => {
+        if(id) {
+            return SubscriptionModel.find({ userEmail: email, id });
         } else {
             return SubscriptionModel.find({ userEmail: email });
         }
     },
-    addSubscription: async ({ name, logo, color, dueDate, frequency, customFrequency, price, promotion, endDatePromotion }, { email }) => {
+    createSubscription: async (_, { email }) => {
         const newSubscription = new SubscriptionModel({
+            id: uuidv4(),
             userEmail: email,
             initDate: new Date(),
-            name,
-            logo,
-            color,
-            dueDate,
-            frequency,
-            customFrequency,
-            price,
-            promotion,
-            endDatePromotion,
         });
         await newSubscription.save();
         return newSubscription;
+    },
+    editSubscription: async ({ id, ...data }, { email }) => {
+        const sub = await SubscriptionModel.findOne({ id });
+        Object.keys(data).forEach(key => {
+            if(data[key] !== undefined) {
+                sub[key] = data[key];
+            }
+        })
+        await sub.save();
+        return sub;
     },
     theme: async ({ theme }, { email }) => {
         const user = await UserModel.findOne({ email });

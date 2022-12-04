@@ -7,7 +7,7 @@ const schema = buildSchema(`
     type Query {
         user: User
         ttDays(startDate: Date!, endDate: Date!): [TTDays]
-        subscriptions(name: String): [Subscription]
+        subscriptions(id: String): [Subscription]
     }
 
     type User {
@@ -17,15 +17,16 @@ const schema = buildSchema(`
     }
 
     type Subscription {
+        id: String!
         userEmail: String!
         initDate: Date!
-        name: String!
-        logo: String!
-        color: String!
-        dueDate: Date!
-        frequency: Frequency!
+        name: String
+        logo: String
+        color: String
+        dueDate: Date
+        frequency: Frequency
         customFrequency: Int
-        price: Float!
+        price: Float
         promotion: Float
         endDatePromotion: Date
     }
@@ -51,7 +52,8 @@ const schema = buildSchema(`
 
 
     type Mutation {
-        addSubscription(name: String!, logo: String!, color: String!, dueDate: Date!, frequency: Frequency!, customFrequency: Int, price: Float!, promotion: Float, endDatePromotion: Date): Subscription
+        createSubscription: Subscription
+        editSubscription(id: String, name: String, logo: String, color: String, dueDate: Date, frequency: Frequency, customFrequency: Int, price: Float, promotion: Float, endDatePromotion: Date): Subscription
         theme(theme: String): String
         addTTDay(date: Date!): TTDays
         removeTTDay(date: Date!): TTDays

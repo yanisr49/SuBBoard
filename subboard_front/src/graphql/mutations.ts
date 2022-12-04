@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { gql } from 'graphql-request';
 import { Mutation, Subscription } from './generated/graphql';
 import { graphQLClient } from './graphqlClient';
@@ -13,19 +14,31 @@ export const changeThemeMutation = (theme: keyof Themes): Promise<Pick<Mutation,
     theme,
 });
 
-const addSubscriptionMutation = gql`
+const createSubscriptionMutation = gql`
+    mutation createSubscription {
+        createSubscription {
+            id
+        }
+    }
+`;
+
+export const createSubscription = (): Promise<Pick<Mutation, 'createSubscription'>> => graphQLClient.request(createSubscriptionMutation);
+
+const editSubscriptionMutation = gql`
     mutation addSubscription(
-        $name: String!,
-        $logo: String!,
-        $color: String!,
-        $dueDate: Date!,
-        $frequency: Frequency!,
+        $id: String,
+        $name: String,
+        $logo: String,
+        $color: String,
+        $dueDate: Date,
+        $frequency: Frequency,
         $customFrequency: Int,
-        $price: Float!,
+        $price: Float,
         $promotion: Float,
         $endDatePromotion: Date
     ) {
-        addSubscription(
+        editSubscription(
+            id: $id,
             name: $name,
             logo: $logo,
             color: $color,
@@ -36,12 +49,13 @@ const addSubscriptionMutation = gql`
             promotion: $promotion,
             endDatePromotion: $endDatePromotion
         ) {
-            name
+            id
         }
     }
 `;
 
-export const addSubscription = ({
+export const editSubscription = ({
+    id,
     name,
     logo,
     color,
@@ -51,7 +65,8 @@ export const addSubscription = ({
     price,
     promotion,
     endDatePromotion,
-}: Omit<Omit<Subscription, 'initDate'>, 'userEmail'>): Promise<Pick<Mutation, 'addSubscription'>> => graphQLClient.request(addSubscriptionMutation, {
+}: Omit<Omit<Subscription, 'initDate'>, 'userEmail'>): Promise<Pick<Mutation, 'editSubscription'>> => graphQLClient.request(editSubscriptionMutation, {
+    id,
     name,
     logo,
     color,

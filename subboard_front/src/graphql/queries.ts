@@ -29,21 +29,22 @@ export const fetchTTDaysQuery = (filters: {startDate: Date, endDate: Date}): Pro
 });
 
 const fetchSubscriptions = gql`
-    query subscriptions($name: String) {
-        subscriptions(name: $name) {
-        name
-        logo
-        color
-        dueDate
-        frequency
-        customFrequency
-        price
-        promotion
-        endDatePromotion
+    query subscriptions($id: String) {
+        subscriptions(id: $id) {
+            id
+            name
+            logo
+            color
+            dueDate
+            frequency
+            customFrequency
+            price
+            promotion
+            endDatePromotion
         }
     }
 `;
 
-export const fetchSubscriptionsQuery = (name?: string): Promise<Pick<Query, 'subscriptions'>> => graphQLClient.request(fetchSubscriptions, {
-    name,
+export const fetchSubscriptionsQuery = (id?: string): Promise<Pick<Query, 'subscriptions'>> => graphQLClient.request(fetchSubscriptions, {
+    id,
 });

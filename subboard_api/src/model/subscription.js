@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const subscriptionSchema = new mongoose.Schema({
+    id: { type: String },
     userEmail: { type: String },
     initDate: { type: Date },
     name: { type: String },
