@@ -1,6 +1,6 @@
 import { css, Theme } from '@emotion/react';
 
-export const SubStyle = (theme: Theme, expended: boolean, headerColor: string) => ({
+export const SubStyle = (theme: Theme, expended: boolean) => ({
     CardContainer: css(expended ? {
         position: 'absolute',
         top: '0',
@@ -8,20 +8,18 @@ export const SubStyle = (theme: Theme, expended: boolean, headerColor: string) =
         width: '100%',
         height: '100%',
         backgroundColor: theme.backgroundColor.ternary,
-        zIndex: '1000',
+        zIndex: '1',
 
         // HEADER
         '.cardHeader': {
             display: 'flex',
             flexDirection: 'row',
             width: '100%',
-            height: '100px',
-            backgroundColor: headerColor,
+            height: '135px',
 
             // Logo
             '.cardImage': {
                 display: 'inline-block',
-                position: 'relative',
                 height: '100%',
                 img: {
                     height: '100%',
@@ -29,11 +27,11 @@ export const SubStyle = (theme: Theme, expended: boolean, headerColor: string) =
                 '.penToSquare': {
                     display: 'none',
                     position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: '50%',
-                    height: '50%',
+                    top: '0',
+                    left: '0',
+                    transform: 'translate(50%, 50%)',
+                    width: 'calc(135px / 2)',
+                    height: 'calc(135px / 2)',
                     color: theme.backgroundColor.ternary,
                     '&:hover': {
                         display: 'block',
@@ -57,11 +55,26 @@ export const SubStyle = (theme: Theme, expended: boolean, headerColor: string) =
                 border: 'none',
                 color: 'black',
                 backgroundColor: 'inherit',
-                width: 'calc(100% - 100px - 50px)',
+                width: 'calc(100% - 100px - 67.5px - 135px)',
                 height: '100%',
                 padding: '0 0 0 10px',
                 fontSize: '4em',
                 boxSizing: 'border-box',
+            },
+
+            '.headerRightOptions': {
+                display: 'flex',
+                flexDirection: 'column',
+            },
+
+            // Spinner
+            '.spinner': {
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '67.5px',
+                height: '67.5px',
+                fontSize: '1.5em',
             },
 
             // Color picker
@@ -69,8 +82,8 @@ export const SubStyle = (theme: Theme, expended: boolean, headerColor: string) =
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                width: '50px',
-                height: '50px',
+                width: '67.5px',
+                height: '67.5px',
                 fontSize: '1.5em',
                 color: 'black',
                 '&:hover': {
@@ -83,8 +96,33 @@ export const SubStyle = (theme: Theme, expended: boolean, headerColor: string) =
             },
             '.colorPicker': {
                 position: 'absolute',
-                top: '110px',
-                right: '10px',
+                top: '145px',
+                right: '30px',
+                '.panel-body': {
+                    backgroundColor: 'transparent',
+                },
+            },
+            '.logoPicker': {
+                position: 'absolute',
+                top: '145px',
+                left: '10px',
+                input: {
+                    backgroundColor: theme.backgroundColor.secondary,
+                    border: `1px solid ${theme.backgroundColor.primary}`,
+                    fontSize: '1.5em',
+                    borderRadius: '5px',
+                    color: theme.color.text,
+                    padding: '10px',
+                    marginRight: '10px',
+                    outlineWidth: '0',
+                    width: '200%',
+                },
+                '.panel-body': {
+                    backgroundColor: 'transparent',
+                },
+            },
+            '.close': {
+                display: 'none',
             },
         },
     } : {
@@ -100,12 +138,10 @@ export const SubStyle = (theme: Theme, expended: boolean, headerColor: string) =
             flexDirection: 'row',
             width: '100%',
             height: '50px',
-            backgroundColor: headerColor,
 
             // Logo
             '.cardImage': {
                 display: 'inline-block',
-                position: 'relative',
                 height: '100%',
                 img: {
                     height: '100%',
@@ -129,13 +165,15 @@ export const SubStyle = (theme: Theme, expended: boolean, headerColor: string) =
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
+                '&:hover': {
+                    cursor: 'pointer',
+                },
             },
 
             // Color picker
-            '.colorPicker, .buttonColorPicker': {
+            '.colorPicker, .buttonColorPicker, .logoPicker, .close': {
                 display: 'none',
             },
         },
-
     }),
 });

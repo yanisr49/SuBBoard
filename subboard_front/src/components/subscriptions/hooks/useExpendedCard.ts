@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Maybe, Subscription } from '../../graphql/generated/graphql';
+import { Maybe, Subscription } from '../../../graphql/generated/graphql';
 
 export default function useExpendedCard() {
     const location = useLocation();

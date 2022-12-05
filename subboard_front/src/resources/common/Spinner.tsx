@@ -16,14 +16,15 @@ interface Props {
     loading?: boolean;
     success?: boolean;
     color?: string;
+    className?: string;
     cssStyle?: SerializedStyles;
 }
 
-export default function Spinner({ loading, success, color, cssStyle } : Props) {
-    const style = SpinnerStyle(color, loading);
+export default function Spinner({ loading, success, color, className, cssStyle } : Props) {
+    const style = SpinnerStyle(color ?? 'black', loading);
 
     return (
-        <div css={[style.spinnerStyle, cssStyle]}>
+        <div className={className} css={[style.spinnerStyle, cssStyle]}>
             {loading && <FontAwesomeIcon icon={faCircleNotch} spin />}
             {!loading && success && <FontAwesomeIcon icon={faCircleCheck} />}
         </div>
