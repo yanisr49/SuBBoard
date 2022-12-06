@@ -19,10 +19,18 @@ export const SubStyle = (theme: Theme, expended: boolean) => ({
 
             // Logo
             '.cardImage': {
-                display: 'inline-block',
+                position: 'relative',
+                width: '135px',
                 height: '100%',
+                overflow: 'hidden',
                 img: {
                     height: '100%',
+                    position: 'absolute',
+                    top: '-9999px',
+                    bottom: '-9999px',
+                    left: '-9999px',
+                    right: '-9999px',
+                    margin: 'auto',
                 },
                 '.penToSquare': {
                     display: 'none',
