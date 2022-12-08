@@ -9,7 +9,7 @@ export interface UserState {
 
 const initialState: UserState = {
     user: undefined,
-    status: 'idle',
+    status: 'loading',
 };
 
 export const loggin = createAsyncThunk(

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect } from 'react';
 import { useMutation } from 'react-query';
 import { useAppDispatch, useAppSelector } from '../../redux/reduxHooks';
 import { ProfilStyle } from './ProfilStyle';
@@ -22,9 +22,10 @@ interface Credentials {
 
 export default function Profil() {
     const [expended, expendedDelayed, setExpended] = useDelayedState<boolean>(false);
-    const [loggining, setLoggining] = useState<boolean>(false);
     const ref = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
+    const dispatch = useAppDispatch();
+
     useLayoutEffect(
         () => {
             const handleClick = (e: MouseEvent) => {
@@ -47,11 +48,12 @@ export default function Profil() {
         [expended],
     );
 
-    const dispatch = useAppDispatch();
-
     const user = useAppSelector(selectUser);
     const loggedIn = Boolean(user.user && user.status === 'idle');
+    const loggining = Boolean(user.status === 'loading');
+
     const theme = useAppSelector(selectTheme);
+
     const style = ProfilStyle(theme.value, expended, loggedIn, expendedDelayed, loggining);
 
     const login = useMutation(['login'], (response: Credentials) => fetch(`${process.env.REACT_APP_API_ENDPOINT}/login`, {
@@ -64,10 +66,8 @@ export default function Profil() {
             credential: response.credential,
         }),
     }), {
-        onMutate: () => setLoggining(true),
         onSuccess: (data) => {
             data.json().then((res) => dispatch(updateUser(res.user as User)));
-            setLoggining(false);
         },
     });
 
@@ -86,26 +86,31 @@ export default function Profil() {
     };
 
     useLayoutEffect(() => {
-        if (!loggedIn && google?.accounts) {
-            google.accounts.id.initialize({
-                client_id: process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID,
-                callback: (response: Credentials) => login.mutate(response),
-                auto_select: true,
-                cancel_on_tap_outside: false,
-            });
-            google.accounts.id.renderButton(
-                document.getElementById('buttonDiv'),
-                {
-                    type: 'standard',
-                    size: 'large',
-                    theme: 'filled_black',
-                    shape: 'circle',
-                    logo_alignment: 'left',
-                    text: 'signin',
-                    locale: 'fr',
-                }, // customization attributes
-            );
-            google.accounts.id.prompt(); // also display the One Tap dialog
+        try {
+            if (!loggedIn && google && google.accounts) {
+                google.accounts.id.initialize({
+                    client_id: process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID,
+                    callback: (response: Credentials) => login.mutate(response),
+                    auto_select: true,
+                    cancel_on_tap_outside: false,
+                });
+                google.accounts.id.renderButton(
+                    document.getElementById('buttonDiv'),
+                    {
+                        type: 'standard',
+                        size: 'large',
+                        theme: 'filled_black',
+                        shape: 'circle',
+                        logo_alignment: 'left',
+                        text: 'signin',
+                        locale: 'fr',
+                    }, // customization attributes
+                );
+                // google.accounts.id.prompt();
+            }
+        } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error(error);
         }
     }, [loggedIn]);
 
@@ -147,7 +152,7 @@ export default function Profil() {
                 tabIndex={0}
                 ref={ref}
             >
-                {loggedIn && (
+                {loggedIn ? (
                     <PP
                         loading={user.status === 'loading'}
                         profilPicture={user.user?.profilPicture ?? ''}
@@ -155,9 +160,7 @@ export default function Profil() {
                         expended={expended}
                         onLogOut={logout}
                     />
-                )}
-
-                {!loggedIn && (
+                ) : (
                     <div
                         css={style.signInButton}
                         id="buttonDiv"

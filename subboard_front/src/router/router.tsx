@@ -6,7 +6,6 @@ import { ROUTES } from './routes';
 
 function Router() {
     const user = useAppSelector(selectUser);
-    console.log(user);
 
     return (
         <BrowserRouter>
@@ -15,7 +14,7 @@ function Router() {
                 {Object.keys(ROUTES).map((routeIndex) => {
                     const newRoute = ROUTES[routeIndex];
                     if (newRoute.loggedIn) {
-                        if (user.user && user.status === 'idle') {
+                        if ((user.user && user.status === 'idle') || user.status === 'loading') {
                             return <Route key={newRoute.path} path={newRoute.path} element={<newRoute.element />} />;
                         }
                         return (

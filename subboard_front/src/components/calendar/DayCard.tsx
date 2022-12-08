@@ -24,7 +24,7 @@ interface Props {
 export default function DayCard({ item, selected, calendar, nbWeeks, loading } : Props) {
     const queryClient = useQueryClient();
     const theme = useAppSelector(selectTheme).value;
-    const holiday = moment(item);
+    const holiday = moment(item.fullDate);
 
     const addTTDayMutation = useMutation(addTTDay, {
         onMutate: async (data) => {

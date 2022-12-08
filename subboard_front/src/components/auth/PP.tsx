@@ -91,8 +91,6 @@ export default function PP({ loading, profilPicture, email, expended, onLogOut }
             >
                 {loading ? (
                     <Skeleton
-                        baseColor={theme.value.backgroundColor.primary}
-                        highlightColor={theme.value.color.primary}
                         css={style.ProfilPicture}
                     />
                 ) : (
