@@ -6,15 +6,14 @@ import { SkeletonTheme } from 'react-loading-skeleton';
 import Router from './router/router';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { AppStyle } from './AppStyle';
-import { selectTheme } from './redux/store';
+import { selectTheme, selectUser } from './redux/store';
 import { useAppDispatch, useAppSelector } from './redux/reduxHooks';
-import { QUERY_NAMES } from './resources/Constants';
-import { fetchCurrentUserQuery } from './graphql/queries';
-import { updateUser } from './redux/userSlice';
+import { loggin } from './redux/userSlice';
 
 function App() {
     const queryClient = new QueryClient();
     const theme = useAppSelector(selectTheme).value;
+    const user = useAppSelector(selectUser);
     const style = AppStyle(theme);
 
     queryClient.setDefaultOptions({
@@ -27,17 +26,9 @@ function App() {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        const fetchUserQuery = async () => {
-            const fetchUser = await queryClient.fetchQuery([QUERY_NAMES.fetchUser], fetchCurrentUserQuery, {
-                retry: false,
-            });
-            if (fetchUser.user) {
-                dispatch(updateUser(fetchUser.user));
-            }
-        };
-
-        // eslint-disable-next-line no-console
-        fetchUserQuery().catch(() => dispatch(updateUser()));
+        if (user.status === 'loading') {
+            dispatch(loggin());
+        }
     }, []);
 
     return (
