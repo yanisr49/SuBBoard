@@ -6,21 +6,26 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors')
+const { CLIENT_ID, FRONT_URI, JWT_SECRET } = process.env;
 
 const app = express();
 
-app.use(cors())
+app.use(cors(
+    {
+      origin: FRONT_URI,
+      credentials: true,
+    }
+));
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-
 // importing user context
 const { UserModel } = require('./model');
 
 const { OAuth2Client } = require('google-auth-library');
-const { CLIENT_ID, REDIRECT_UI, JWT_SECRET } = process.env;
 
 // Login
 app.post('/login', async (req, res) => {
@@ -47,10 +52,15 @@ app.post('/login', async (req, res) => {
         let user = await UserModel.findOne({ email: userEmail });
 
         if (user) {
+            const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+            res.cookie('access_token', token, {
+                httpOnly: true,
+                secure: true
+            })
+
             res.status(200).json({
                 message: 'Login successfully',
                 user,
-                token: jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }),
             });
         } else {
             // Create user in our database
@@ -59,13 +69,19 @@ app.post('/login', async (req, res) => {
                 profilPicture: userPicture,
             });
 
-            // save user token
+            const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+
+            res.cookie('access_token', token, {
+                httpOnly: true,
+                secure: true
+            })
+
             res.status(201).json({
                 message: 'Signup successfully',
                 user,
-                token: jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '1h' }),
             });
         }
+        res.end();
     } catch (err) {
         res.status(500).send(err);
     }
@@ -79,15 +95,24 @@ const { unless } = require('express-unless');
 
 // Configuration du middleware GraphQL
 checkTokenMiddleware.unless = unless;
-app.use(checkTokenMiddleware.unless({ path: ['/', '/login', '/graphql'] }));
+app.use(checkTokenMiddleware.unless({ path: ['/login'] }));
+
+// Logout
+app.get('/logout', async (req, res) => {
+    res.clearCookie("access_token");
+    res.status(204);
+    res.send('Cookie cleared');
+    res.end();
+});
+
 app.use(
     '/graphql',
     graphqlHTTP(async (req, res) => ({
         schema: graphQlSchema,
         rootValue: graphQlResolvers,
         context: {
-            email: "yanisrichard21@gmail.com"
-            // email: jwt.decode(req.headers.authorization.split('Bearer ')[1]).email,
+            // email: "yanisrichard21@gmail.com"
+            email: jwt.decode(req.cookies.access_token).email,
         },
         graphiql: true,
     }))

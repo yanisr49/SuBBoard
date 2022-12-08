@@ -5,6 +5,8 @@ const graphQLClient = new GraphQLClient(`${process.env.REACT_APP_API_ENDPOINT}/g
     headers: () => ({
         authorization: `Bearer ${window.localStorage.getItem(TOKEN_STORE_NAME)}`,
     }),
+    credentials: 'include',
+    mode: 'cors',
 });
 
 export { graphQLClient };

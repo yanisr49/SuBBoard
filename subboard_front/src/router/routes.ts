@@ -1,4 +1,3 @@
-import Auth from '../components/auth/Auth';
 import Calendar from '../components/calendar/Calendar';
 import Subscriptions from '../components/subscriptions/Subscriptions';
 import WelcomePage from '../components/welcome/WelcomePage';
@@ -24,11 +23,6 @@ export const ROUTES: Routes = {
         path: ROUTES_PATHS.workFromHome,
         element: Calendar,
         loggedIn: true,
-    },
-    tokenPath: {
-        path: ROUTES_PATHS.tokenPath,
-        element: Auth,
-        loggedIn: false,
     },
     subscriptions: {
         path: `${ROUTES_PATHS.subscriptions}/*`,

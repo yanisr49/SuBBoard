@@ -1,10 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import themeReducer, { ThemeState } from './themeSlice';
-import tokenReducer, { TokenState } from './tokenSlice';
+import userReducer, { UserState } from './userSlice';
 
 export const store = configureStore({
     reducer: {
-        token: tokenReducer,
+        user: userReducer,
         theme: themeReducer,
     },
 });
@@ -19,4 +19,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 >;
 
 export const selectTheme = (state: RootState): ThemeState => state.theme;
-export const selectToken = (state: RootState): TokenState => state.token;
+export const selectUser = (state: RootState): UserState => state.user;

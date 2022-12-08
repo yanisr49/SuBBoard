@@ -1,11 +1,12 @@
 import { Navigate, BrowserRouter, Route, Routes } from 'react-router-dom';
 import Profil from '../components/auth/Profil';
 import { useAppSelector } from '../redux/reduxHooks';
-import { selectToken } from '../redux/store';
+import { selectUser } from '../redux/store';
 import { ROUTES } from './routes';
 
 function Router() {
-    const token = useAppSelector(selectToken);
+    const user = useAppSelector(selectUser);
+    console.log(user);
 
     return (
         <BrowserRouter>
@@ -14,7 +15,7 @@ function Router() {
                 {Object.keys(ROUTES).map((routeIndex) => {
                     const newRoute = ROUTES[routeIndex];
                     if (newRoute.loggedIn) {
-                        if (token.value) {
+                        if (user.user && user.status === 'idle') {
                             return <Route key={newRoute.path} path={newRoute.path} element={<newRoute.element />} />;
                         }
                         return (

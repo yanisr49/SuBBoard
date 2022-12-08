@@ -14,17 +14,17 @@ const extractBearerToken = headerValue => {
 /* Vérification du token */
 const checkTokenMiddleware = (req, res, next) => {
     // Récupération du token
-    const token = req.headers.authorization && extractBearerToken(req.headers.authorization)
-
+    const token = req.cookies.access_token;
+    console.log('test', token);
     // Présence d'un token
     if (!token) {
-        return res.status(401).json({ message: 'Error. Need a token' })
+        return res.status(401).json({ message: 'Error. Need a cookie' })
     }
 
     // Véracité du token
     jwt.verify(token, JWT_SECRET, (err) => {
         if (err) {
-            res.status(401).json({ message: 'Error. Bad token' })
+            res.status(401).json({ message: 'Error. Bad cookie' })
         } else {
             return next()
         }

@@ -5,7 +5,7 @@ import { Select } from '../../resources/common/Select';
 import { updateTheme } from '../../redux/themeSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/reduxHooks';
 import { isThemesKey, ThemesKeys, themesKeys } from '../../theme';
-import { selectTheme, selectToken } from '../../redux/store';
+import { selectTheme, selectUser } from '../../redux/store';
 import { changeThemeMutation } from '../../graphql/mutations';
 import { QUERY_NAMES } from '../../resources/Constants';
 import { Query } from '../../graphql/generated/graphql';
@@ -23,7 +23,7 @@ export default function PP({ loading, profilPicture, email, expended, onLogOut }
     const queryClient = useQueryClient();
     const dispatch = useAppDispatch();
     const theme = useAppSelector(selectTheme);
-    const token = useAppSelector(selectToken).value;
+    const user = useAppSelector(selectUser);
     const style = PPStyle(theme.value);
 
     const changeTheme = useMutation(changeThemeMutation, {
@@ -34,14 +34,14 @@ export default function PP({ loading, profilPicture, email, expended, onLogOut }
         },
         onMutate: async (data) => {
             await queryClient.cancelQueries({
-                queryKey: [QUERY_NAMES.fetchUser, token],
+                queryKey: [QUERY_NAMES.fetchUser, user],
             });
 
             // Snapshot the previous value
-            const previousData: Pick<Query, 'user'> | undefined = queryClient.getQueryData([QUERY_NAMES.fetchUser, token]);
+            const previousData: Pick<Query, 'user'> | undefined = queryClient.getQueryData([QUERY_NAMES.fetchUser, user]);
 
             const newData = queryClient.setQueryData(
-                [QUERY_NAMES.fetchUser, token],
+                [QUERY_NAMES.fetchUser, user],
                 (oldData: Pick<Query, 'user'> | undefined) => {
                     dispatch(updateTheme(data));
 
@@ -69,13 +69,13 @@ export default function PP({ loading, profilPicture, email, expended, onLogOut }
         },
         onError: (err, newData, context) => {
             queryClient.setQueryData(
-                [QUERY_NAMES.fetchUser, token],
+                [QUERY_NAMES.fetchUser, user],
                 context?.previousData,
             );
         },
         onSettled: () => {
             queryClient.invalidateQueries({
-                queryKey: [QUERY_NAMES.fetchUser, token],
+                queryKey: [QUERY_NAMES.fetchUser, user],
             });
         },
     });

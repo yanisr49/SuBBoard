@@ -2,19 +2,19 @@
 
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../redux/reduxHooks';
-import { selectTheme, selectToken } from '../../redux/store';
+import { selectTheme, selectUser } from '../../redux/store';
 import ROUTES_PATHS from '../../router/RoutesPath';
 import { WelcomePageStyle } from './WelcomePageStyle';
 
 export default function WelcomePage() {
     const theme = useAppSelector(selectTheme).value;
-    const token = useAppSelector(selectToken).value;
+    const user = useAppSelector(selectUser);
     const style = WelcomePageStyle(theme);
     const navigate = useNavigate();
 
     return (
         <div css={style.WelcomePage}>
-            {!token ? <div className="welcome">Welcome</div>
+            {!user.user ? <div className="welcome">Welcome</div>
                 : (
                     <>
                         <div
@@ -24,8 +24,8 @@ export default function WelcomePage() {
                             role="button"
                             tabIndex={0}
                         >
-                            WIP
-                            <p>(SuBBoard)</p>
+                            SuBBoard
+                            <p>(WIP)</p>
                         </div>
                         <div
                             className="welcomeButton"

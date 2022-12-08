@@ -1,16 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useRef, useLayoutEffect } from 'react';
-import { useMutation, useQuery } from 'react-query';
-import { resetToken, updateToken } from '../../redux/tokenSlice';
-import { updateTheme } from '../../redux/themeSlice';
+import { useMutation } from 'react-query';
 import { useAppDispatch, useAppSelector } from '../../redux/reduxHooks';
-import { fetchCurrentUserQuery } from '../../graphql/queries';
-import { isThemesKey } from '../../theme';
 import { ProfilStyle } from './ProfilStyle';
-import { selectTheme, selectToken } from '../../redux/store';
+import { selectTheme, selectUser } from '../../redux/store';
 import PP from './PP';
-import { QUERY_NAMES, TRANSITION_TIME } from '../../resources/Constants';
+import { TRANSITION_TIME } from '../../resources/Constants';
 import useDelayedState from '../../resources/hooks/useDelayedState';
+import { User } from '../../graphql/generated/graphql';
+import { updateUser } from '../../redux/userSlice';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const google: any;
@@ -51,42 +49,40 @@ export default function Profil() {
 
     const dispatch = useAppDispatch();
 
-    const token = useAppSelector(selectToken).value;
-    const loggedIn = Boolean(token);
+    const user = useAppSelector(selectUser);
+    const loggedIn = Boolean(user.user && user.status === 'idle');
     const theme = useAppSelector(selectTheme);
-
     const style = ProfilStyle(theme.value, expended, loggedIn, expendedDelayed, loggining);
-
-    const connectedUser = useQuery([QUERY_NAMES.fetchUser, token], fetchCurrentUserQuery, {
-        enabled: Boolean(token),
-        onSuccess: (data) => data?.user?.theme && isThemesKey(data.user.theme) && dispatch(updateTheme(data.user.theme)),
-
-    });
 
     const login = useMutation(['login'], (response: Credentials) => fetch(`${process.env.REACT_APP_API_ENDPOINT}/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-
+        credentials: 'include',
         body: JSON.stringify({
             credential: response.credential,
         }),
     }), {
         onMutate: () => setLoggining(true),
         onSuccess: (data) => {
-            data.json().then((res) => dispatch(updateToken(res.token)));
+            data.json().then((res) => dispatch(updateUser(res.user as User)));
             setLoggining(false);
         },
     });
 
     const logout = () => {
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/logout`, {
+            method: 'GET',
+            credentials: 'include',
+        });
+
         if (google?.accounts) {
             google.accounts.id.disableAutoSelect();
         }
 
         setExpended(false, true, TRANSITION_TIME.medium);
-        dispatch(resetToken());
+        dispatch(updateUser(undefined));
     };
 
     useLayoutEffect(() => {
@@ -153,9 +149,9 @@ export default function Profil() {
             >
                 {loggedIn && (
                     <PP
-                        loading={connectedUser.isLoading}
-                        profilPicture={connectedUser.data?.user?.profilPicture ?? ''}
-                        email={connectedUser.data?.user?.email ?? ''}
+                        loading={user.status === 'loading'}
+                        profilPicture={user.user?.profilPicture ?? ''}
+                        email={user.user?.email ?? ''}
                         expended={expended}
                         onLogOut={logout}
                     />
