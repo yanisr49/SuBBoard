@@ -55,11 +55,13 @@ app.post('/login', async (req, res) => {
             const token = jwt.sign({ email: user.email }, JWT_SECRET, { expiresIn: '7d' });
             res.cookie('access_token', token, {
                 httpOnly: true,
-                secure: true
+                secure: true,
+                sameSite: false,
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
-                secure: true
+                secure: true,
+                sameSite: false,
             })
 
             res.status(200).json({
@@ -77,11 +79,13 @@ app.post('/login', async (req, res) => {
 
             res.cookie('access_token', token, {
                 httpOnly: true,
-                secure: true
+                secure: true,
+                sameSite: false,
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
-                secure: true
+                secure: true,
+                sameSite: false,
             })
 
             res.status(201).json({
