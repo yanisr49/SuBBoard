@@ -56,12 +56,12 @@ app.post('/login', async (req, res) => {
             res.cookie('access_token', token, {
                 httpOnly: true,
                 secure: true,
-                sameSite: false,
+                sameSite: 'none',
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
-                sameSite: false,
+                sameSite: 'none',
             })
 
             res.status(200).json({
@@ -80,12 +80,12 @@ app.post('/login', async (req, res) => {
             res.cookie('access_token', token, {
                 httpOnly: true,
                 secure: true,
-                sameSite: false,
+                sameSite: 'none',
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
-                sameSite: false,
+                sameSite: 'none',
             })
 
             res.status(201).json({
