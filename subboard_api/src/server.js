@@ -14,6 +14,8 @@ app.use(cors(
     {
       origin: FRONT_URI,
       credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      exposedHeaders: ['Content-Range', 'X-Content-Range'],
     }
 ));
 
