@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import cookieParser from 'cookie';
 import { User } from '../graphql/generated/graphql';
 import { fetchCurrentUserQuery } from '../graphql/queries';
 
@@ -9,7 +10,7 @@ export interface UserState {
 
 const initialState: UserState = {
     user: undefined,
-    status: 'loading',
+    status: cookieParser.parse(document.cookie).access_token_present === undefined ? 'idle' : 'loading',
 };
 
 export const loggin = createAsyncThunk(

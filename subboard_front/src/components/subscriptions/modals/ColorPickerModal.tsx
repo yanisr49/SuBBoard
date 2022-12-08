@@ -29,9 +29,12 @@ export default function ColorPicker({ color, onChange, ...props }: Props) {
         >
             <div className="containerStyle">
                 {colorNames.map((colorName) => (
-                    <div>
+                    <div
+                        key={`ColorColumn-${colorName}`}
+                    >
                         {intensities.map((intensity) => (
                             <div
+                                key={`Color-${colorName}-${intensity}`}
                                 className={color === MaterialColors[colorName][intensity] ? 'optionStyle optionSelected' : 'optionStyle'}
                                 style={{
                                     backgroundColor: MaterialColors[colorName][intensity],

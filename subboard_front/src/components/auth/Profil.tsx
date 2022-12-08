@@ -93,6 +93,7 @@ export default function Profil() {
                     callback: (response: Credentials) => login.mutate(response),
                     auto_select: true,
                     cancel_on_tap_outside: false,
+                    // skip_prompt_cookie: 'access_token',
                 });
                 google.accounts.id.renderButton(
                     document.getElementById('buttonDiv'),
@@ -104,7 +105,7 @@ export default function Profil() {
                         logo_alignment: 'left',
                         text: 'signin',
                         locale: 'fr',
-                    }, // customization attributes
+                    },
                 );
                 // google.accounts.id.prompt();
             }

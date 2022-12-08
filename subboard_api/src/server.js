@@ -57,6 +57,10 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 secure: true
             })
+            res.cookie('access_token_present', '', {
+                httpOnly: false,
+                secure: true
+            })
 
             res.status(200).json({
                 message: 'Login successfully',
@@ -73,6 +77,10 @@ app.post('/login', async (req, res) => {
 
             res.cookie('access_token', token, {
                 httpOnly: true,
+                secure: true
+            })
+            res.cookie('access_token_present', '', {
+                httpOnly: false,
                 secure: true
             })
 
@@ -100,6 +108,7 @@ app.use(checkTokenMiddleware.unless({ path: ['/login'] }));
 // Logout
 app.get('/logout', async (req, res) => {
     res.clearCookie("access_token");
+    res.clearCookie("access_token_present");
     res.status(204);
     res.send('Cookie cleared');
     res.end();

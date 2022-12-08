@@ -47,6 +47,8 @@ export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, 
         position: 'absolute',
         top: '-40px',
         right: '0',
+        borderRadius: '20px',
+        boxShadow: '0px 0px 7px -2px rgba(0,0,0)',
         '@media only screen and (min-width: 600px)': {
             top: '0',
         },

@@ -24,8 +24,6 @@ function App() {
         },
     });
 
-    console.log(navigator);
-
     const dispatch = useAppDispatch();
 
     useEffect(() => {

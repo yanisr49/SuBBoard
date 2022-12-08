@@ -11,7 +11,6 @@ import { selectTheme } from '../../redux/store';
 import { QUERY_NAMES } from '../../resources/Constants';
 import { fetchSubscriptionsQuery } from '../../graphql/queries';
 import { Maybe, Subscription } from '../../graphql/generated/graphql';
-import Input from '../../resources/common/input/Input';
 import useExpendedCard from './hooks/useExpendedCard';
 import ROUTES_PATHS from '../../router/RoutesPath';
 
@@ -31,6 +30,7 @@ export default function Subscriptions() {
                 if (subscription && expendedCard?.id !== subscription?.id) {
                     return (
                         <Link
+                            key={`Link-${subscription?.id}`}
                             to={`${ROUTES_PATHS.subscriptions}/${(subscription.name ?? subscription.id).replaceAll(' ', '_')}`}
                             style={{
                                 textDecoration: 'none',

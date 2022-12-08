@@ -15,7 +15,7 @@ const extractBearerToken = headerValue => {
 const checkTokenMiddleware = (req, res, next) => {
     // Récupération du token
     const token = req.cookies.access_token;
-    console.log('test', token);
+
     // Présence d'un token
     if (!token) {
         return res.status(401).json({ message: 'Error. Need a cookie' })
