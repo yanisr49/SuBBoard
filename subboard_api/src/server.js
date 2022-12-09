@@ -13,7 +13,7 @@ const app = express();
 
 app.use(cors(
     {
-      origin: 'https://www.yanisrichard.fr',
+      origin: FRONT_URI,
       credentials: true,
       allowedHeaders: [
         "Content-Type",
@@ -34,7 +34,7 @@ app.use(
       resave: true,
       saveUninitialized: false,
       cookie: {
-        sameSite: 'lax', // : 'lax', // must be 'none' to enable cross-site delivery
+        sameSite: 'strict', // : 'lax', // must be 'none' to enable cross-site delivery
         secure: true,
       }
     })
@@ -79,12 +79,12 @@ app.post('/login', async (req, res) => {
             res.cookie('access_token', token, {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'lax',
+                sameSite: 'strict',
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
-                sameSite: 'lax',
+                sameSite: 'strict',
             })
 
             res.status(200).json({
@@ -103,12 +103,12 @@ app.post('/login', async (req, res) => {
             res.cookie('access_token', token, {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'lax',
+                sameSite: 'strict',
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
-                sameSite: 'lax',
+                sameSite: 'strict',
             })
 
             res.status(201).json({
