@@ -28,7 +28,6 @@ app.use(cors(
     }
 ));
 
-/*
 app.use(
     session({
       secret: 'Super Secret (change it)',
@@ -37,10 +36,10 @@ app.use(
       cookie: {
         sameSite: 'strict', // : 'lax', // must be 'none' to enable cross-site delivery
         secure: true,
+        domain: FRONT_URI,
       }
     })
   );
-  */
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
