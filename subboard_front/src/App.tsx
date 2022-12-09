@@ -27,7 +27,7 @@ function App() {
 
     useEffect(() => {
         if (user.status === 'loading') {
-            dispatch(loggin());
+            // dispatch(loggin());
         }
     }, []);
 
