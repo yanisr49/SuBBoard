@@ -28,6 +28,7 @@ app.use(cors(
     }
 ));
 
+/*
 app.use(
     session({
       secret: 'Super Secret (change it)',
@@ -39,6 +40,7 @@ app.use(
       }
     })
   );
+  */
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -80,11 +82,13 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict',
+                domain: FRONT_URI,
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
                 sameSite: 'strict',
+                domain: FRONT_URI,
             })
 
             res.status(200).json({
@@ -104,11 +108,13 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict',
+                domain: FRONT_URI,
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
                 sameSite: 'strict',
+                domain: FRONT_URI,
             })
 
             res.status(201).json({
