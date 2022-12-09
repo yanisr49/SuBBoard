@@ -13,7 +13,7 @@ const app = express();
 
 app.use(cors(
     {
-      origin: FRONT_URI,
+      origin: 'https://www.yanisrichard.fr',
       credentials: true,
       allowedHeaders: [
         "Content-Type",
