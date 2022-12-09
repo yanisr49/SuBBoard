@@ -28,18 +28,18 @@ app.use(cors(
     }
 ));
 
-// app.use(
-//     session({
-//       secret: 'Super Secret (change it)',
-//       resave: true,
-//       saveUninitialized: false,
-//       cookie: {
-//         sameSite: 'strict', // : 'lax', // must be 'none' to enable cross-site delivery
-//         secure: true,
-//         domain: 'yanisrichard.fr',
-//       }
-//     })
-//   );
+app.use(
+    session({
+      secret: 'Super Secret (change it)',
+      resave: true,
+      saveUninitialized: false,
+      cookie: {
+        sameSite: 'strict', // : 'lax', // must be 'none' to enable cross-site delivery
+        secure: true,
+        domain: DOMAIN,
+      }
+    })
+  );
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
