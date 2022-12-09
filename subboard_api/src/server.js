@@ -12,26 +12,18 @@ const app = express();
 
 app.use(cors(
     {
-      origin: FRONT_URI,
+      origin: [FRONT_URI],
       credentials: true,
       allowedHeaders: [
-        "Content-Type",
         "Access-Control-Allow-Headers",
         "Access-Control-Allow-Origin",
-        "Authorization",
-        "csrf-token"
       ],
       exposedHeaders: [
-        "Content-Type",
         "Access-Control-Allow-Headers",
         "Access-Control-Allow-Origin",
-        "Authorization",
-        "csrf-token"
       ],
     }
 ));
-
-app.set("trust proxy", 1);
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
