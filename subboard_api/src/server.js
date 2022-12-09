@@ -139,8 +139,12 @@ app.use(checkTokenMiddleware.unless({ path: ['/login'] }));
 
 // Logout
 app.get('/logout', async (req, res) => {
-    res.clearCookie("access_token");
-    res.clearCookie("access_token_present");
+    res.clearCookie("access_token", {
+        domain: DOMAIN,
+    });
+    res.clearCookie("access_token_present", {
+        domain: DOMAIN,
+    });
     res.status(204);
     res.send('Cookie cleared');
     res.end();
