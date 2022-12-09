@@ -36,7 +36,7 @@ app.use(
       cookie: {
         sameSite: 'strict', // : 'lax', // must be 'none' to enable cross-site delivery
         secure: true,
-        domain: FRONT_URI,
+        domain: 'yanisrichard.fr',
       }
     })
   );
@@ -81,13 +81,13 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict',
-                domain: FRONT_URI,
+                domain: 'yanisrichard.fr',
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
                 sameSite: 'strict',
-                domain: FRONT_URI,
+                domain: 'yanisrichard.fr',
             })
 
             res.status(200).json({
@@ -107,13 +107,13 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict',
-                domain: FRONT_URI,
+                domain: 'yanisrichard.fr',
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
                 sameSite: 'strict',
-                domain: FRONT_URI,
+                domain: 'yanisrichard.fr',
             })
 
             res.status(201).json({
