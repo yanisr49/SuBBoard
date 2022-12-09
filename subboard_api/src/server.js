@@ -14,8 +14,20 @@ app.use(cors(
     {
       origin: FRONT_URI,
       credentials: true,
-    //   allowedHeaders: '*',
-    //   exposedHeaders: '*',
+      allowedHeaders: [
+        "Content-Type",
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Origin",
+        "Authorization",
+        "csrf-token"
+      ],
+      exposedHeaders: [
+        "Content-Type",
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Origin",
+        "Authorization",
+        "csrf-token"
+      ],
     }
 ));
 
