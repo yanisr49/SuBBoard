@@ -28,7 +28,6 @@ app.use(cors(
     }
 ));
 
-/*
 app.use(
     session({
       secret: 'Super Secret (change it)',
@@ -40,7 +39,6 @@ app.use(
       }
     })
   );
-  */
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
