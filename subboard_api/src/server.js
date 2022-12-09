@@ -34,7 +34,7 @@ app.use(
       resave: true,
       saveUninitialized: false,
       cookie: {
-        sameSite: 'none', // : 'lax', // must be 'none' to enable cross-site delivery
+        sameSite: 'lax', // : 'lax', // must be 'none' to enable cross-site delivery
         secure: true,
       }
     })
@@ -79,12 +79,12 @@ app.post('/login', async (req, res) => {
             res.cookie('access_token', token, {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'none',
+                sameSite: 'lax',
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
-                sameSite: 'none',
+                sameSite: 'lax',
             })
 
             res.status(200).json({
@@ -103,12 +103,12 @@ app.post('/login', async (req, res) => {
             res.cookie('access_token', token, {
                 httpOnly: true,
                 secure: true,
-                sameSite: 'none',
+                sameSite: 'lax',
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
-                sameSite: 'none',
+                sameSite: 'lax',
             })
 
             res.status(201).json({
