@@ -2,11 +2,11 @@ const { UserModel, SubscriptionModel } = require('../model');
 const { TTDaysSchema, TTDaysModel } = require('../model/ttDays');
 const { v4: uuidv4 } = require('uuid');
 
-function sleep(ms) {
-    return new Promise((resolve) => {
-      setTimeout(resolve, ms);
-    });
-  }
+// function sleep(ms) {
+//     return new Promise((resolve) => {
+//         setTimeout(resolve, ms);
+//     });
+// }
 
 const resolvers = {
     user: async (_, {email}) => {

@@ -8,7 +8,7 @@ import PP from './PP';
 import { TRANSITION_TIME } from '../../resources/Constants';
 import useDelayedState from '../../resources/hooks/useDelayedState';
 import { User } from '../../graphql/generated/graphql';
-import { updateUser } from '../../redux/userSlice';
+import { updateStatus, updateUser } from '../../redux/userSlice';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const google: any;
@@ -66,6 +66,7 @@ export default function Profil() {
             credential: response.credential,
         }),
     }), {
+        onMutate: () => dispatch(updateStatus('loading')),
         onSuccess: (data) => {
             data.json().then((res) => dispatch(updateUser(res.user as User)));
         },
@@ -153,7 +154,7 @@ export default function Profil() {
                 tabIndex={0}
                 ref={ref}
             >
-                {loggedIn ? (
+                {loggedIn || loggining ? (
                     <PP
                         loading={user.status === 'loading'}
                         profilPicture={user.user?.profilPicture ?? ''}

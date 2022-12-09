@@ -19,6 +19,7 @@ function App() {
     queryClient.setDefaultOptions({
         queries: {
             refetchOnWindowFocus: false,
+            enabled: user.status === 'idle',
             // staleTime: Infinity,
         },
     });
@@ -37,6 +38,7 @@ function App() {
                 <SkeletonTheme
                     baseColor={theme.backgroundColor.secondary}
                     highlightColor={theme.backgroundColor.primaryIntermediate}
+                    duration={1.3}
                 >
                     <Router />
                 </SkeletonTheme>

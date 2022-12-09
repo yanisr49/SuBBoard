@@ -30,6 +30,9 @@ export const userSlice = createSlice({
             state.user = action.payload;
             state.status = 'idle';
         },
+        updateStatus: (state, action: PayloadAction<'idle' | 'loading' | 'failed'>) => {
+            state.status = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -48,6 +51,6 @@ export const userSlice = createSlice({
     },
 });
 
-export const { updateUser } = userSlice.actions;
+export const { updateUser, updateStatus } = userSlice.actions;
 
 export default userSlice.reducer;
