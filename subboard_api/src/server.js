@@ -81,7 +81,7 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict',
-                domain: 'DOMAIN',
+                domain: DOMAIN,
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
