@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors')
-const { CLIENT_ID, FRONT_URI, JWT_SECRET } = process.env;
+const { CLIENT_ID, FRONT_URI, JWT_SECRET, DOMAIN } = process.env;
 const session = require("express-session")
 
 const app = express();
@@ -28,18 +28,18 @@ app.use(cors(
     }
 ));
 
-app.use(
-    session({
-      secret: 'Super Secret (change it)',
-      resave: true,
-      saveUninitialized: false,
-      cookie: {
-        sameSite: 'strict', // : 'lax', // must be 'none' to enable cross-site delivery
-        secure: true,
-        domain: 'yanisrichard.fr',
-      }
-    })
-  );
+// app.use(
+//     session({
+//       secret: 'Super Secret (change it)',
+//       resave: true,
+//       saveUninitialized: false,
+//       cookie: {
+//         sameSite: 'strict', // : 'lax', // must be 'none' to enable cross-site delivery
+//         secure: true,
+//         domain: 'yanisrichard.fr',
+//       }
+//     })
+//   );
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -81,13 +81,13 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict',
-                domain: 'yanisrichard.fr',
+                domain: DOMAIN,
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
                 sameSite: 'strict',
-                domain: 'yanisrichard.fr',
+                domain: DOMAIN,
             })
 
             res.status(200).json({
@@ -107,13 +107,13 @@ app.post('/login', async (req, res) => {
                 httpOnly: true,
                 secure: true,
                 sameSite: 'strict',
-                domain: 'yanisrichard.fr',
+                domain: DOMAIN,
             })
             res.cookie('access_token_present', '', {
                 httpOnly: false,
                 secure: true,
                 sameSite: 'strict',
-                domain: 'yanisrichard.fr',
+                domain: DOMAIN,
             })
 
             res.status(201).json({
