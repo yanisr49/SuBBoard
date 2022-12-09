@@ -13,11 +13,13 @@ const app = express();
 app.use(cors(
     {
       origin: FRONT_URI,
-      credentials: true,
-      allowedHeaders: '*',
-      exposedHeaders: '*',
+    //   credentials: true,
+    //   allowedHeaders: '*',
+    //   exposedHeaders: '*',
     }
 ));
+
+app.set("trust proxy", 1);
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
