@@ -2,16 +2,28 @@ import { css, Theme } from '@emotion/react';
 
 export const SubscriptionStyle = (theme: Theme) => ({
     SubscriptionContainer: css({
-        backgroundColor: 'navy',
-        position: 'relative',
         display: 'flex',
-        justifyContent: 'center',
-        flexWrap: 'wrap',
+        alignItems: 'center',
+        flexDirection: 'column',
         width: '100%',
-        height: '100%',
         transition: 'all 0.2s',
-        transitionDelay: '0.07s',
-        overflowX: 'hidden',
-        overflowY: 'auto',
+        border: 'none',
+
+        '.subscriptionsHeader': {
+            height: '10vh',
+        },
+
+        table: {
+            width: '100%',
+            maxWidth: '1800px',
+
+            tr: {
+                borderCollapse: 'collapse',
+                height: 'calc((min(1800px, 100vw) / 5) * 1.4)',
+                td: {
+                    width: 'calc(min(1800px, 100%) / 5)',
+                },
+            },
+        },
     }),
 });

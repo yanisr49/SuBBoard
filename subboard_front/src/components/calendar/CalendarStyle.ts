@@ -33,6 +33,7 @@ export const CalendarStyle = (theme: Theme, nbRow: number) => ({
         },
     }),
     CalendarContainer: css({
+        display: 'inline-block',
         width: '100%',
         maxWidth: `min(1324px, calc(90vh * 7 / ${nbRow}))`,
         backgroundColor: theme.backgroundColor.ternary,

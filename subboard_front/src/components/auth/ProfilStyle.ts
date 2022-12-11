@@ -15,7 +15,7 @@ export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, 
             backdrop-filter ${TRANSITION_TIME.medium}ms,
             background-color ${TRANSITION_TIME.medium}ms
         `,
-        zIndex: 9,
+        zIndex: expended ? 2 : -1,
     }),
     ProfilContainer: css({
         backgroundColor: theme.backgroundColor.ternary,
@@ -32,7 +32,7 @@ export const ProfilStyle = (theme: Theme, expended: boolean, loggedIn: boolean, 
         boxShadow: '0px 0px 7px -2px rgba(0,0,0)',
         transform: expended ? 'translate(50%, 50%)' : 'none',
         transition: `all ${TRANSITION_TIME.medium}ms`,
-        zIndex: 10,
+        zIndex: 3,
         '@media only screen and (min-width: 600px)': {
             top: expended ? '50%' : '30px',
             right: expended ? '50%' : '30px',

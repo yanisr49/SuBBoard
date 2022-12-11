@@ -1,14 +1,24 @@
 import { css, Theme } from '@emotion/react';
+import { TRANSITION_TIME } from '../../../resources/Constants';
 
-export const SubStyle = (theme: Theme, expended: boolean) => ({
+export const SubStyle = (
+    theme: Theme,
+    expended: boolean,
+    position?: {
+        top?: number;
+        left?: number;
+    },
+    scrollTop?: number,
+) => ({
     CardContainer: css(expended ? {
         position: 'absolute',
-        top: '0',
+        top: scrollTop ?? '0',
         left: '0',
         width: '100%',
         height: '100%',
         backgroundColor: theme.backgroundColor.ternary,
-        zIndex: '1',
+        zIndex: '2',
+        transition: `all ${TRANSITION_TIME.short}ms ease-in`,
 
         // HEADER
         '.cardHeader': {
@@ -134,25 +144,47 @@ export const SubStyle = (theme: Theme, expended: boolean) => ({
             },
         },
     } : {
-        width: '200px',
-        height: '300px',
-        backgroundColor: 'red',
-        border: '2px solid green',
+        position: position ? 'absolute' : 'inherit',
+        top: position ? `${position.top}px` : 'inherit',
+        left: position ? `${position.left}px` : 'inherit',
+        width: 'calc(min(1800px, 100%) / 5 - 20px - 2px)',
+        height: 'calc((min(1800px, 100vw) / 5) * 1.4 - 20px - 2px)',
+        // margin: '0 6px',
+        backgroundColor: theme.backgroundColor.secondary,
+        borderRadius: '7px',
         overflow: 'hidden',
+        border: `1px solid ${theme.backgroundColor.primary}`,
+        boxShadow: '0px 0px 4px 0px rgba(0,0,0)',
+        transition: `all ${TRANSITION_TIME.short}ms ease-in`,
+        zIndex: '1',
+        ':hover': {
+            zIndex: '2',
+            cursor: 'pointer',
+        },
 
         // HEADER
         '.cardHeader': {
             display: 'flex',
             flexDirection: 'row',
             width: '100%',
-            height: '50px',
+            height: '3vw',
 
             // Logo
             '.cardImage': {
                 display: 'inline-block',
-                height: '100%',
+                flexShrink: '0',
+                position: 'relative',
+                height: '3vw',
+                width: '3vw',
+                overflow: 'hidden',
                 img: {
                     height: '100%',
+                    position: 'absolute',
+                    top: '-9999px',
+                    bottom: '-9999px',
+                    left: '-9999px',
+                    right: '-9999px',
+                    margin: 'auto',
                 },
                 '.penToSquare': {
                     display: 'none',
@@ -161,14 +193,16 @@ export const SubStyle = (theme: Theme, expended: boolean) => ({
 
             // Nom de l'abonnement
             '.cardName': {
+                flexShrink: '1',
+                display: 'block',
                 outlineWidth: '0',
                 border: 'none',
                 color: 'black',
                 backgroundColor: 'inherit',
-                width: '150px',
                 height: '100%',
+                width: '100%',
                 padding: '0 0 0 10px',
-                fontSize: '2em',
+                fontSize: '1vw',
                 boxSizing: 'border-box',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',

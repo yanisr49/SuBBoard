@@ -1,29 +1,29 @@
 import { useEffect, useState, useRef } from 'react';
 
-export default function useDelayedState<T>(initialState: T) {
+export default function useDelayedState<T>(initialState: T, nextState?: T, delay?: number) {
     const [state, setState] = useState<T>(initialState);
-    const [nextState, setNextState] = useState<T>(initialState);
     const timeoutRef = useRef<number | null>(null);
 
-    const setStateAfter = (actifState: T, bufferedState?: T, delay?: number) => {
-        setState(actifState);
-        if (bufferedState !== undefined) {
-            setNextState(bufferedState);
-        }
-        if (delay) {
+    const setNewState = (newCurrentState: T, newNextState: T, newDelay: number) => {
+        setState(newCurrentState);
+        if (newDelay && newNextState) {
             if (timeoutRef.current) {
                 clearTimeout(timeoutRef.current);
             }
             timeoutRef.current = window.setTimeout(() => {
-                setNextState(actifState);
+                setState(newNextState);
                 timeoutRef.current = null;
-            }, delay);
+            }, newDelay);
         }
     };
 
-    useEffect(() => () => {
+    useEffect(() => {
+        if (nextState && delay) setNewState(initialState, nextState, delay);
+    }, []);
+
+    useEffect(() => {
         if (timeoutRef.current) clearTimeout(timeoutRef.current);
     }, []);
 
-    return [state, nextState, setStateAfter] as const;
+    return [state, setNewState] as const;
 }

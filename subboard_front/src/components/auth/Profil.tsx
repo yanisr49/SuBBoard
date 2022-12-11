@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useRef, useLayoutEffect, useState } from 'react';
 import { useMutation } from 'react-query';
 import { useAppDispatch, useAppSelector } from '../../redux/reduxHooks';
 import { ProfilStyle } from './ProfilStyle';
@@ -21,7 +21,8 @@ interface Credentials {
 }
 
 export default function Profil() {
-    const [expended, expendedDelayed, setExpended] = useDelayedState<boolean>(false);
+    const [expended, setExpended] = useState<boolean>(false);
+    const [expendedDelayed, setExpendedDelayed] = useDelayedState<boolean>(false);
     const ref = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
@@ -36,7 +37,8 @@ export default function Profil() {
                     && containerRef.current
                     && containerRef.current !== (e.target as Node)
                 ) {
-                    setExpended(false, true, TRANSITION_TIME.medium);
+                    setExpended(false);
+                    setExpendedDelayed(true, false, TRANSITION_TIME.medium);
                 }
             };
             document.addEventListener('click', handleClick);
@@ -82,7 +84,8 @@ export default function Profil() {
             google.accounts.id.disableAutoSelect();
         }
 
-        setExpended(false, true, TRANSITION_TIME.medium);
+        setExpended(false);
+        setExpendedDelayed(true, false, TRANSITION_TIME.medium);
         dispatch(updateUser(undefined));
     };
 
@@ -118,23 +121,28 @@ export default function Profil() {
 
     const handleClick = () => {
         if (!expended) {
-            setExpended(true, false, TRANSITION_TIME.medium);
+            setExpended(true);
+            setExpendedDelayed(false, true, TRANSITION_TIME.medium);
         }
     };
 
     const handleKeyDown = (e?: React.KeyboardEvent<HTMLDivElement>) => {
         if (e?.key === 'Escape' && expended) {
-            setExpended(false, true, TRANSITION_TIME.medium);
+            setExpended(false);
+            setExpendedDelayed(true, false, TRANSITION_TIME.medium);
         } else if (e?.key === 'Enter' && !expended) {
-            setExpended(true, false, TRANSITION_TIME.medium);
+            setExpended(true);
+            setExpendedDelayed(false, true, TRANSITION_TIME.medium);
         } else if (e?.key === 'Tab' && !e.shiftKey && (e.target as HTMLDivElement).innerText === 'Logout') {
-            setExpended(false, true, TRANSITION_TIME.medium);
+            setExpended(false);
+            setExpendedDelayed(true, false, TRANSITION_TIME.medium);
         }
     };
 
     const handleFocus = (e: React.FocusEvent<HTMLDivElement, Element>) => {
         if (!expended && e.target === ref.current) {
-            setExpended(true, false, TRANSITION_TIME.medium);
+            setExpended(true);
+            setExpendedDelayed(false, true, TRANSITION_TIME.medium);
         }
     };
 
@@ -156,7 +164,7 @@ export default function Profil() {
             >
                 {loggedIn || loggining ? (
                     <PP
-                        loading={user.status === 'loading'}
+                        loading={loggining}
                         profilPicture={user.user?.profilPicture ?? ''}
                         email={user.user?.email ?? ''}
                         expended={expended}

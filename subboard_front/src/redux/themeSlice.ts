@@ -12,6 +12,11 @@ const initialState: ThemeState = {
     key: defaultKey,
     value: themes[defaultKey],
 };
+document.getElementsByTagName('html')[0].style.backgroundColor = themes[defaultKey].backgroundColor.ternary;
+// document.styleSheets[0].insertRule('::-webkit-scrollbar { width: 17px }', 0);
+// document.styleSheets[0].insertRule(`::-webkit-scrollbar-track { background: ${themes[defaultKey].backgroundColor.ternary} }`);
+// document.styleSheets[0].insertRule(`::-webkit-scrollbar-thumb { background: ${themes[defaultKey].backgroundColor.secondary} }`);
+// document.styleSheets[0].insertRule(`-webkit-scrollbar-thumb:hover { background: ${themes[defaultKey].backgroundColor.primary} }`);
 
 export const themeSlice = createSlice({
     name: 'theme',
@@ -20,6 +25,7 @@ export const themeSlice = createSlice({
         updateTheme: (state, action: PayloadAction<ThemesKeys>) => {
             state.key = action.payload;
             state.value = themes[action.payload];
+            document.getElementsByTagName('html')[0].style.backgroundColor = themes[action.payload].backgroundColor.ternary;
         },
     },
 });

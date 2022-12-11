@@ -13,10 +13,7 @@ function Router() {
             <Routes>
                 {Object.keys(ROUTES).map((routeIndex) => {
                     const newRoute = ROUTES[routeIndex];
-                    if (newRoute.loggedIn) {
-                        if ((user.user && user.status === 'idle') || user.status === 'loading') {
-                            return <Route key={newRoute.path} path={newRoute.path} element={<newRoute.element />} />;
-                        }
+                    if (newRoute.loggedIn && !user.user && user.status === 'idle') {
                         return (
                             <Route
                                 key={newRoute.path}
@@ -27,7 +24,7 @@ function Router() {
                             />
                         );
                     }
-                    return <Route key={newRoute.path} path={newRoute.path} element={<newRoute.element />} />;
+                    return <Route key={newRoute.path} path={newRoute.path} element={newRoute.element} />;
                 })}
             </Routes>
         </BrowserRouter>

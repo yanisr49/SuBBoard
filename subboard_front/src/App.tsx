@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import { useEffect } from 'react';
 import './App.scss';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { SkeletonTheme } from 'react-loading-skeleton';
@@ -7,8 +6,7 @@ import Router from './router/router';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { AppStyle } from './AppStyle';
 import { selectTheme, selectUser } from './redux/store';
-import { useAppDispatch, useAppSelector } from './redux/reduxHooks';
-import { loggin } from './redux/userSlice';
+import { useAppSelector } from './redux/reduxHooks';
 
 function App() {
     const queryClient = new QueryClient();
@@ -20,17 +18,9 @@ function App() {
         queries: {
             refetchOnWindowFocus: false,
             enabled: user.status === 'idle',
-            // staleTime: Infinity,
+            // staleTime: 10000,
         },
     });
-
-    const dispatch = useAppDispatch();
-
-    useEffect(() => {
-        if (user.status === 'loading') {
-            dispatch(loggin());
-        }
-    }, []);
 
     return (
         <div id="main" css={style.main}>

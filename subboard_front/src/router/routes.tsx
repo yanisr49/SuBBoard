@@ -5,7 +5,7 @@ import ROUTES_PATHS from './RoutesPath';
 
 type Route = {
     path: string,
-    element: React.ElementType,
+    element: React.ReactNode,
     loggedIn: boolean,
 }
 
@@ -16,17 +16,17 @@ type Routes = {
 export const ROUTES: Routes = {
     welcomePage: {
         path: ROUTES_PATHS.welcomePage,
-        element: WelcomePage,
+        element: <WelcomePage />,
         loggedIn: false,
     },
     workFromHome: {
         path: ROUTES_PATHS.workFromHome,
-        element: Calendar,
+        element: <Calendar />,
         loggedIn: true,
     },
     subscriptions: {
         path: `${ROUTES_PATHS.subscriptions}/*`,
-        element: Subscriptions,
+        element: <Subscriptions />,
         loggedIn: true,
     },
 };

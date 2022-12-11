@@ -6,9 +6,9 @@ export default function useExpendedCard() {
     const location = useLocation();
     const [subscriptions, updateSubscriptions] = useState<Maybe<Maybe<Subscription>[]>>();
     const [expendedCard, setExpendedCard] = useState<Subscription>();
+    const cardName = location.pathname.split('/')[2]?.replaceAll('_', ' ');
 
     useEffect(() => {
-        const cardName = location.pathname.split('/')[2]?.replaceAll('_', ' ');
         if (cardName && subscriptions?.length) {
             const subByName = subscriptions.find((sub) => sub?.name === cardName);
             if (subByName) {
