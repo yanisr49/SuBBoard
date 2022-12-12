@@ -10,8 +10,9 @@ import React, {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMutation } from 'react-query';
 import { current } from '@reduxjs/toolkit';
-import { ListFormat } from 'typescript';
-import { debounce } from 'lodash';
+import { createNoSubstitutionTemplateLiteral, ListFormat } from 'typescript';
+import { debounce, throttle } from 'lodash';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import Chip from '../../chip/Chip';
 import image from '../../../resources/img/netflix_logo.png';
 import SubscriptionModel from '../../../models/SubscriptionModel';
@@ -30,10 +31,14 @@ interface Props {
   expended: boolean;
 }
 
+let cursorX: number;
+let cursorY: number;
+
 function Sub({ subscription, expended }: Props) {
     // const navigate = useNavigate();
     const theme = useAppSelector(selectTheme).value;
     const ref = useRef<HTMLDivElement>(null);
+    const refChild = useRef<HTMLDivElement>(null);
 
     const [position, setPosition] = React.useState<{
         top?: number;
@@ -58,6 +63,17 @@ function Sub({ subscription, expended }: Props) {
     }, []);
 
     useEffect(() => {
+        const getCursorPosition = (e: MouseEvent) => {
+            cursorX = e.clientX;
+            cursorY = e.clientY;
+        };
+
+        document.addEventListener('mousemove', getCursorPosition);
+
+        return () => document.removeEventListener('mousemove', getCursorPosition);
+    }, []);
+
+    useEffect(() => {
         const debouncedHandleResize = debounce(() => {
             setPosition({
                 top: (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetTop ?? 0)
@@ -75,15 +91,59 @@ function Sub({ subscription, expended }: Props) {
         };
     }, []);
 
+    const handleMouse = throttle(() => {
+        if (ref.current?.firstElementChild && !expended) {
+            if (refChild.current) {
+                const rect = ref.current.getBoundingClientRect();
+                refChild.current.style.transform = `perspective(750px) rotateX(${-((cursorY - ((rect.bottom - rect.top) / 2) - rect.top) / 50)}deg) rotateY(${(cursorX - ((rect.left - rect.right) / 2) - rect.right) / 50}deg) translateZ(0px)`;
+            }
+        }
+    }, 50);
+
+    const handleOnMouseLeave = () => {
+        if (!expended) {
+            setTimeout(() => {
+                if (refChild.current) {
+                    refChild.current.style.transform = '';
+                }
+            }, 60);
+        }
+    };
+
     return (
+        // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
         <div
             css={style.CardContainer}
             ref={ref}
+            onMouseMove={() => requestAnimationFrame(handleMouse)}
+            onPointerLeave={handleOnMouseLeave}
+            onClick={handleOnMouseLeave}
         >
-            <SubHeader
-                subscription={subscription}
-                expended={expended}
-            />
+            <div
+                css={style.Card}
+                ref={refChild}
+            >
+                <SubHeader
+                    subscription={subscription}
+                    expended={expended}
+                />
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+                qkjsdbvjksbjvkbsvbskdjvbjks
+            </div>
         </div>
     );
 }

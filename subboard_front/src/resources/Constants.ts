@@ -1,4 +1,5 @@
 export const TRANSITION_TIME = {
+    veryShort: 50,
     short: 100,
     medium: 200,
     long: 500,
