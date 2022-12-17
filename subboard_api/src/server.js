@@ -124,7 +124,7 @@ const { unless } = require('express-unless');
 
 // Configuration du middleware GraphQL
 checkTokenMiddleware.unless = unless;
-app.use(checkTokenMiddleware.unless({ path: ['/login', '/graphql'] }));
+app.use(checkTokenMiddleware.unless({ path: ['/login', /*'/graphql'*/] }));
 
 app.use(
     '/graphql',
@@ -132,8 +132,8 @@ app.use(
         schema: graphQlSchema,
         rootValue: graphQlResolvers,
         context: {
-            email: "yanisrichard21@gmail.com"
-            // email: jwt.decode(req.cookies.access_token).email,
+            // email: "yanisrichard21@gmail.com"
+            email: jwt.decode(req.cookies.access_token).email,
         },
         graphiql: true,
     }))
