@@ -103,16 +103,6 @@ app.post('/login', async (req, res) => {
     }
 });
 
-const { graphqlHTTP } = require('express-graphql');
-const graphQlSchema = require('./schema');
-const graphQlResolvers = require('./resolver');
-const checkTokenMiddleware = require('./middleware/auth');
-const { unless } = require('express-unless');
-
-// Configuration du middleware GraphQL
-checkTokenMiddleware.unless = unless;
-app.use(checkTokenMiddleware.unless({ path: ['/login'] }));
-
 // Logout
 app.get('/logout', async (req, res) => {
     res.clearCookie("access_token", {
@@ -126,14 +116,24 @@ app.get('/logout', async (req, res) => {
     res.end();
 });
 
+const { graphqlHTTP } = require('express-graphql');
+const graphQlSchema = require('./schema');
+const graphQlResolvers = require('./resolver');
+const checkTokenMiddleware = require('./middleware/auth');
+const { unless } = require('express-unless');
+
+// Configuration du middleware GraphQL
+checkTokenMiddleware.unless = unless;
+app.use(checkTokenMiddleware.unless({ path: ['/login', '/graphql'] }));
+
 app.use(
     '/graphql',
     graphqlHTTP(async (req, res) => ({
         schema: graphQlSchema,
         rootValue: graphQlResolvers,
         context: {
-            // email: "yanisrichard21@gmail.com"
-            email: jwt.decode(req.cookies.access_token).email,
+            email: "yanisrichard21@gmail.com"
+            // email: jwt.decode(req.cookies.access_token).email,
         },
         graphiql: true,
     }))

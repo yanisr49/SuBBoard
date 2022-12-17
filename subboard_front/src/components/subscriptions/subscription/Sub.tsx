@@ -5,10 +5,10 @@
 /* eslint-disable react/prop-types */
 /** @jsxImportSource @emotion/react */
 import React, {
-    CSSProperties, useCallback, useRef, useState, useEffect, useLayoutEffect,
+    CSSProperties, useCallback, useRef, useState, useEffect, useLayoutEffect, RefObject,
 } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { current } from '@reduxjs/toolkit';
 import { createNoSubstitutionTemplateLiteral, ListFormat } from 'typescript';
 import { debounce, throttle } from 'lodash';
@@ -21,24 +21,45 @@ import { useAppSelector } from '../../../redux/reduxHooks';
 import { selectTheme } from '../../../redux/store';
 import Input from '../../../resources/common/input/Input';
 import SubHeader from './SubHeader';
-import { Subscription } from '../../../graphql/generated/graphql';
-import { editSubscription } from '../../../graphql/mutations';
+import { Query, Subscription } from '../../../graphql/generated/graphql';
+import { deleteSubscription, editSubscription } from '../../../graphql/mutations';
 import ROUTES_PATHS from '../../../router/RoutesPath';
 import themes from '../../../theme';
+import { QUERY_NAMES } from '../../../resources/Constants';
 
 interface Props {
   subscription: Subscription;
   expended: boolean;
+  index: number;
 }
 
 let cursorX: number;
 let cursorY: number;
 
-function Sub({ subscription, expended }: Props) {
-    // const navigate = useNavigate();
+function Sub({ subscription, expended, index }: Props) {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const theme = useAppSelector(selectTheme).value;
     const ref = useRef<HTMLDivElement>(null);
     const refChild = useRef<HTMLDivElement>(null);
+
+    const deleteSubscriptionMutation = useMutation(deleteSubscription, {
+        onMutate: () => navigate(-1),
+        onSuccess: (data) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            queryClient.setQueryData([QUERY_NAMES.fetchSubscription], (oldData: Pick<Query, 'subscriptions'> | undefined) => {
+                const newSubscriptions = {
+                    subscriptions: [],
+                } as Pick<Query, 'subscriptions'>;
+
+                if (oldData?.subscriptions?.length) {
+                    newSubscriptions.subscriptions = oldData.subscriptions.filter((sub) => sub?.id !== data.deleteSubscription);
+                }
+
+                return newSubscriptions;
+            });
+        },
+    });
 
     const [position, setPosition] = React.useState<{
         top?: number;
@@ -47,20 +68,28 @@ function Sub({ subscription, expended }: Props) {
 
     const style = SubStyle(theme, expended, position, document.getElementsByTagName('html')[0].scrollTop);
 
+    const test = (lastChangeTimestamp: number, oldTop: number, oldLeft: number) => {
+        if (lastChangeTimestamp > Date.now() - 500) {
+            const top = (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetTop ?? 0)
+            + (ref.current?.parentElement?.parentElement?.offsetTop ?? 0);
+            const left = (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetLeft ?? 0)
+            + (ref.current?.parentElement?.parentElement?.offsetLeft ?? 0);
+
+            setPosition({
+                top,
+                left,
+            });
+
+            const hasChanged = oldTop !== top || oldLeft !== left;
+            setTimeout(() => {
+                test(hasChanged ? Date.now() : lastChangeTimestamp, top, left);
+            }, 10);
+        }
+    };
+
     useLayoutEffect(() => {
-        setPosition({
-            top: (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetTop ?? 0)
-            + (ref.current?.parentElement?.parentElement?.offsetTop ?? 0),
-            left: (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetLeft ?? 0)
-            + (ref.current?.parentElement?.parentElement?.offsetLeft ?? 0),
-        });
-        setTimeout(() => setPosition({
-            top: (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetTop ?? 0)
-            + (ref.current?.parentElement?.parentElement?.offsetTop ?? 0),
-            left: (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetLeft ?? 0)
-            + (ref.current?.parentElement?.parentElement?.offsetLeft ?? 0),
-        }), 0);
-    }, []);
+        test(Date.now(), 0, 0);
+    }, [index]);
 
     useEffect(() => {
         const getCursorPosition = (e: MouseEvent) => {
@@ -95,7 +124,7 @@ function Sub({ subscription, expended }: Props) {
         if (ref.current?.firstElementChild && !expended) {
             if (refChild.current) {
                 const rect = ref.current.getBoundingClientRect();
-                refChild.current.style.transform = `perspective(750px) rotateX(${-((cursorY - ((rect.bottom - rect.top) / 2) - rect.top) / 50)}deg) rotateY(${(cursorX - ((rect.left - rect.right) / 2) - rect.right) / 50}deg) translateZ(0px)`;
+                refChild.current.style.transform = `perspective(700px) rotateX(${-((cursorY - ((rect.bottom - rect.top) / 2) - rect.top) / 50)}deg) rotateY(${(cursorX - ((rect.left - rect.right) / 2) - rect.right) / 50}deg) translateZ(0px)`;
             }
         }
     }, 50);
@@ -104,10 +133,14 @@ function Sub({ subscription, expended }: Props) {
         if (!expended) {
             setTimeout(() => {
                 if (refChild.current) {
-                    refChild.current.style.transform = '';
+                    refChild.current.style.transform = 'none';
                 }
             }, 60);
         }
+    };
+
+    const handleDelete = () => {
+        deleteSubscriptionMutation.mutate(subscription.id);
     };
 
     return (
@@ -127,22 +160,14 @@ function Sub({ subscription, expended }: Props) {
                     subscription={subscription}
                     expended={expended}
                 />
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
-                qkjsdbvjksbjvkbsvbskdjvbjks
+                <div
+                    onClick={handleDelete}
+                    onKeyDown={(ev) => ev.key === 'Enter' && handleDelete()}
+                    role="button"
+                    tabIndex={0}
+                >
+                    Delete
+                </div>
             </div>
         </div>
     );

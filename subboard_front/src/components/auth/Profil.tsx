@@ -89,35 +89,47 @@ export default function Profil() {
         dispatch(updateUser(undefined));
     };
 
-    useLayoutEffect(() => {
-        try {
-            if (!loggedIn && google && google.accounts) {
-                google.accounts.id.initialize({
-                    client_id: process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID,
-                    callback: (response: Credentials) => login.mutate(response),
-                    auto_select: true,
-                    cancel_on_tap_outside: false,
+    function loadGoogleButton(nthTry: number) { // if you need any param
+        // if google is loaded
+        if (typeof google !== 'undefined' && document.getElementById('buttonDiv')) {
+            try {
+                if (!loggedIn && google.accounts) {
+                    google.accounts.id.initialize({
+                        client_id: process.env.REACT_APP_GOOGLE_AUTH_CLIENT_ID,
+                        callback: (response: Credentials) => login.mutate(response),
+                        auto_select: true,
+                        cancel_on_tap_outside: false,
                     // skip_prompt_cookie: 'access_token',
-                });
-                google.accounts.id.renderButton(
-                    document.getElementById('buttonDiv'),
-                    {
-                        type: 'standard',
-                        size: 'large',
-                        theme: 'filled_black',
-                        shape: 'circle',
-                        logo_alignment: 'left',
-                        text: 'signin',
-                        locale: 'fr',
-                    },
-                );
+                    });
+                    google.accounts.id.renderButton(
+                        document.getElementById('buttonDiv'),
+                        {
+                            type: 'standard',
+                            size: 'large',
+                            theme: 'filled_black',
+                            shape: 'circle',
+                            logo_alignment: 'left',
+                            text: 'signin',
+                            locale: 'fr',
+                        },
+                    );
                 // google.accounts.id.prompt();
+                }
+            } catch (error) {
+                // eslint-disable-next-line no-console
+                console.error(error);
             }
-        } catch (error) {
+        } else if (nthTry < 5) {
+            setTimeout(() => { loadGoogleButton(nthTry + 1); }, 100);
+        } else if (nthTry >= 5) {
             // eslint-disable-next-line no-console
-            console.error(error);
+            console.error('Failed to load google signin button');
         }
-    }, [loggedIn]);
+    }
+
+    useLayoutEffect(() => {
+        loadGoogleButton(0);
+    }, []);
 
     const handleClick = () => {
         if (!expended) {

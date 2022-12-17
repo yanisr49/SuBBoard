@@ -11,7 +11,7 @@ function Router() {
         <BrowserRouter>
             <Profil />
             <Routes>
-                {Object.keys(ROUTES).map((routeIndex) => {
+                {user.status !== 'loading' && Object.keys(ROUTES).map((routeIndex) => {
                     const newRoute = ROUTES[routeIndex];
                     if (newRoute.loggedIn && !user.user && user.status === 'idle') {
                         return (

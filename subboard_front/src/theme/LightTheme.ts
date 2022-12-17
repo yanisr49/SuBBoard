@@ -7,6 +7,8 @@ export default {
         secondary: 'rgb(200, 200, 200)',
         secondaryIntermediate: 'rgb(180, 180, 180)',
         ternary: 'rgb(160, 160, 160)',
+        light: 'rgb(200, 200, 200)',
+        light2: 'rgb(160, 160, 160)',
     },
     color: {
         text: 'black',

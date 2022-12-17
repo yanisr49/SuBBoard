@@ -38,6 +38,11 @@ const resolvers = {
         await sub.save();
         return sub;
     },
+    deleteSubscription: async ({id}, { email }) => {
+        const deletedSub = await SubscriptionModel.findOneAndDelete({userEmail: email, id });
+
+        return deletedSub.id;
+    },
     theme: async ({ theme }, { email }) => {
         const user = await UserModel.findOne({ email });
         user.theme = theme;

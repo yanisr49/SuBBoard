@@ -16,7 +16,7 @@ function App() {
 
     queryClient.setDefaultOptions({
         queries: {
-            refetchOnWindowFocus: false,
+            // refetchOnWindowFocus: false,
             enabled: user.status === 'idle',
             // staleTime: 10000,
         },

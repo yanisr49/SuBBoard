@@ -29,6 +29,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   addTTDay?: Maybe<TtDays>;
   createSubscription?: Maybe<Subscription>;
+  deleteSubscription: Scalars['String'];
   editSubscription?: Maybe<Subscription>;
   removeTTDay?: Maybe<TtDays>;
   theme?: Maybe<Scalars['String']>;
@@ -37,6 +38,11 @@ export type Mutation = {
 
 export type MutationAddTtDayArgs = {
   date: Scalars['Date'];
+};
+
+
+export type MutationDeleteSubscriptionArgs = {
+  id: Scalars['String'];
 };
 
 

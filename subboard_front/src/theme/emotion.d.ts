@@ -7,7 +7,9 @@ declare module '@emotion/react' {
       primaryIntermediate: string;
       secondary: string;
       secondaryIntermediate: string;
-      ternary: string
+      ternary: string;
+      light: string;
+      light2: string;
     },
     color: {
         text: string

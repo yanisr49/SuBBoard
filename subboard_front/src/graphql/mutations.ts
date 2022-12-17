@@ -78,6 +78,16 @@ export const editSubscription = ({
     endDatePromotion,
 });
 
+const deleteSubscriptionMutation = gql`
+    mutation deleteSubscription($id: String!) {
+        deleteSubscription(id: $id)
+    }
+`;
+
+export const deleteSubscription = (id: string): Promise<Pick<Mutation, 'deleteSubscription'>> => graphQLClient.request(deleteSubscriptionMutation, {
+    id,
+});
+
 const addTTDayMutation = gql`
     mutation addTTDay($date: Date!) {
         addTTDay(date: $date) {

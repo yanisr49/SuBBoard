@@ -164,13 +164,15 @@ export const SubStyle = (
         backgroundColor: theme.backgroundColor.secondary,
         borderRadius: '7px',
         overflow: 'hidden',
-        border: `1px solid ${theme.backgroundColor.primary}`,
-        boxShadow: '0px 0px 4px 0px rgba(0,0,0)',
+        boxShadow: '0px 0px 5px 0px rgba(0,0,0)',
         transition: `all ${TRANSITION_TIME.veryShort}ms ease-in`,
         zIndex: '1',
         ':hover': {
             zIndex: '2',
             cursor: 'pointer',
+        },
+        '&:active': {
+            transform: 'scale(0.98) !important',
         },
 
         // HEADER

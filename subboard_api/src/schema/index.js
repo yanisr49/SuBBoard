@@ -54,6 +54,7 @@ const schema = buildSchema(`
     type Mutation {
         createSubscription: Subscription
         editSubscription(id: String, name: String, logo: String, color: String, dueDate: Date, frequency: Frequency, customFrequency: Int, price: Float, promotion: Float, endDatePromotion: Date): Subscription
+        deleteSubscription(id: String!): String!
         theme(theme: String): String
         addTTDay(date: Date!): TTDays
         removeTTDay(date: Date!): TTDays
