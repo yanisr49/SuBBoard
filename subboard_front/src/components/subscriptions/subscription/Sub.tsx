@@ -25,7 +25,7 @@ import { Query, Subscription } from '../../../graphql/generated/graphql';
 import { deleteSubscription, editSubscription } from '../../../graphql/mutations';
 import ROUTES_PATHS from '../../../router/RoutesPath';
 import themes from '../../../theme';
-import { QUERY_NAMES } from '../../../resources/Constants';
+import { QUERY_NAMES, TRANSITION_TIME } from '../../../resources/Constants';
 
 interface Props {
   subscription: Subscription;
@@ -44,20 +44,22 @@ function Sub({ subscription, expended, index }: Props) {
     const refChild = useRef<HTMLDivElement>(null);
 
     const deleteSubscriptionMutation = useMutation(deleteSubscription, {
-        onMutate: () => navigate(-1),
         onSuccess: (data) => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            queryClient.setQueryData([QUERY_NAMES.fetchSubscription], (oldData: Pick<Query, 'subscriptions'> | undefined) => {
-                const newSubscriptions = {
-                    subscriptions: [],
-                } as Pick<Query, 'subscriptions'>;
+            navigate(-1);
 
-                if (oldData?.subscriptions?.length) {
-                    newSubscriptions.subscriptions = oldData.subscriptions.filter((sub) => sub?.id !== data.deleteSubscription);
-                }
+            setTimeout(() => {
+                queryClient.setQueryData([QUERY_NAMES.fetchSubscription], (oldData: Pick<Query, 'subscriptions'> | undefined) => {
+                    const newSubscriptions = {
+                        subscriptions: [],
+                    } as Pick<Query, 'subscriptions'>;
 
-                return newSubscriptions;
-            });
+                    if (oldData?.subscriptions?.length) {
+                        newSubscriptions.subscriptions = oldData.subscriptions.filter((sub) => sub?.id !== data.deleteSubscription);
+                    }
+
+                    return newSubscriptions;
+                });
+            }, TRANSITION_TIME.short);
         },
     });
 
