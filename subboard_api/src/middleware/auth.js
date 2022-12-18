@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = process.env;
+const { JWT_SECRET, ENV } = process.env;
 
 /* Récupération du header bearer */
 const extractBearerToken = headerValue => {
@@ -11,8 +11,18 @@ const extractBearerToken = headerValue => {
     return matches && matches[2]
 }
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
 /* Vérification du token */
-const checkTokenMiddleware = (req, res, next) => {
+const checkTokenMiddleware = async (req, res, next) => {
+    if(ENV === 'dev') {
+        await sleep(750);
+    }
+
     // Récupération du token
     const token = req.cookies.access_token;
 

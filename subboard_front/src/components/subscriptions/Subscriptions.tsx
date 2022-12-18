@@ -34,25 +34,6 @@ export default function Subscriptions() {
         onSuccess: (data) => updateSubscriptions(data.subscriptions),
     });
 
-    const createSubscriptionMutation = useMutation(createSubscription, {
-        onSuccess: (data) => {
-            queryClient.setQueryData([QUERY_NAMES.fetchSubscription], (oldData: Pick<Query, 'subscriptions'> | undefined) => {
-                const newSubscriptions = {
-                    subscriptions: [{
-                        id: data.createSubscription?.id ?? '',
-                        initDate: new Date(),
-                        userEmail: 'yanisrichard21@gmail.com',
-                    }],
-                } as Pick<Query, 'subscriptions'>;
-                if (oldData?.subscriptions?.length && newSubscriptions.subscriptions) {
-                    newSubscriptions.subscriptions.push(...oldData.subscriptions);
-                }
-                return newSubscriptions;
-            });
-        },
-
-    });
-
     const handleOnClick = (subscription: Subscription) => {
         if (expendedCard?.id !== subscription?.id) {
             navigate(`${ROUTES_PATHS.subscriptions}/${(subscription.name ?? subscription.id).replaceAll(' ', '_')}`);
@@ -72,10 +53,6 @@ export default function Subscriptions() {
             subs.push(subscriptions.data.subscriptions.slice(i * 5 - 1, ((i + 1) * 5 - 1)));
         }
     }
-
-    const handleCreateSub = () => {
-        createSubscriptionMutation.mutate();
-    };
 
     const [projectedInsertPosition, setProjectedInsertPosition] = useState<number>(-1);
 
@@ -152,19 +129,11 @@ export default function Subscriptions() {
                 </tbody>
             </table>
 
-            <span
+            <NewSubComponent
                 // eslint-disable-next-line react/no-array-index-key
-                key="Link-new"
-                onClick={handleCreateSub}
-                onKeyDown={(ev) => ev.key === 'Enter' && handleCreateSub()}
-                role="button"
-                tabIndex={0}
-            >
-                <NewSubComponent
-                    // eslint-disable-next-line react/no-array-index-key
-                    key="Card-new"
-                />
-            </span>
+                key="Card-new"
+                loading={subscriptions.isLoading}
+            />
 
             {subscriptions.data?.subscriptions?.map((sub, index) => (
                 <span
@@ -178,6 +147,7 @@ export default function Subscriptions() {
                     <Sub
                         // eslint-disable-next-line react/no-array-index-key
                         key={`Card-${sub.id}`}
+                        loading={subscriptions.isLoading}
                         subscription={sub}
                         expended={expendedCard?.id === sub.id}
                         index={index + 1}

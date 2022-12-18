@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors')
-const { CLIENT_ID, FRONT_URI, JWT_SECRET, DOMAIN } = process.env;
+const { CLIENT_ID, FRONT_URI, JWT_SECRET, DOMAIN, ENV } = process.env;
 
 const app = express();
 

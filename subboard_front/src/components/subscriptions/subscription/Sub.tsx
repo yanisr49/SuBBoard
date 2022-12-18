@@ -31,13 +31,14 @@ interface Props {
   subscription: Subscription;
   expended: boolean;
   index: number;
+  loading: boolean;
   setDraggedSub: (sub: Subscription) => void;
 }
 
 let cursorX: number;
 let cursorY: number;
 
-function Sub({ subscription, expended, index, setDraggedSub }: Props) {
+function Sub({ subscription, expended, index, loading, setDraggedSub }: Props) {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const theme = useAppSelector(selectTheme).value;
@@ -69,9 +70,9 @@ function Sub({ subscription, expended, index, setDraggedSub }: Props) {
         left?: number;
     }>();
 
-    const style = SubStyle(theme, expended, position, document.getElementsByTagName('html')[0].scrollTop);
+    const style = SubStyle(theme, loading, expended, position, document.getElementsByTagName('html')[0].scrollTop);
 
-    const test = (lastChangeTimestamp: number, oldTop: number, oldLeft: number) => {
+    const test = (lastChangeTimestamp: number, oldTop?: number, oldLeft?: number) => {
         if (lastChangeTimestamp > Date.now() - 150) {
             const tds = document.getElementsByTagName('td');
 
@@ -83,6 +84,9 @@ function Sub({ subscription, expended, index, setDraggedSub }: Props) {
             }
 
             if (position?.top !== top || position?.left !== left) {
+                if (subscription.name === 'NETFLIX') {
+                    console.log(top, left, position, '');
+                }
                 setPosition({
                     top,
                     left,
@@ -97,7 +101,14 @@ function Sub({ subscription, expended, index, setDraggedSub }: Props) {
     };
 
     useLayoutEffect(() => {
-        test(Date.now(), 0, 0);
+        test(Date.now(), position?.top, position?.left);
+
+        const resizeHandler = () => test(Date.now(), position?.top, position?.left);
+
+        window.addEventListener('resize', resizeHandler);
+        return () => {
+            window.removeEventListener('resize', resizeHandler);
+        };
     }, [index]);
 
     useEffect(() => {
@@ -109,25 +120,6 @@ function Sub({ subscription, expended, index, setDraggedSub }: Props) {
         document.addEventListener('mousemove', getCursorPosition);
 
         return () => document.removeEventListener('mousemove', getCursorPosition);
-    }, []);
-
-    useEffect(() => {
-        const debouncedHandleResize = debounce(() => {
-            const tds = document.getElementsByTagName('td');
-            if (tds.length > index) {
-                setPosition({
-                    top: tds[index].getBoundingClientRect().top + 10,
-                    left: tds[index].getBoundingClientRect().left + 10,
-                });
-            }
-        }, 0);
-
-        window.addEventListener('resize', debouncedHandleResize);
-        document.getElementsByTagName('html')[0].addEventListener('scroll', debouncedHandleResize, true);
-        return () => {
-            window.removeEventListener('resize', debouncedHandleResize);
-            document.getElementsByTagName('html')[0].removeEventListener('scroll', debouncedHandleResize, true);
-        };
     }, []);
 
     const handleMouse = throttle(() => {
@@ -175,14 +167,16 @@ function Sub({ subscription, expended, index, setDraggedSub }: Props) {
                     subscription={subscription}
                     expended={expended}
                 />
-                <div
-                    onClick={handleDelete}
-                    onKeyDown={(ev) => ev.key === 'Enter' && handleDelete()}
-                    role="button"
-                    tabIndex={0}
-                >
-                    Delete
-                </div>
+                {expended && (
+                    <div
+                        onClick={handleDelete}
+                        onKeyDown={(ev) => ev.key === 'Enter' && handleDelete()}
+                        role="button"
+                        tabIndex={0}
+                    >
+                        Delete
+                    </div>
+                )}
             </div>
         </div>
     );

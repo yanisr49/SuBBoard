@@ -3,6 +3,7 @@ import { TRANSITION_TIME } from '../../../resources/Constants';
 
 export const NewSubStyle = (
     theme: Theme,
+    loading: boolean,
     position?: {
         top?: number;
         left?: number;
@@ -16,6 +17,7 @@ export const NewSubStyle = (
         height: 'calc((min(1800px, 100vw) / 5) * 1.4 - 20px)',
         zIndex: '1',
         transition: `all ${TRANSITION_TIME.short}ms ease-in`,
+        display: loading ? 'none' : 'auto',
     }),
     NewSub: css({
         display: 'flex',

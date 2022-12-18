@@ -8,7 +8,7 @@ import React, {
     CSSProperties, useCallback, useRef, useState, useEffect, useLayoutEffect,
 } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { current } from '@reduxjs/toolkit';
 import { createNoSubstitutionTemplateLiteral, ListFormat } from 'typescript';
 import { debounce, throttle } from 'lodash';
@@ -19,18 +19,19 @@ import SubscriptionModel from '../../../models/SubscriptionModel';
 import { useAppSelector } from '../../../redux/reduxHooks';
 import { selectTheme } from '../../../redux/store';
 import Input from '../../../resources/common/input/Input';
-import { Subscription } from '../../../graphql/generated/graphql';
-import { editSubscription } from '../../../graphql/mutations';
+import { Query, Subscription } from '../../../graphql/generated/graphql';
+import { createSubscription, editSubscription } from '../../../graphql/mutations';
 import ROUTES_PATHS from '../../../router/RoutesPath';
 import themes from '../../../theme';
 import { NewSubStyle } from './NewSubStyle';
+import { QUERY_NAMES } from '../../../resources/Constants';
+import Spinner from '../../../resources/common/Spinner';
 
 interface Props {
-  subscription: Subscription;
-  expended: boolean;
+  loading: boolean;
 }
 
-function NewSub() {
+function NewSub({ loading }: Props) {
     // const navigate = useNavigate();
     const theme = useAppSelector(selectTheme).value;
     const ref = useRef<HTMLDivElement>(null);
@@ -40,28 +41,33 @@ function NewSub() {
         left?: number;
     }>();
 
-    const style = NewSubStyle(theme, position);
+    const style = NewSubStyle(theme, loading, position);
 
-    useEffect(() => {
-        const debouncedHandleResize = debounce(() => {
-            const tds = document.getElementsByTagName('td');
-            if (tds.length > 0) {
-                setPosition({
-                    top: tds[0].getBoundingClientRect().top + 10,
-                    left: tds[0].getBoundingClientRect().left + 10,
-                });
-            }
-        }, 0);
+    const queryClient = useQueryClient();
+    const createSubscriptionMutation = useMutation(createSubscription, {
+        onSuccess: (data) => {
+            queryClient.setQueryData([QUERY_NAMES.fetchSubscription], (oldData: Pick<Query, 'subscriptions'> | undefined) => {
+                const newSubscriptions = {
+                    subscriptions: [{
+                        id: data.createSubscription?.id ?? '',
+                        initDate: new Date(),
+                        userEmail: 'yanisrichard21@gmail.com',
+                    }],
+                } as Pick<Query, 'subscriptions'>;
+                if (oldData?.subscriptions?.length && newSubscriptions.subscriptions) {
+                    newSubscriptions.subscriptions.push(...oldData.subscriptions);
+                }
+                return newSubscriptions;
+            });
+        },
 
-        window.addEventListener('resize', debouncedHandleResize);
-        document.getElementsByTagName('html')[0].addEventListener('scroll', debouncedHandleResize, true);
-        return () => {
-            window.removeEventListener('resize', debouncedHandleResize);
-            document.getElementsByTagName('html')[0].removeEventListener('scroll', debouncedHandleResize, true);
-        };
-    }, []);
+    });
 
-    const test = (lastChangeTimestamp: number, oldTop: number, oldLeft: number) => {
+    const handleCreateSub = () => {
+        createSubscriptionMutation.mutate();
+    };
+
+    const test = (lastChangeTimestamp: number, oldTop?: number, oldLeft?: number) => {
         if (lastChangeTimestamp > Date.now() - 500) {
             const tds = document.getElementsByTagName('td');
 
@@ -84,8 +90,21 @@ function NewSub() {
         }
     };
 
+    useEffect(() => {
+        if (!loading) {
+            console.log('tets');
+            test(Date.now());
+        }
+
+        const ressizeHandler = () => test(Date.now());
+
+        window.addEventListener('resize', ressizeHandler);
+        return () => {
+            window.removeEventListener('resize', ressizeHandler);
+        };
+    }, [loading]);
+
     useLayoutEffect(() => {
-        test(Date.now(), 0, 0);
     }, []);
 
     return (
@@ -94,12 +113,18 @@ function NewSub() {
             css={style.NewSubContainer}
             ref={ref}
             className="subscription"
+            onClick={handleCreateSub}
+            onKeyDown={(ev) => ev.key === 'Enter' && handleCreateSub()}
+            role="button"
+            tabIndex={0}
         >
-            <div
-                css={style.NewSub}
-            >
-                +
-            </div>
+            {createSubscriptionMutation.isLoading ? <Spinner css={style.NewSub} loading={createSubscriptionMutation.isLoading} /> : (
+                <div
+                    css={style.NewSub}
+                >
+                    +
+                </div>
+            )}
         </div>
     );
 }

@@ -3,6 +3,7 @@ import { TRANSITION_TIME } from '../../../resources/Constants';
 
 export const SubStyle = (
     theme: Theme,
+    loading: boolean,
     expended: boolean,
     position?: {
         top?: number;
@@ -18,6 +19,7 @@ export const SubStyle = (
         height: '100%',
         zIndex: '2',
         transition: `all ${TRANSITION_TIME.short}ms ease-in`,
+        display: loading ? 'none' : 'auto',
     } : {
         position: position ? 'absolute' : 'inherit',
         top: position ? `${position.top}px` : 'inherit',
@@ -26,6 +28,7 @@ export const SubStyle = (
         height: 'calc((min(1800px, 100vw) / 5) * 1.4 - 20px)',
         zIndex: '1',
         transition: `all ${TRANSITION_TIME.short}ms ease-in`,
+        display: loading ? 'none' : 'auto',
     }),
     Card: css(expended ? {
         width: '100%',
