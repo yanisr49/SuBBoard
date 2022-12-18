@@ -44,12 +44,13 @@ function NewSub() {
 
     useEffect(() => {
         const debouncedHandleResize = debounce(() => {
-            setPosition({
-                top: (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetTop ?? 0)
-                + (ref.current?.parentElement?.parentElement?.offsetTop ?? 0),
-                left: (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetLeft ?? 0)
-                + (ref.current?.parentElement?.parentElement?.offsetLeft ?? 0),
-            });
+            const tds = document.getElementsByTagName('td');
+            if (tds.length > 0) {
+                setPosition({
+                    top: tds[0].getBoundingClientRect().top + 10,
+                    left: tds[0].getBoundingClientRect().left + 10,
+                });
+            }
         }, 0);
 
         window.addEventListener('resize', debouncedHandleResize);
@@ -62,10 +63,14 @@ function NewSub() {
 
     const test = (lastChangeTimestamp: number, oldTop: number, oldLeft: number) => {
         if (lastChangeTimestamp > Date.now() - 500) {
-            const top = (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetTop ?? 0)
-            + (ref.current?.parentElement?.parentElement?.offsetTop ?? 0);
-            const left = (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetLeft ?? 0)
-            + (ref.current?.parentElement?.parentElement?.offsetLeft ?? 0);
+            const tds = document.getElementsByTagName('td');
+
+            let top = 0;
+            let left = 0;
+            if (tds.length > 0) {
+                top = tds[0].getBoundingClientRect().top + 10;
+                left = tds[0].getBoundingClientRect().left + 10;
+            }
 
             setPosition({
                 top,
@@ -88,6 +93,7 @@ function NewSub() {
         <div
             css={style.NewSubContainer}
             ref={ref}
+            className="subscription"
         >
             <div
                 css={style.NewSub}

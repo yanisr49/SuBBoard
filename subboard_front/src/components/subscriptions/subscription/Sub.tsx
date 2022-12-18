@@ -10,9 +10,9 @@ import React, {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
 import { current } from '@reduxjs/toolkit';
-import { createNoSubstitutionTemplateLiteral, ListFormat } from 'typescript';
 import { debounce, throttle } from 'lodash';
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { useDrag } from 'react-dnd';
 import Chip from '../../chip/Chip';
 import image from '../../../resources/img/netflix_logo.png';
 import SubscriptionModel from '../../../models/SubscriptionModel';
@@ -31,12 +31,13 @@ interface Props {
   subscription: Subscription;
   expended: boolean;
   index: number;
+  setDraggedSub: (sub: Subscription) => void;
 }
 
 let cursorX: number;
 let cursorY: number;
 
-function Sub({ subscription, expended, index }: Props) {
+function Sub({ subscription, expended, index, setDraggedSub }: Props) {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const theme = useAppSelector(selectTheme).value;
@@ -71,16 +72,22 @@ function Sub({ subscription, expended, index }: Props) {
     const style = SubStyle(theme, expended, position, document.getElementsByTagName('html')[0].scrollTop);
 
     const test = (lastChangeTimestamp: number, oldTop: number, oldLeft: number) => {
-        if (lastChangeTimestamp > Date.now() - 500) {
-            const top = (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetTop ?? 0)
-            + (ref.current?.parentElement?.parentElement?.offsetTop ?? 0);
-            const left = (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetLeft ?? 0)
-            + (ref.current?.parentElement?.parentElement?.offsetLeft ?? 0);
+        if (lastChangeTimestamp > Date.now() - 150) {
+            const tds = document.getElementsByTagName('td');
 
-            setPosition({
-                top,
-                left,
-            });
+            let top = 0;
+            let left = 0;
+            if (tds.length > index) {
+                top = tds[index].getBoundingClientRect().top + 10;
+                left = tds[index].getBoundingClientRect().left + 10;
+            }
+
+            if (position?.top !== top || position?.left !== left) {
+                setPosition({
+                    top,
+                    left,
+                });
+            }
 
             const hasChanged = oldTop !== top || oldLeft !== left;
             setTimeout(() => {
@@ -106,12 +113,13 @@ function Sub({ subscription, expended, index }: Props) {
 
     useEffect(() => {
         const debouncedHandleResize = debounce(() => {
-            setPosition({
-                top: (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetTop ?? 0)
-                + (ref.current?.parentElement?.parentElement?.offsetTop ?? 0),
-                left: (ref.current?.parentElement?.parentElement?.parentElement?.parentElement?.offsetLeft ?? 0)
-                + (ref.current?.parentElement?.parentElement?.offsetLeft ?? 0),
-            });
+            const tds = document.getElementsByTagName('td');
+            if (tds.length > index) {
+                setPosition({
+                    top: tds[index].getBoundingClientRect().top + 10,
+                    left: tds[index].getBoundingClientRect().left + 10,
+                });
+            }
         }, 0);
 
         window.addEventListener('resize', debouncedHandleResize);
@@ -146,13 +154,18 @@ function Sub({ subscription, expended, index }: Props) {
     };
 
     return (
-        // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
         <div
+            className="subscription"
             css={style.CardContainer}
             ref={ref}
             onMouseMove={() => requestAnimationFrame(handleMouse)}
             onPointerLeave={handleOnMouseLeave}
             onClick={handleOnMouseLeave}
+            onKeyDown={(ev) => ev.key === 'Enter' && handleOnMouseLeave()}
+            role="button"
+            tabIndex={0}
+            draggable
+            onDragStart={() => setDraggedSub(subscription)}
         >
             <div
                 css={style.Card}

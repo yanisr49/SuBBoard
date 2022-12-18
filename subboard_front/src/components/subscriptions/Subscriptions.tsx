@@ -4,6 +4,8 @@
 import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useDrop } from 'react-dnd';
+import { throttle } from 'lodash';
 import Sub from './subscription/Sub';
 import { SubscriptionStyle } from './SubscriptionsStyle';
 import { useAppSelector } from '../../redux/reduxHooks';
@@ -51,8 +53,6 @@ export default function Subscriptions() {
 
     });
 
-    console.log(subscriptions);
-
     const handleOnClick = (subscription: Subscription) => {
         if (expendedCard?.id !== subscription?.id) {
             navigate(`${ROUTES_PATHS.subscriptions}/${(subscription.name ?? subscription.id).replaceAll(' ', '_')}`);
@@ -77,67 +77,114 @@ export default function Subscriptions() {
         createSubscriptionMutation.mutate();
     };
 
+    const [projectedInsertPosition, setProjectedInsertPosition] = useState<number>(-1);
+
+    useEffect(() => {
+        const t = throttle((e: MouseEvent) => {
+            if (e.clientX > 0 && e.clientY > 0) {
+                let index = -1;
+                const subss = document.getElementsByTagName('td');
+                for (let i = 0; subss.length > i && index === -1; i += 1) {
+                    if (document.getElementsByTagName('td')[i].getBoundingClientRect().left <= e.clientX
+                    && document.getElementsByTagName('td')[i].getBoundingClientRect().right >= e.clientX
+                    && document.getElementsByTagName('td')[i].getBoundingClientRect().top <= e.clientY
+                    && document.getElementsByTagName('td')[i].getBoundingClientRect().bottom >= e.clientY) {
+                        index = i - 1;
+                    }
+                }
+                setProjectedInsertPosition(index);
+            }
+        }, 100);
+
+        const tt = () => {
+            setProjectedInsertPosition(-1);
+            document.removeEventListener('drag', tt);
+        };
+
+        document.addEventListener('drag', t);
+        document.addEventListener('dragend', tt);
+
+        return () => {
+            document.removeEventListener('drag', t);
+            document.removeEventListener('dragend', tt);
+        };
+    }, []);
+
+    const [draggedSub, setDraggedSub] = useState<Subscription>();
+
+    useEffect(() => {
+        if (projectedInsertPosition > -1 && subscriptions.data?.subscriptions?.length && projectedInsertPosition < subscriptions.data.subscriptions.length) {
+            console.log(projectedInsertPosition);
+            queryClient.setQueryData([QUERY_NAMES.fetchSubscription], (oldData: Pick<Query, 'subscriptions'> | undefined) => {
+                const newSubscriptions = {
+                    subscriptions: oldData?.subscriptions,
+                } as Pick<Query, 'subscriptions'>;
+
+                if (oldData?.subscriptions && draggedSub) {
+                    const indexDraggedSub = oldData.subscriptions.findIndex((oldSub) => oldSub.id === draggedSub.id);
+                    if (projectedInsertPosition !== indexDraggedSub) {
+                        const subscriptionsFiltered = oldData.subscriptions.filter((sub) => sub?.id !== draggedSub?.id);
+                        console.log(subscriptionsFiltered.slice(0, 4));
+                        newSubscriptions.subscriptions = [
+                            ...subscriptionsFiltered.slice(0, projectedInsertPosition),
+                            draggedSub,
+                            ...subscriptionsFiltered.slice(projectedInsertPosition)];
+                    }
+                }
+
+                return newSubscriptions;
+            });
+        }
+    }, [projectedInsertPosition]);
+
     return (
         <div css={style.SubscriptionContainer}>
             {/* <Input id="treygecv" name="kjsdkjvbn" onBlur={() => {}} /> */}
             <div className="subscriptionsHeader">header</div>
+
             <table cellSpacing={0} cellPadding={0}>
-                {subs.map((subTr, ind) => (
-                    <tr
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={`Link-${ind}-tr`}
-                    >
-                        {subTr.map((sub, ind2) => {
-                            if (sub && typeof sub === 'object') {
-                                return (
-                                    <td
-                                        // eslint-disable-next-line react/no-array-index-key
-                                        key={`Link-${sub?.id}-td`}
-                                    >
-                                        <span
-                                        // eslint-disable-next-line react/no-array-index-key
-                                            key={`Link-${sub?.id}`}
-                                            onClick={() => handleOnClick(sub)}
-                                            onKeyDown={(ev) => ev.key === 'Enter' && handleOnClick(sub)}
-                                            role="button"
-                                            tabIndex={0}
-                                        >
-                                            <Sub
-                                                // eslint-disable-next-line react/no-array-index-key
-                                                key={`Card-${sub?.id}`}
-                                                subscription={sub}
-                                                expended={expendedCard?.id === sub?.id}
-                                                index={ind * 5 + ind2}
-                                            />
-                                        </span>
-                                    </td>
-                                );
-                            }
-                            return (
-                                <td
-                                    // eslint-disable-next-line react/no-array-index-key
-                                    key={`Link-${ind}-new-td`}
-                                >
-                                    <span
-                                        // eslint-disable-next-line react/no-array-index-key
-                                        key={`Link-${ind}-new`}
-                                        onClick={handleCreateSub}
-                                        onKeyDown={(ev) => ev.key === 'Enter' && handleCreateSub()}
-                                        role="button"
-                                        tabIndex={0}
-                                    >
-                                        <NewSubComponent
-                                            // eslint-disable-next-line react/no-array-index-key
-                                            key={`Card-${ind}-new`}
-                                        />
-                                    </span>
-                                </td>
-                            );
-                        })}
-                        {subs.length < 5 && Array.from(Array(5 - subs[0].length).keys()).map((key) => <td key={key} />)}
-                    </tr>
-                ))}
+                <tbody>
+                    {Array.from(Array(Math.ceil(((subscriptions.data?.subscriptions?.length ?? 0) + 1) / 5)).keys()).map((index1) => (
+                        <tr key={`tr-${index1}`}>
+                            {[0, 1, 2, 3, 4].map((index2) => <td key={`td-${index1}-${index2}`} />)}
+                        </tr>
+                    )) }
+                </tbody>
             </table>
+
+            <span
+                // eslint-disable-next-line react/no-array-index-key
+                key="Link-new"
+                onClick={handleCreateSub}
+                onKeyDown={(ev) => ev.key === 'Enter' && handleCreateSub()}
+                role="button"
+                tabIndex={0}
+            >
+                <NewSubComponent
+                    // eslint-disable-next-line react/no-array-index-key
+                    key="Card-new"
+                />
+            </span>
+
+            {subscriptions.data?.subscriptions?.map((sub, index) => (
+                <span
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`Link-${sub.id}`}
+                    onClick={() => handleOnClick(sub)}
+                    onKeyDown={(ev) => ev.key === 'Enter' && handleOnClick(sub)}
+                    role="button"
+                    tabIndex={0}
+                >
+                    <Sub
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={`Card-${sub.id}`}
+                        subscription={sub}
+                        expended={expendedCard?.id === sub.id}
+                        index={index + 1}
+                        setDraggedSub={setDraggedSub}
+                    />
+                </span>
+            ))}
         </div>
     );
 }

@@ -7,7 +7,7 @@ const schema = buildSchema(`
     type Query {
         user: User
         ttDays(startDate: Date!, endDate: Date!): [TTDays]
-        subscriptions(id: String): [Subscription]
+        subscriptions(id: String): [Subscription!]
     }
 
     type User {

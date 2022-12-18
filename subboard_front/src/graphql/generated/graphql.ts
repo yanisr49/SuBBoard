@@ -71,7 +71,7 @@ export type MutationThemeArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  subscriptions?: Maybe<Array<Maybe<Subscription>>>;
+  subscriptions?: Maybe<Array<Subscription>>;
   ttDays?: Maybe<Array<Maybe<TtDays>>>;
   user?: Maybe<User>;
 };
