@@ -1,38 +1,19 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable jsx-a11y/control-has-associated-label */
-/* eslint-disable react/button-has-type */
-/* eslint-disable no-console */
-/* eslint-disable react/prop-types */
 /** @jsxImportSource @emotion/react */
-import React, {
-    CSSProperties, useCallback, useRef, useState, useEffect, useLayoutEffect,
-} from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useRef, useLayoutEffect } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
-import { current } from '@reduxjs/toolkit';
-import { createNoSubstitutionTemplateLiteral, ListFormat } from 'typescript';
-import { debounce, throttle } from 'lodash';
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import Chip from '../../chip/Chip';
-import image from '../../../resources/img/netflix_logo.png';
-import SubscriptionModel from '../../../models/SubscriptionModel';
 import { useAppSelector } from '../../../redux/reduxHooks';
 import { selectTheme } from '../../../redux/store';
-import Input from '../../../resources/common/input/Input';
-import { Query, Subscription } from '../../../graphql/generated/graphql';
-import { createSubscription, editSubscription } from '../../../graphql/mutations';
-import ROUTES_PATHS from '../../../router/RoutesPath';
-import themes from '../../../theme';
+import { Query } from '../../../graphql/generated/graphql';
+import { createSubscription } from '../../../graphql/mutations';
 import { NewSubStyle } from './NewSubStyle';
 import { QUERY_NAMES } from '../../../resources/Constants';
-import Spinner from '../../../resources/common/Spinner';
+import Spinner from '../../../resources/components/Spinner';
 
 interface Props {
   loading: boolean;
 }
 
-function NewSub({ loading }: Props) {
-    // const navigate = useNavigate();
+export default React.memo(({ loading }: Props) => {
     const theme = useAppSelector(selectTheme).value;
     const ref = useRef<HTMLDivElement>(null);
 
@@ -67,48 +48,26 @@ function NewSub({ loading }: Props) {
         createSubscriptionMutation.mutate();
     };
 
-    const test = (lastChangeTimestamp: number, oldTop?: number, oldLeft?: number) => {
-        if (lastChangeTimestamp > Date.now() - 500) {
-            const tds = document.getElementsByTagName('td');
-
-            let top = 0;
-            let left = 0;
-            if (tds.length > 0) {
-                top = tds[0].getBoundingClientRect().top + 10;
-                left = tds[0].getBoundingClientRect().left + 10;
-            }
-
+    const relocate = () => {
+        const tds = document.getElementsByTagName('td');
+        if (tds.length > 0) {
             setPosition({
-                top,
-                left,
+                top: tds[0].getBoundingClientRect().top + 10,
+                left: tds[0].getBoundingClientRect().left + 10,
             });
-
-            const hasChanged = oldTop !== top || oldLeft !== left;
-            setTimeout(() => {
-                test(hasChanged ? Date.now() : lastChangeTimestamp, top, left);
-            }, 10);
         }
     };
 
-    useEffect(() => {
-        if (!loading) {
-            console.log('tets');
-            test(Date.now());
-        }
+    useLayoutEffect(() => {
+        relocate();
 
-        const ressizeHandler = () => test(Date.now());
-
-        window.addEventListener('resize', ressizeHandler);
+        window.addEventListener('resize', relocate);
         return () => {
-            window.removeEventListener('resize', ressizeHandler);
+            window.removeEventListener('resize', relocate);
         };
     }, [loading]);
 
-    useLayoutEffect(() => {
-    }, []);
-
     return (
-        // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events, jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
         <div
             css={style.NewSubContainer}
             ref={ref}
@@ -118,15 +77,9 @@ function NewSub({ loading }: Props) {
             role="button"
             tabIndex={0}
         >
-            {createSubscriptionMutation.isLoading ? <Spinner css={style.NewSub} loading={createSubscriptionMutation.isLoading} /> : (
-                <div
-                    css={style.NewSub}
-                >
-                    +
-                </div>
-            )}
+            <div css={style.NewSub}>
+                {createSubscriptionMutation.isLoading ? <Spinner loading={createSubscriptionMutation.isLoading} /> : '+'}
+            </div>
         </div>
     );
-}
-const NewSubComponent = React.memo(NewSub);
-export default NewSubComponent;
+});

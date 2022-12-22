@@ -7,9 +7,8 @@ export const WelcomePageStyle = (theme: Theme) => ({
         justifyContent: 'space-evenly',
         alignItems: 'center',
         flexDirection: 'column',
-        position: 'absolute',
         width: '100%',
-        height: '100%',
+        height: '100vh',
         '.welcome': {
             color: theme.color.text,
             fontSize: '15vw',

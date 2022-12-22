@@ -129,7 +129,7 @@ export default function Profil() {
 
     useLayoutEffect(() => {
         loadGoogleButton(0);
-    }, []);
+    }, [user]);
 
     const handleClick = () => {
         if (!expended) {

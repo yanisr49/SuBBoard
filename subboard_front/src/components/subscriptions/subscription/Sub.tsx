@@ -1,30 +1,14 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable jsx-a11y/control-has-associated-label */
-/* eslint-disable react/button-has-type */
-/* eslint-disable no-console */
-/* eslint-disable react/prop-types */
 /** @jsxImportSource @emotion/react */
-import React, {
-    CSSProperties, useCallback, useRef, useState, useEffect, useLayoutEffect, RefObject,
-} from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from 'react-query';
-import { current } from '@reduxjs/toolkit';
-import { debounce, throttle } from 'lodash';
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import { useDrag } from 'react-dnd';
-import Chip from '../../chip/Chip';
-import image from '../../../resources/img/netflix_logo.png';
-import SubscriptionModel from '../../../models/SubscriptionModel';
+import { throttle } from 'lodash';
 import { SubStyle } from './SubStyle';
 import { useAppSelector } from '../../../redux/reduxHooks';
 import { selectTheme } from '../../../redux/store';
-import Input from '../../../resources/common/input/Input';
 import SubHeader from './SubHeader';
 import { Query, Subscription } from '../../../graphql/generated/graphql';
-import { deleteSubscription, editSubscription } from '../../../graphql/mutations';
-import ROUTES_PATHS from '../../../router/RoutesPath';
-import themes from '../../../theme';
+import { deleteSubscription } from '../../../graphql/mutations';
 import { QUERY_NAMES, TRANSITION_TIME } from '../../../resources/Constants';
 
 interface Props {
@@ -72,42 +56,22 @@ function Sub({ subscription, expended, index, loading, setDraggedSub }: Props) {
 
     const style = SubStyle(theme, loading, expended, position, document.getElementsByTagName('html')[0].scrollTop);
 
-    const test = (lastChangeTimestamp: number, oldTop?: number, oldLeft?: number) => {
-        if (lastChangeTimestamp > Date.now() - 150) {
-            const tds = document.getElementsByTagName('td');
-
-            let top = 0;
-            let left = 0;
-            if (tds.length > index) {
-                top = tds[index].getBoundingClientRect().top + 10;
-                left = tds[index].getBoundingClientRect().left + 10;
-            }
-
-            if (position?.top !== top || position?.left !== left) {
-                if (subscription.name === 'NETFLIX') {
-                    console.log(top, left, position, '');
-                }
-                setPosition({
-                    top,
-                    left,
-                });
-            }
-
-            const hasChanged = oldTop !== top || oldLeft !== left;
-            setTimeout(() => {
-                test(hasChanged ? Date.now() : lastChangeTimestamp, top, left);
-            }, 10);
+    const relocate = () => {
+        const tds = document.getElementsByTagName('td');
+        if (tds.length > index) {
+            setPosition({
+                top: tds[index].getBoundingClientRect().top + 10,
+                left: tds[index].getBoundingClientRect().left + 10,
+            });
         }
     };
 
-    useLayoutEffect(() => {
-        test(Date.now(), position?.top, position?.left);
+    useEffect(() => {
+        relocate();
 
-        const resizeHandler = () => test(Date.now(), position?.top, position?.left);
-
-        window.addEventListener('resize', resizeHandler);
+        window.addEventListener('resize', relocate);
         return () => {
-            window.removeEventListener('resize', resizeHandler);
+            window.removeEventListener('resize', relocate);
         };
     }, [index]);
 
@@ -126,7 +90,12 @@ function Sub({ subscription, expended, index, loading, setDraggedSub }: Props) {
         if (ref.current?.firstElementChild && !expended) {
             if (refChild.current) {
                 const rect = ref.current.getBoundingClientRect();
-                refChild.current.style.transform = `perspective(700px) rotateX(${-((cursorY - ((rect.bottom - rect.top) / 2) - rect.top) / 50)}deg) rotateY(${(cursorX - ((rect.left - rect.right) / 2) - rect.right) / 50}deg) translateZ(0px)`;
+                refChild.current.style.transform = `
+                    perspective(700px)
+                    rotateX(${-((cursorY - ((rect.bottom - rect.top) / 2) - rect.top) / 50)}deg)
+                    rotateY(${(cursorX - ((rect.left - rect.right) / 2) - rect.right) / 50}deg)
+                    translateZ(0px)
+                `;
             }
         }
     }, 50);

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare, faPalette } from '@fortawesome/free-solid-svg-icons';
 import { useMutation } from 'react-query';
 import ColorPicker from '../modals/ColorPickerModal';
-import Spinner from '../../../resources/common/Spinner';
+import Spinner from '../../../resources/components/Spinner';
 import { editSubscription } from '../../../graphql/mutations';
 import { Subscription } from '../../../graphql/generated/graphql';
 import LogoPlaceholder from '../../../resources/img/SubLogoPlaceholder.png';

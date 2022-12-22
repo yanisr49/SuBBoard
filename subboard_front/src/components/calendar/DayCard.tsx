@@ -6,7 +6,7 @@ import Skeleton from 'react-loading-skeleton';
 import moment from 'moment-ferie-fr';
 import { useAppSelector } from '../../redux/reduxHooks';
 import { selectTheme } from '../../redux/store';
-import Spinner from '../../resources/common/Spinner';
+import Spinner from '../../resources/components/Spinner';
 import { addTTDay, removeTTDay } from '../../graphql/mutations';
 import { Query, TtDays } from '../../graphql/generated/graphql';
 import { QUERY_NAMES } from '../../resources/Constants';

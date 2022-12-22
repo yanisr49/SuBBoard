@@ -1,8 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import './App.scss';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import Router from './router/router';
 import 'react-loading-skeleton/dist/skeleton.css';

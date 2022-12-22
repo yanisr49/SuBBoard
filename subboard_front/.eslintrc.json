@@ -45,7 +45,7 @@
         "max-len": [
             "warn",
             {
-                "code": 150
+                "code": 180
             }
         ],
         "object-curly-newline": [

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import Skeleton from 'react-loading-skeleton';
 import { useMutation, useQueryClient } from 'react-query';
-import { Select } from '../../resources/common/Select';
+import { Select } from '../../resources/components/Select';
 import { updateTheme } from '../../redux/themeSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/reduxHooks';
 import { isThemesKey, ThemesKeys, themesKeys } from '../../theme';

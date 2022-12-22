@@ -18,24 +18,28 @@ export const SubStyle = (
         width: '100%',
         height: '100%',
         zIndex: '2',
-        transition: `all ${TRANSITION_TIME.short}ms ease-in`,
+        transition: `all ${TRANSITION_TIME.medium}ms cubic-bezier(0,0,0,1)`,
         display: loading ? 'none' : 'auto',
     } : {
-        position: position ? 'absolute' : 'inherit',
+        position: 'absolute',
         top: position ? `${position.top}px` : 'inherit',
         left: position ? `${position.left}px` : 'inherit',
         width: 'calc(min(1800px, 100%) / 5 - 20px)',
         height: 'calc((min(1800px, 100vw) / 5) * 1.4 - 20px)',
         zIndex: '1',
-        transition: `all ${TRANSITION_TIME.short}ms ease-in`,
-        display: loading ? 'none' : 'auto',
+        transition: `all ${TRANSITION_TIME.medium}ms cubic-bezier(0,0,0,1)`,
+        ':hover': {
+            zIndex: '2',
+            cursor: 'pointer',
+        },
     }),
     Card: css(expended ? {
+        position: 'relative',
         width: '100%',
         height: '100%',
         backgroundColor: theme.backgroundColor.ternary,
         zIndex: '2',
-        transition: `all ${TRANSITION_TIME.short}ms ease-in`,
+        transition: `all ${TRANSITION_TIME.medium}ms cubic-bezier(0,0,0,1)`,
 
         // HEADER
         '.cardHeader': {
@@ -161,14 +165,14 @@ export const SubStyle = (
             },
         },
     } : {
+        position: 'relative',
         width: '100%',
         height: '100%',
-        // margin: '0 6px',
         backgroundColor: theme.backgroundColor.secondary,
         borderRadius: '7px',
         overflow: 'hidden',
         boxShadow: '0px 0px 5px 0px rgba(0,0,0)',
-        transition: `all ${TRANSITION_TIME.veryShort}ms ease-in`,
+        transition: `all ${TRANSITION_TIME.veryShort}ms linear`,
         zIndex: '1',
         ':hover': {
             zIndex: '2',
