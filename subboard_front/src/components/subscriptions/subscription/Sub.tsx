@@ -16,7 +16,7 @@ interface Props {
   expended: boolean;
   index: number;
   loading: boolean;
-  setDraggedSub: (sub: Subscription) => void;
+  setDraggedSub: (sub?: Subscription) => void;
 }
 
 let cursorX: number;
@@ -127,6 +127,7 @@ function Sub({ subscription, expended, index, loading, setDraggedSub }: Props) {
             tabIndex={0}
             draggable
             onDragStart={() => setDraggedSub(subscription)}
+            onDragEnd={() => setDraggedSub()}
         >
             <div
                 css={style.Card}

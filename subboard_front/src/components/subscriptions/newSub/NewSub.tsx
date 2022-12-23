@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import React, { useRef, useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useAppSelector } from '../../../redux/reduxHooks';
 import { selectTheme } from '../../../redux/store';
 import { Query } from '../../../graphql/generated/graphql';
 import { createSubscription } from '../../../graphql/mutations';
-import { NewSubStyle } from './NewSubStyle';
 import { QUERY_NAMES } from '../../../resources/Constants';
 import Spinner from '../../../resources/components/Spinner';
+import { NewSubStyle } from './NewSubStyle';
 
 interface Props {
   loading: boolean;
@@ -15,14 +15,13 @@ interface Props {
 
 export default React.memo(({ loading }: Props) => {
     const theme = useAppSelector(selectTheme).value;
-    const ref = useRef<HTMLDivElement>(null);
 
     const [position, setPosition] = React.useState<{
         top?: number;
         left?: number;
     }>();
 
-    const style = NewSubStyle(theme, loading, position);
+    const { newSubContainerStyle, newSubStyle } = NewSubStyle(theme, loading, position);
 
     const queryClient = useQueryClient();
     const createSubscriptionMutation = useMutation(createSubscription, {
@@ -69,15 +68,14 @@ export default React.memo(({ loading }: Props) => {
 
     return (
         <div
-            css={style.NewSubContainer}
-            ref={ref}
+            css={newSubContainerStyle}
             className="subscription"
             onClick={handleCreateSub}
             onKeyDown={(ev) => ev.key === 'Enter' && handleCreateSub()}
             role="button"
             tabIndex={0}
         >
-            <div css={style.NewSub}>
+            <div css={newSubStyle}>
                 {createSubscriptionMutation.isLoading ? <Spinner loading={createSubscriptionMutation.isLoading} /> : '+'}
             </div>
         </div>

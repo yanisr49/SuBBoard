@@ -21,10 +21,12 @@ export default function Subscriptions() {
     const location = useLocation();
     const [filter, setFilter] = useState<string>('');
     const [expendedCard, updateSubscriptions] = useExpendedCard();
+    const [draggedSub, setDraggedSub] = useState<Subscription>();
     const theme = useAppSelector(selectTheme).value;
+    const queryClient = useQueryClient();
+
     const style = SubscriptionStyle(theme);
 
-    const queryClient = useQueryClient();
     const subscriptions = useQuery({
         queryKey: [QUERY_NAMES.fetchSubscription],
         queryFn: () => fetchSubscriptionsQuery(),
@@ -84,8 +86,6 @@ export default function Subscriptions() {
             document.removeEventListener('drag', calculNewSubIndex);
         };
     }, []);
-
-    const [draggedSub, setDraggedSub] = useState<Subscription>();
 
     useEffect(() => {
         // Si un abonnement doit être déplacé

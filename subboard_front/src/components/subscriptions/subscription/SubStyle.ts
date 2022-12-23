@@ -19,11 +19,11 @@ export const SubStyle = (
         height: '100%',
         zIndex: '2',
         transition: `all ${TRANSITION_TIME.medium}ms cubic-bezier(0,0,0,1)`,
-        display: loading ? 'none' : 'auto',
     } : {
         position: 'absolute',
         top: position ? `${position.top}px` : 'inherit',
         left: position ? `${position.left}px` : 'inherit',
+        transform: position ? 'scale(1)' : 'scale(0)',
         width: 'calc(min(1800px, 100%) / 5 - 20px)',
         height: 'calc((min(1800px, 100vw) / 5) * 1.4 - 20px)',
         zIndex: '1',

@@ -15,6 +15,7 @@ export const InputStyle = (theme: Theme) => ({
             borderRadius: '5px',
             color: theme.color.text,
             padding: '10px',
+            boxShadow: 'inset 0px 0px 15px -10px #000000',
             '&:focus': {
                 outlineWidth: '0',
             },

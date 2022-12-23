@@ -9,17 +9,16 @@ export const NewSubStyle = (
         left?: number;
     },
 ) => ({
-    NewSubContainer: css({
-        position: position ? 'absolute' : 'inherit',
+    newSubContainerStyle: css({
+        position: 'absolute',
         top: position ? `${position.top}px` : 'inherit',
         left: position ? `${position.left}px` : 'inherit',
         width: 'calc(min(1800px, 100%) / 5 - 20px)',
         height: 'calc((min(1800px, 100vw) / 5) * 1.4 - 20px)',
         zIndex: '1',
         transition: `all ${TRANSITION_TIME.short}ms ease-in`,
-        display: loading ? 'none' : 'auto',
     }),
-    NewSub: css({
+    newSubStyle: css({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
