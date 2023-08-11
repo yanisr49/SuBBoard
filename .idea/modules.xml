@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/SuBBoard.iml" filepath="$PROJECT_DIR$/.idea/SuBBoard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/subboard_api/subboard_api.iml" filepath="$PROJECT_DIR$/subboard_api/subboard_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/subboard_front/subboard_front.iml" filepath="$PROJECT_DIR$/subboard_front/subboard_front.iml" />
+    </modules>
+  </component>
+</project>
