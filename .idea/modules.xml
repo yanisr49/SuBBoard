@@ -5,7 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/SuBBoard.iml" filepath="$PROJECT_DIR$/.idea/SuBBoard.iml" />
       <module fileurl="file://$PROJECT_DIR$/subboard_api/subboard_api.iml" filepath="$PROJECT_DIR$/subboard_api/subboard_api.iml" />
       <module fileurl="file://$PROJECT_DIR$/subboard_back/subboard_java.iml" filepath="$PROJECT_DIR$/subboard_back/subboard_java.iml" />
-      <module fileurl="file://$PROJECT_DIR$/subboard_react/subboard_react.iml" filepath="$PROJECT_DIR$/subboard_react/subboard_react.iml" />
+      <module fileurl="file://$PROJECT_DIR$/subboard_react_old/subboard_react_old.iml" filepath="$PROJECT_DIR$/subboard_react_old/subboard_react_old.iml" />
     </modules>
   </component>
 </project>
