@@ -1,0 +1,39 @@
+scalar Date
+
+type Query {
+    user: User
+    subscriptions: [Subscription!]
+}
+
+type User {
+    id: ID!
+    email: String!
+    pseudo: String
+    theme: String
+    profilPicture: String
+    subscriptions: [Subscription]
+}
+
+type Subscription {
+    id: ID!
+    name: String
+    logo: String
+    color: String
+}
+
+enum Frequency {
+    DAILY
+    WEEKLY
+    BIMONTHLY
+    MONTHLY
+    BIQUARTERLY
+    QUARTERLY
+    BIANNUAL
+    ANNUAL
+    CUSTOM
+}
+
+
+type Mutation {
+    createSubscription(name: String, color: String, logo: String): Subscription
+}
