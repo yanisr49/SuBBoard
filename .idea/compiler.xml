@@ -21,6 +21,9 @@
         <module name="subboard_java" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="subboard_back" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
